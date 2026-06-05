@@ -1,0 +1,52 @@
+## General
+# macOS folder attributes
+.DS_Store
+# Windows thumbnail cache files
+Thumbs.db
+
+## Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Debug files
+*.stacktrace
+
+## Dependency directories
+node_modules/
+# If using Yarn PnP
+.pnp.*
+
+## Build directories
+build/
+/dist/
+# Vite/Next.js output
+/.next/
+/.vite/
+
+## IDE / Editor settings
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+## Environment files
+.env
+.env.*
+# Private key files
+*.pem
+*.key
+
+## OS generated files
+ehthumbs.db
+Desktop.ini
+
+## Test coverage
+coverage/
+
+## Misc
+*.tgz
+*.zip
+*.tar.gz
+
+# Add any other files or directories you want to ignore.
