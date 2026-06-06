@@ -1,10 +1,10 @@
+using Evote360.Core.Common;
 using System;
 
 namespace Evote360.Core.Entities
 {
-    public class CodigoVerificacion
+    public class CodigoVerificacion : BaseEntity
     {
-        public int Id { get; set; }
         public int CiudadanoId { get; set; }
         public int EleccionId { get; set; }
         public string Codigo { get; set; } = null!;

@@ -1,12 +1,11 @@
+using Evote360.Core.Common;
 namespace Evote360.Core.Entities
 {
-    public class AlianzaPolitica
+    public class AlianzaPolitica : BaseEntity
     {
-        public int Id { get; set; }
         public int EleccionId { get; set; }
         public int PartidoMayoristaId { get; set; }
         public int PartidoAliadoId { get; set; }
-        public bool Estado { get; set; } = true;
 
         // Navigation properties
         public virtual Eleccion Eleccion { get; set; } = null!;

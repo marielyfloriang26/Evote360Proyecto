@@ -1,10 +1,10 @@
+using Evote360.Core.Common;
 using System;
 
 namespace Evote360.Core.Entities
 {
-    public class AsignacionDirigente
+    public class AsignacionDirigente : BaseEntity
     {
-        public int Id { get; set; }
         public int UsuarioId { get; set; }
         public int PartidoId { get; set; }
         public DateTime FechaAsignacion { get; set; } = DateTime.Now;

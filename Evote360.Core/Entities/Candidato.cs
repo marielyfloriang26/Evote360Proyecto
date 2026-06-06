@@ -1,14 +1,13 @@
+using Evote360.Core.Common;
 using System.Collections.Generic;
 
 namespace Evote360.Core.Entities
 {
-    public class Candidato
+    public class Candidato : BaseEntity
     {
-        public int Id { get; set; }
         public string Nombre { get; set; } = null!;
         public int PartidoId { get; set; }
         public string? FotoUrl { get; set; }
-        public bool Estado { get; set; } = true;
 
         // Navigation properties
         public virtual PartidoPolitico Partido { get; set; } = null!;

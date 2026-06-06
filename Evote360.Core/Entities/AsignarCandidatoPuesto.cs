@@ -1,8 +1,8 @@
+using Evote360.Core.Common;
 namespace Evote360.Core.Entities
 {
-    public class AsignarCandidatoPuesto
+    public class AsignarCandidatoPuesto : BaseEntity
     {
-        public int Id { get; set; }
         public int CandidatoId { get; set; }
         public int PuestoId { get; set; }
         public int EleccionId { get; set; }

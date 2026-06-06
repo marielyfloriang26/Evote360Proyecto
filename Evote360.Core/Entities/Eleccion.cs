@@ -1,11 +1,11 @@
+using Evote360.Core.Common;
 using System;
 using System.Collections.Generic;
 
 namespace Evote360.Core.Entities
 {
-    public class Eleccion
+    public class Eleccion : BaseEntity
     {
-        public int Id { get; set; }
         public string Nombre { get; set; } = null!;
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
