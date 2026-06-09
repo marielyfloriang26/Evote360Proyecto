@@ -1,4 +1,4 @@
-namespace Evote360.Web.ViewModels
+namespace Evote360.Application.ViewModels
 {
     public class ErrorViewModel
     {
