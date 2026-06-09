@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Evote360.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InicializacionSistema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,8 @@ namespace Evote360.Infrastructure.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EstadoElectoral = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    EstadoElectoral = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,6 +68,7 @@ namespace Evote360.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
@@ -101,7 +103,8 @@ namespace Evote360.Infrastructure.Migrations
                     Codigo = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     FechaGeneracion = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     FechaExpiracion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Usado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    Usado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -184,7 +187,8 @@ namespace Evote360.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     PartidoId = table.Column<int>(type: "int", nullable: false),
-                    FechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    FechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -211,7 +215,8 @@ namespace Evote360.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CandidatoId = table.Column<int>(type: "int", nullable: false),
                     PuestoId = table.Column<int>(type: "int", nullable: false),
-                    EleccionId = table.Column<int>(type: "int", nullable: false)
+                    EleccionId = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,7 +249,8 @@ namespace Evote360.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EleccionId = table.Column<int>(type: "int", nullable: false),
                     PuestoId = table.Column<int>(type: "int", nullable: false),
-                    CandidatoId = table.Column<int>(type: "int", nullable: true)
+                    CandidatoId = table.Column<int>(type: "int", nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

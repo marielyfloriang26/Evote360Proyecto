@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Evote360.Web.ViewModels;
+using Evote360.Application.ViewModels;
 using System.Diagnostics;
 
 namespace Evote360.Web.Controllers
