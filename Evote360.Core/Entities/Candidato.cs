@@ -6,6 +6,7 @@ namespace Evote360.Core.Entities
     public class Candidato : BaseEntity
     {
         public string Nombre { get; set; } = null!;
+        public string Apellido { get; set; } = null!;
         public int PartidoId { get; set; }
         public string? FotoUrl { get; set; }
 
