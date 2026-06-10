@@ -9,8 +9,10 @@ namespace Evote360.Application.DTOs
 {
     public class CrearCandidatoDTO
     {
-        string NombreCandidato { get; set; }
-        string ApellidoCandidato { get; set; }
-        IFormFile FotoCandidato { get; set; }
+        public string Nombre { get; set; } = null!;
+        public string Apellido { get; set; } = null!;
+        public IFormFile Foto { get; set; } = null!;
+        public int PartidoId { get; set; }
+        public bool Estado { get; set; } = true;
     }
 }

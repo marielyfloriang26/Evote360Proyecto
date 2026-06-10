@@ -12,10 +12,14 @@ namespace Evote360.Application.Services.Implementations
     public class CandidatoService : ICandidatoService
     {
         private readonly ICandidatoRepository _repository;
-        public CandidatoService(ICandidatoRepository repository) 
+        private readonly IEleccionRepository _eleccionRepository;
+
+        public CandidatoService(ICandidatoRepository repository, IEleccionRepository eleccionRepository) 
         {
             _repository = repository;
+            _eleccionRepository = eleccionRepository;
         }
+
         public async Task<IEnumerable<CandidatoDTO>> GetAllCandidatos()
         {
             var candidatos = await _repository.GetAllAsync();
@@ -24,35 +28,138 @@ namespace Evote360.Application.Services.Implementations
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Apellido = c.Apellido,
-                Foto = c.FotoUrl,
-                PuestoAsociado = c.,
+                FotoUrl = c.FotoUrl,
+                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
                 Estado = c.Estado
             });
         }
 
-        public Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
+        public async Task<IEnumerable<CandidatoDTO>> GetAllByPartidoAsync(int partidoId)
         {
-            throw new NotImplementedException();
+            var candidatos = await _repository.GetAllAsync();
+            return candidatos.Where(c => c.PartidoId == partidoId).Select(c => new CandidatoDTO
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Apellido = c.Apellido,
+                FotoUrl = c.FotoUrl,
+                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
+                Estado = c.Estado
+            });
         }
 
-        public Task<CandidatoDTO> GetCandidatoById(int id)
+        public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
         {
-            throw new NotImplementedException();
+            var candidatos = await _repository.GetAllAsync();
+            return candidatos.Where(c => c.Estado).Select(c => new CandidatoDTO
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Apellido = c.Apellido,
+                FotoUrl = c.FotoUrl,
+                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
+                Estado = c.Estado
+            });
         }
 
-        public Task<CandidatoDTO> CreateCandidato(CrearCandidatoDTO candidato)
+        public async Task<CandidatoDTO?> GetCandidatoById(int id)
         {
-            throw new NotImplementedException();
+            var c = await _repository.GetByIdAsync(id);
+            if (c == null) return null;
+
+            return new CandidatoDTO
+            {
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Apellido = c.Apellido,
+                FotoUrl = c.FotoUrl,
+                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
+                Estado = c.Estado
+            };
         }
 
-        public Task<CandidatoDTO> UpdateCandidato(CandidatoDTO candidato)
+        public async Task<CandidatoDTO> CreateCandidato(CrearCandidatoDTO candidatoDto)
         {
-            throw new NotImplementedException();
+            var candidato = new Core.Entities.Candidato
+            {
+                Nombre = candidatoDto.Nombre,
+                Apellido = candidatoDto.Apellido,
+                PartidoId = candidatoDto.PartidoId,
+                Estado = candidatoDto.Estado,
+                FotoUrl = candidatoDto.Foto != null ? "dummy" : null // Should be handled in controller before calling this, or updated later
+            };
+
+            await _repository.AddAsync(candidato);
+
+            return new CandidatoDTO
+            {
+                Id = candidato.Id,
+                Nombre = candidato.Nombre,
+                Apellido = candidato.Apellido,
+                Estado = candidato.Estado,
+                PuestoAsociado = "Sin puesto asociado"
+            };
         }
 
-        public Task<bool> AlternarEstadoCandidato(int id)
+        public async Task<CandidatoDTO?> UpdateCandidato(CandidatoDTO candidatoDto)
         {
-            throw new NotImplementedException();
+            var candidato = await _repository.GetByIdAsync(candidatoDto.Id);
+            if (candidato == null) return null;
+
+            candidato.Nombre = candidatoDto.Nombre;
+            candidato.Apellido = candidatoDto.Apellido;
+            candidato.Estado = candidatoDto.Estado;
+            candidato.FotoUrl = candidatoDto.FotoUrl ?? candidato.FotoUrl; // Update only if new url provided
+
+            await _repository.UpdateAsync(candidato);
+
+            return new CandidatoDTO
+            {
+                Id = candidato.Id,
+                Nombre = candidato.Nombre,
+                Apellido = candidato.Apellido,
+                FotoUrl = candidato.FotoUrl,
+                PuestoAsociado = candidato.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
+                Estado = candidato.Estado
+            };
+        }
+
+        public async Task<bool> AlternarEstadoCandidato(int id)
+        {
+            var candidato = await _repository.GetByIdAsync(id);
+            if (candidato == null) return false;
+
+            candidato.Estado = !candidato.Estado;
+            await _repository.UpdateAsync(candidato);
+            return true;
+        }
+
+        public async Task<bool> HasActiveElectionAsync()
+        {
+            var elecciones = await _eleccionRepository.GetAllAsync();
+            return elecciones.Any(e => e.EstadoElectoral == "Activa");
+        }
+
+        public async Task<bool> HasParticipatedInElectionAsync(int candidatoId)
+        {
+            var candidato = await _repository.GetByIdAsync(candidatoId);
+            if (candidato == null) return false;
+
+            // A candidate has participated if there's an active or finalized election using them.
+            // As per rules, if they are part of an Activa or Finalizada election, they participated.
+            // We check through AsignacionesCandidatos or Votos (since the assignment locks it)
+            return candidato.AsignacionesPuestos.Any(a => 
+                a.Eleccion != null && (a.Eleccion.EstadoElectoral == "Activa" || a.Eleccion.EstadoElectoral == "Finalizada"));
+        }
+
+        public async Task<bool> HasAssignedPuestoVigenteAsync(int candidatoId)
+        {
+            var candidato = await _repository.GetByIdAsync(candidatoId);
+            if (candidato == null) return false;
+
+            // They are assigned to a current elective position (Pendiente or Activa election)
+            return candidato.AsignacionesPuestos.Any(a => 
+                a.Eleccion == null || a.Eleccion.EstadoElectoral == "Pendiente" || a.Eleccion.EstadoElectoral == "Activa");
         }
     }
 }
