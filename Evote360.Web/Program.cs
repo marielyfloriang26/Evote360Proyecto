@@ -2,8 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Evote360.Infrastructure.Context;
 using Evote360.Core.Interfaces;
 using Evote360.Infrastructure.Repositories.Implementations;
+
 using Evote360.Application.Interfaces;
 using Evote360.Application.Services;
+
+using Evote360.Application.Services.Interfaces;
+using Evote360.Application.Services.Implementations;
+using Evote360.Infrastructure.Services.Implementations;
+
 
 namespace WebApp
 {
@@ -37,9 +43,16 @@ namespace WebApp
             builder.Services.AddScoped<ICodigoVerificacionRepository, CodigoVerificacionRepository>();
 
 
+
             // service
             builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
             
+
+            // Register Services
+            builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+            builder.Services.AddScoped<ICandidatoService, CandidatoService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
