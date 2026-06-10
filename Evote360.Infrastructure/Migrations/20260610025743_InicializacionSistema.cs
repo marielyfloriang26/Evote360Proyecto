@@ -52,6 +52,7 @@ namespace Evote360.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Siglas = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     LogoUrl = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
