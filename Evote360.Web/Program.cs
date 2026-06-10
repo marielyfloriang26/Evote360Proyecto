@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Evote360.Infrastructure.Context;
 using Evote360.Core.Interfaces;
 using Evote360.Infrastructure.Repositories.Implementations;
+using Evote360.Application.Services.Interfaces;
+using Evote360.Application.Services;
 
 namespace WebApp
 {
@@ -33,6 +35,7 @@ namespace WebApp
             builder.Services.AddScoped<IAsignarCandidatoPuestoRepository, AsignarCandidatoPuestoRepository>();
             builder.Services.AddScoped<IVotoRepository, VotoRepository>();
             builder.Services.AddScoped<ICodigoVerificacionRepository, CodigoVerificacionRepository>();
+            builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
 
             var app = builder.Build();
 

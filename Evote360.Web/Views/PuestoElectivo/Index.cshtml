@@ -1,0 +1,90 @@
+@model Evote360.Application.ViewModels.PuestoElectivoIndexViewModel
+
+@{
+    ViewData["Title"] = "Mantenimiento de Puestos Electivos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Mantenimiento de Puestos Electivos</h2>
+        @if (Model.ExisteEleccionActiva)
+        {
+            <button class="btn btn-primary" disabled title="No disponible con elección activa">Crear puesto electivo</button>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">Crear puesto electivo</a>
+        }
+    </div>
+
+    @if (Model.ExisteEleccionActiva)
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>Aviso:</strong> No se pueden modificar puestos electivos mientras exista una elección activa.
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre del puesto</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Puestos.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No hay puestos electivos registrados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var puesto in Model.Puestos)
+                    {
+                        <tr>
+                            <td><strong>@puesto.Nombre</strong></td>
+                            <td>@puesto.Descripcion</td>
+                            <td>
+                                <span class="badge @(puesto.Estado ? "bg-success" : "bg-secondary")">
+                                    @puesto.EstadoTexto
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                @if (Model.ExisteEleccionActiva)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Editar</button>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>@(puesto.Estado ? "Desactivar" : "Activar")</button>
+                                }
+                                else
+                                {
+                                    <a asp-action="Editar" asp-route-id="@puesto.Id" class="btn btn-sm btn-warning">Editar</a>
+                                    if (puesto.Estado)
+                                    {
+                                        <a asp-action="ConfirmarDesactivar" asp-route-id="@puesto.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="ConfirmarActivar" asp-route-id="@puesto.Id" class="btn btn-sm btn-success">Activar</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
