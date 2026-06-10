@@ -30,6 +30,9 @@ namespace Evote360.Infrastructure.Configurations
             builder.Property(p => p.Estado)
                 .HasDefaultValue(true)
                 .IsRequired();
+            builder.Property(p => p.Descripcion)
+            .HasMaxLength(500) 
+            .IsRequired(false); 
         }
     }
 }
