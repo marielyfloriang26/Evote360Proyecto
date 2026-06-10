@@ -6,6 +6,7 @@ namespace Evote360.Core.Entities
     public class PartidoPolitico : BaseEntity
     {
         public string Nombre { get; set; } = null!;
+        public string? Descripcion {get; set;}
         public string Siglas { get; set; } = null!;
         public string LogoUrl { get; set; } = null!;
 
