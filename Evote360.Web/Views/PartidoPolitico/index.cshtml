@@ -1,0 +1,75 @@
+@model List<Evote360.Application.ViewModels.PartidoPoliticoViewModel>
+
+@{
+    ViewData["Title"] = "Mantenimiento de Partidos Políticos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Mantenimiento de Partidos Políticos</h2>
+        <a asp-action="Crear" class="btn btn-primary">Crear partido político</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 90px;">Logo</th>
+                    <th>Siglas</th>
+                    <th>Nombre del Partido</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No hay partidos políticos registrados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var partido in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@partido.LogoUrl" alt="Logo @partido.Siglas" class="img-thumbnail" style="max-height: 50px; max-width: 70px; object-fit: contain;" onerror="this.src='/images/default-logo.png';" />
+                            </td>
+                            <td><span class="badge bg-dark">@partido.Siglas</span></td>
+                            <td><strong>@partido.Nombre</strong></td>
+                            <td>@partido.Descripcion</td>
+                            <td>
+                                <span class="badge @(partido.Estado ? "bg-success" : "bg-secondary")">
+                                    @(partido.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Editar" asp-route-id="@partido.Id" class="btn btn-sm btn-warning">Editar</a>
+                                
+                                @if (partido.Estado)
+                                {
+                                    <a asp-action="ConfirmarDesactivar" asp-route-id="@partido.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="ConfirmarActivar" asp-route-id="@partido.Id" class="btn btn-sm btn-success">Activar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

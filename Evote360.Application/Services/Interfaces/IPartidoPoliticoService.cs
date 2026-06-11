@@ -14,5 +14,6 @@ namespace Evote360.Application.Interfaces;
 
         Task UpdateAsync(SavePartidoPoliticoViewModel vm);
 
+        Task<bool> ExisteSiglasAsync(string siglas, int idActual = 0);
         Task DeleteAsync(int id);
     }

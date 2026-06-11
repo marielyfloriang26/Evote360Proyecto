@@ -56,9 +56,9 @@ namespace Evote360.Application.Services;
             var partido = new PartidoPolitico
             {
                 Nombre = vm.Nombre,
-                Siglas = vm.Siglas,
+                Siglas = vm.Siglas.Trim().ToUpper(),
                 LogoUrl = vm.LogoUrl,
-                Descripcion = vm.Descripcion,
+                Descripcion = vm.Descripcion?.Trim(),
                 Estado = vm.Estado
             };
 
@@ -74,13 +74,25 @@ namespace Evote360.Application.Services;
             {
                 // Actualiza las propiedades de la entidad con lo que ingreso el usuario
                 partido.Nombre = vm.Nombre;
-                partido.Siglas = vm.Siglas;
+                partido.Siglas = vm.Siglas.Trim().ToUpper();
                 partido.LogoUrl = vm.LogoUrl;
-                partido.Descripcion = vm.Descripcion;
+                partido.Descripcion = vm.Descripcion?.Trim();
                 partido.Estado = vm.Estado;
 
                 await _partidoRepository.UpdateAsync(partido);
             }
+        }
+        public async Task<bool> ExisteSiglasAsync(string siglas, int idActual = 0)
+        {
+            if (string.IsNullOrWhiteSpace(siglas)) return false;
+            
+            // Limpia las siglas tal cual como se van a guardar
+            string siglasLimpia = siglas.Trim().ToUpper();
+
+            var partidos = await _partidoRepository.GetAllAsync();
+            
+            // Valida si ya existe algun partido con esas siglas
+            return partidos.Any(p => p.Siglas.Trim().ToUpper() == siglasLimpia && p.Id != idActual);
         }
 
         // ELIMINAR PARTIDO
