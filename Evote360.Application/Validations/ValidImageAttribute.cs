@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 
-namespace Evote360.Web.Validations
+namespace Evote360.Application.Validations
 {
     public class ValidImageAttribute : ValidationAttribute
     {

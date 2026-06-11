@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Evote360.Application.Services.Interfaces;
-using Evote360.Web.ViewModels.Candidatos;
+using Evote360.Application.ViewModels.Candidatos;
 using Evote360.Application.DTOs;
 using System.Security.Claims;
 using System.Threading.Tasks;
