@@ -1,7 +1,7 @@
 using Evote360.Application.DTOs;
 using System.Collections.Generic;
 
-namespace Evote360.Application.ViewModels
+namespace Evote360.Application.ViewModels.PuestoElectivo
 {
     public class PuestoElectivoIndexViewModel
     {

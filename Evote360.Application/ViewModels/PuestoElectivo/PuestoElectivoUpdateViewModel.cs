@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Evote360.Application.ViewModels
+namespace Evote360.Application.ViewModels.PuestoElectivo
 {
     public class PuestoElectivoUpdateViewModel
     {
