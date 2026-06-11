@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Evote360.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InicializacionSistema : Migration
+    public partial class InitialRepositorySetup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,8 @@ namespace Evote360.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Cedula = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    NombreCompleto = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     HaVotado = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
@@ -165,6 +166,7 @@ namespace Evote360.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PartidoId = table.Column<int>(type: "int", nullable: false),
                     FotoUrl = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
