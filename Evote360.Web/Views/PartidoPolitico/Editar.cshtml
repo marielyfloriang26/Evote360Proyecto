@@ -10,8 +10,10 @@
             <h4 class="mb-0">Editar Partido Político</h4>
         </div>
         <div class="card-body">
-            <form asp-action="Editar" method="post">
+            <form asp-action="Editar" method="post" enctype="multipart/form-data" >
                 <input type="hidden" asp-for="Id" />
+
+                <input type="hidden" asp-for="LogoUrl" />
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -28,9 +30,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="LogoUrl" class="form-label fw-bold">URL del Logo</label>
-                    <input asp-for="LogoUrl" class="form-control" />
-                    <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                    <label asp-for="File" class="form-label fw-bold">Logo del Partido</label>
+                    <input asp-for="File" type="file" class="form-control" accept=".png, .jpg, .jpeg" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+
+                    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                    {
+                        <div class="mt-2 d-flex align-items-center gap-2">
+                            <span class="text-muted small">Logo actual:</span>
+                            <img src="@Model.LogoUrl" alt="Logo" style="max-height: 50px; border: 1px solid #ddd; border-radius: 4px;" onerror="this.onerror=null; this.src'';"/>
+                        </div>
+                    }
                 </div>
 
                 <div class="mb-3">

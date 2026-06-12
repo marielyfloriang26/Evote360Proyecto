@@ -44,7 +44,7 @@
                     {
                         <tr>
                             <td>
-                                <img src="@partido.LogoUrl" alt="Logo @partido.Siglas" class="img-thumbnail" style="max-height: 50px; max-width: 70px; object-fit: contain;" onerror="this.src='/images/default-logo.png';" />
+                                <img src="@partido.LogoUrl" alt="Logo @partido.Siglas" class="img-thumbnail" style="max-height: 50px; max-width: 70px; object-fit: contain;" onerror="this.onerror=null; this.src='';" />
                             </td>
                             <td><span class="badge bg-dark">@partido.Siglas</span></td>
                             <td><strong>@partido.Nombre</strong></td>
