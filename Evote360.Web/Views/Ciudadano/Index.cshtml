@@ -1,0 +1,85 @@
+@model IEnumerable<Evote360.Application.DTOs.CiudadanoDto>
+@{
+    ViewData["Title"] = "Mantenimiento de Ciudadanos";
+    bool eleccionActiva = ViewBag.EleccionActiva ?? false;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Mantenimiento de Ciudadanos</h2>
+        @if (eleccionActiva)
+        {
+            <button class="btn btn-secondary" disabled title="No se pueden modificar ciudadanos mientras exista una elección activa.">Crear ciudadano</button>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">Crear ciudadano</a>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewBag.AlertaEleccion))
+    {
+        <div class="alert alert-warning animate__animated animate__fadeIn" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @ViewBag.AlertaEleccion
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Documento Identidad</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Correo electrónico</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.Cedula</td>
+                            <td>@c.Nombre</td>
+                            <td>@c.Apellido</td>
+                            <td>@c.Correo</td>
+                            <td>
+                                <span class="badge @(c.Estado ? "bg-success" : "bg-danger")">
+                                    @(c.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                @if (eleccionActiva)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Editar</button>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Cambiar Estado</button>
+                                }
+                                else
+                                {
+                                    <a asp-action="Editar" asp-route-id="@c.Id" class="btn btn-sm btn-warning text-white">Editar</a>
+                                    @if (c.Estado)
+                                    {
+                                        <a asp-action="ConfirmarDesactivar" asp-route-id="@c.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="ConfirmarActivar" asp-route-id="@c.Id" class="btn btn-sm btn-success">Activar</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
