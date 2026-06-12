@@ -7,7 +7,6 @@ using Evote360.Application.Interfaces;
 using Evote360.Application.Services;
 
 using Evote360.Application.Services.Interfaces;
-using Evote360.Application.Services;
 using Evote360.Application.Services.Implementations;
 using Evote360.Infrastructure.Services.Implementations;
 
@@ -48,7 +47,7 @@ namespace WebApp
 
             // service
             builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
-            
+             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
             // Register Services
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();

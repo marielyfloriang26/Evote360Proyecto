@@ -1,0 +1,101 @@
+@model Evote360.Application.ViewModels.Usuario.SaveUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="mb-4">
+        <a asp-action="Index" class="text-decoration-none small d-flex align-items-center gap-1 text-muted mb-2">
+            <i class="bi bi-arrow-left"></i> Volver al listado
+        </a>
+        <h2 class="text-dark fw-bold m-0">Editar Usuario</h2>
+        <p class="text-muted small">Modifica los accesos, el rol o el estado operativo de este usuario en el sistema.</p>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
+            <form asp-action="Editar" method="post">
+                
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small p-2 shadow-sm" style="list-style: none;"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nombre" class="form-label small fw-semibold text-secondary">Nombre real</label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Apellido" class="form-label small fw-semibold text-secondary">Apellido</label>
+                        <input asp-for="Apellido" class="form-control" />
+                        <span asp-validation-for="Apellido" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label asp-for="Correo" class="form-label small fw-semibold text-secondary">Correo Electrónico</label>
+                        <input asp-for="Correo" type="email" class="form-control" />
+                        <span asp-validation-for="Correo" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Estado" class="form-label small fw-semibold text-secondary d-block">Estado Operativo</label>
+                        <select asp-for="Estado" class="form-select">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                        <span asp-validation-for="Estado" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="NombreUsuario" class="form-label small fw-semibold text-secondary">Nombre de Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted small">@@</span>
+                            <input asp-for="NombreUsuario" class="form-control" />
+                        </div>
+                        <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Rol" class="form-label small fw-semibold text-secondary">Rol / Perfil</label>
+                        <select asp-for="Rol" class="form-select">
+                            <option value="Administrador">Administrador</option>
+                            <option value="Dirigente Politico">Dirigente Político</option>
+                        </select>
+                        <span asp-validation-for="Rol" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4 pt-2 border-top">
+                        <div class="bg-light p-3 rounded-3 mb-3">
+                            <span class="fw-semibold text-dark small d-block mb-1"><i class="bi bi-info-circle-fill text-primary me-1"></i> Cambio Opcional de Contraseña</span>
+                            <span class="text-muted small">Deja los campos vacíos si deseas conservar la clave actual del usuario. Solo escríbela si necesitas restablecerla.</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Contrasena" class="form-label small fw-semibold text-secondary">Nueva Contraseña</label>
+                        <input asp-for="Contrasena" type="password" class="form-control" placeholder="Dejar en blanco para no cambiar" />
+                        <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ConfirmarContrasena" class="form-label small fw-semibold text-secondary">Confirmar Nueva Contraseña</label>
+                        <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="Dejar en blanco para no cambiar" />
+                        <span asp-validation-for="ConfirmarContrasena" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-light px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-primary px-4 shadow-sm">Aplicar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

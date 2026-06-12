@@ -1,5 +1,5 @@
-/*using Evote360.Application.Interfaces;
-
+using Evote360.Application.Interfaces;
+using Evote360.Application.ViewModels;
 using Evote360.Application.ViewModels.Usuario;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
@@ -19,16 +19,16 @@ public class UsuarioService : IUsuarioService
         _asignacionRepository = asignacionRepository;
     }
 
-    // OBTENER TODOS LOS USUARIOS (Para el Index)
+    // OBTENER TODOS LOS USUARIOS (Para la tabla principal en el Index)
     public async Task<List<UsuarioViewModel>> GetAllViewModelAsync()
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Mapeo manual de la entidad al ViewModel de lectura plano
+        // Mapeo manual exacto de la Entidad al ViewModel de lectura plano
         return usuarios.Select(u => new UsuarioViewModel
         {
             Id = u.Id,
-            Nombre = u.NombreUsuario,
+            Nombre = u.Nombre,
             Apellido = u.Apellido,
             Correo = u.Correo,
             NombreUsuario = u.NombreUsuario,
@@ -37,14 +37,14 @@ public class UsuarioService : IUsuarioService
         }).ToList();
     }
 
-    // OBTENER POR ID (Para cargar los formularios o confirmaciones)
+    // OBTENER POR ID (Para cargar los datos en los formularios de edición)
     public async Task<SaveUsuarioViewModel> GetByIdSaveViewModelAsync(int id)
     {
         var usuario = await _usuarioRepository.GetByIdAsync(id);
 
         if (usuario == null) return null!;
 
-        // Mapeo manual al ViewModel de persistencia
+        // Mapeo manual de la entidad al ViewModel de persistencia
         return new SaveUsuarioViewModel
         {
             Id = usuario.Id,
@@ -53,8 +53,8 @@ public class UsuarioService : IUsuarioService
             Correo = usuario.Correo,
             NombreUsuario = usuario.NombreUsuario,
             Rol = usuario.Rol,
-            Estado = u.Estado
-            // Contrasena y ConfirmarContrasena quedan vacías por seguridad
+            Estado = usuario.Estado
+            // Nota: Contrasena y ConfirmarContrasena se dejan vacías por seguridad
         };
     }
 
@@ -68,9 +68,9 @@ public class UsuarioService : IUsuarioService
             Correo = vm.Correo.Trim().ToLower(),
             NombreUsuario = vm.NombreUsuario.Trim(),
             Rol = vm.Rol,
-            Estado = true, // Forzado por defecto según el PDF
+            Estado = true, // Todo usuario nuevo nace activo por defecto
             
-            // Hasheamos la contraseña de manera segura
+            // Hasheamos la contraseña usando BCrypt antes de impactar la BD
             ClaveHash = BCrypt.Net.BCrypt.HashPassword(vm.Contrasena)
         };
 
@@ -91,7 +91,7 @@ public class UsuarioService : IUsuarioService
             usuario.Rol = vm.Rol;
             usuario.Estado = vm.Estado;
 
-            // Solo se actualiza la clave si el usuario escribió una nueva en el formulario
+            // Regla del PDF: Solo se actualiza la clave si el usuario escribió algo en el campo del formulario
             if (!string.IsNullOrWhiteSpace(vm.Contrasena))
             {
                 usuario.ClaveHash = BCrypt.Net.BCrypt.HashPassword(vm.Contrasena);
@@ -109,6 +109,7 @@ public class UsuarioService : IUsuarioService
         string usernameLimpio = nombreUsuario.Trim().ToLower();
         var usuarios = await _usuarioRepository.GetAllAsync();
 
+        // Si idActual > 0 (Modo Edición), excluye al usuario actual de la búsqueda
         return usuarios.Any(u => u.NombreUsuario.Trim().ToLower() == usernameLimpio && u.Id != idActual);
     }
 
@@ -120,6 +121,7 @@ public class UsuarioService : IUsuarioService
         string correoLimpio = correo.Trim().ToLower();
         var usuarios = await _usuarioRepository.GetAllAsync();
 
+        // Evita que dos personas usen el mismo email (Regla del PDF)
         return usuarios.Any(u => u.Correo.Trim().ToLower() == correoLimpio && u.Id != idActual);
     }
 
@@ -128,10 +130,10 @@ public class UsuarioService : IUsuarioService
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Cuenta cuántos administradores activos hay en total
+        // Contamos cuántos administradores activos quedan en el sistema
         int adminsActivos = usuarios.Count(u => u.Rol == "Administrador" && u.Estado);
 
-        // Si solo hay uno, verifica si coincide con el ID que estamos evaluando
+        // Si solo queda uno, evaluamos si ese único es el ID que intentan desactivar o cambiar de rol
         if (adminsActivos == 1)
         {
             var unicoAdmin = usuarios.FirstOrDefault(u => u.Rol == "Administrador" && u.Estado);
@@ -148,9 +150,10 @@ public class UsuarioService : IUsuarioService
         return asignaciones.Any(a => a.UsuarioId == usuarioId);
     }
 
-    // VALIDACIÓN SIMULADA: Elección activa (Se completará cuando se haga el módulo de Elecciones)
+    // VALIDACIÓN SIMULADA: Elección activa (Se completará en el módulo de Elecciones)
     public async Task<bool> ExisteEleccionActivaAsync()
     {
+        // Devolvemos false temporalmente para que puedas registrar y hacer pruebas libres
         return await Task.FromResult(false);
     }
-} */
+}
