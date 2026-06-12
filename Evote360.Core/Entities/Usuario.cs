@@ -7,7 +7,7 @@ namespace Evote360.Core.Entities
         public string ClaveHash { get; set; } = null!;
         public string Rol { get; set; } = null!;
 
-        // Navigation property
+        // propiedad navegacion
         public virtual AsignacionDirigente? AsignacionDirigente { get; set; }
     }
 }
