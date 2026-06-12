@@ -1,0 +1,84 @@
+@model List<Evote360.Application.ViewModels.Candidatos.CandidatoViewModel>
+
+@{
+    ViewData["Title"] = "Mantenimiento de Candidatos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Mantenimiento de Candidatos</h2>
+        <a asp-action="Crear" class="btn btn-primary">Crear candidato</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 90px;" class="text-center">Foto</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Puesto Electivo Asociado</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No hay candidatos registrados para su partido.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var candidato in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <img src="@candidato.FotoUrl" alt="Foto @candidato.Nombre" class="img-thumbnail rounded-circle" style="height: 50px; width: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='';" />
+                            </td>
+                            <td><strong>@candidato.Nombre</strong></td>
+                            <td><strong>@candidato.Apellido</strong></td>
+                            <td>
+                                @if (string.IsNullOrEmpty(candidato.PuestoAsociado))
+                                {
+                                    <span class="text-muted fst-italic">Sin puesto asociado</span>
+                                }
+                                else
+                                {
+                                    @candidato.PuestoAsociado
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @(candidato.Estado ? "bg-success" : "bg-secondary")">
+                                    @(candidato.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Editar" asp-route-id="@candidato.Id" class="btn btn-sm btn-warning">Editar</a>
+                                
+                                @if (candidato.Estado)
+                                {
+                                    <a asp-action="ConfirmarDesactivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="ConfirmarActivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-success">Activar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
