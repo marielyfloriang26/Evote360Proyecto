@@ -6,7 +6,8 @@ namespace Evote360.Core.Entities
     public class Ciudadano : BaseEntity
     {
         public string Cedula { get; set; } = null!;
-        public string NombreCompleto { get; set; } = null!;
+        public string Nombre { get; set; } = null!;
+        public string Apellido { get; set; } = null!;
         public string Correo { get; set; } = null!;
         public bool HaVotado { get; set; } = false;
 

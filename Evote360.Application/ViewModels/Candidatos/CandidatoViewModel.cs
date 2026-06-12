@@ -1,4 +1,4 @@
-namespace Evote360.Web.ViewModels.Candidatos
+namespace Evote360.Application.ViewModels.Candidatos
 {
     public class CandidatoViewModel
     {

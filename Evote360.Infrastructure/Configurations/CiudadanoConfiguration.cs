@@ -19,8 +19,12 @@ namespace Evote360.Infrastructure.Configurations
             builder.HasIndex(c => c.Cedula)
                 .IsUnique();
 
-            builder.Property(c => c.NombreCompleto)
-                .HasMaxLength(150)
+            builder.Property(c => c.Nombre)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(c => c.Apellido)
+                .HasMaxLength(100)
                 .IsRequired();
 
             builder.Property(c => c.Correo)
