@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Evote360.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialRepositorySetup : Migration
+    public partial class InicializacionSistema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -84,6 +84,9 @@ namespace Evote360.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Correo = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     NombreUsuario = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ClaveHash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Rol = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
@@ -344,6 +347,12 @@ namespace Evote360.Infrastructure.Migrations
                 name: "IX_PartidosPoliticos_Siglas",
                 table: "PartidosPoliticos",
                 column: "Siglas",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_Correo",
+                table: "Usuarios",
+                column: "Correo",
                 unique: true);
 
             migrationBuilder.CreateIndex(
