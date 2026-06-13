@@ -1,4 +1,4 @@
-/*using Evote360.Core.Enums;
+using Evote360.Core.Enums;
 
 namespace Evote360.Application.DTOs
 {
@@ -9,4 +9,4 @@ namespace Evote360.Application.DTOs
         public string Descripcion { get; set; } = string.Empty;
         public EstadoEnum Estado { get; set; }
     }
-} */
+} 

@@ -1,4 +1,4 @@
-/*namespace Evote360.Application.DTOs
+namespace Evote360.Application.DTOs
 {
     public class PuestoElectivoCreateDto
     {
@@ -6,4 +6,4 @@
         public string Descripcion { get; set; } = string.Empty;
         public bool Estado { get; set; }
     }
-} */
+} 

@@ -1,4 +1,4 @@
-/*using Evote360.Core.Enums;
+using Evote360.Core.Enums;
 
 namespace Evote360.Application.DTOs
 {
@@ -12,4 +12,4 @@ namespace Evote360.Application.DTOs
         
        public string EstadoTexto => Estado ? "Activo" : "Inactivo";
     }
-} */
+} 
