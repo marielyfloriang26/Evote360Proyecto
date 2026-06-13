@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using Evote360.Core.Interfaces;
+using Evote360.Core.Enums;
 
 namespace Evote360.Web.Controllers
 {
@@ -227,13 +228,13 @@ namespace Evote360.Web.Controllers
 
             if (await _candidatoService.HasActiveElectionAsync())
             {
-                TempData["ErrorMessage"] = dto.Estado 
+                TempData["ErrorMessage"] = dto.Estado == EstadoEnum.Activo 
                     ? "No se puede desactivar un candidato mientras exista una elección activa." 
                     : "No se puede activar un candidato mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (dto.Estado) // Attempting to deactivate
+            if (dto.Estado == EstadoEnum.Activo) // Attempting to deactivate
             {
                 if (await _candidatoService.HasAssignedPuestoVigenteAsync(id))
                 {

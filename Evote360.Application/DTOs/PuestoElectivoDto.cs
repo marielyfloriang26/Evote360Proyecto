@@ -10,6 +10,6 @@ namespace Evote360.Application.DTOs
         public EstadoEnum Estado { get; set; }
 
         
-       public string EstadoTexto => Estado ? "Activo" : "Inactivo";
+       public string EstadoTexto => Estado == EstadoEnum.Activo ? "Activo" : "Inactivo";
     }
 } 

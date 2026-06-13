@@ -38,7 +38,7 @@ namespace Evote360.Application.Services
                 Id = p.Id,
                 Nombre = p.Nombre,
                 Descripcion = p.Descripcion,
-                Estado = p.Estado == Core.Enums.EstadoEnum.Activo
+                Estado = p.Estado
             });
         }
 
@@ -52,7 +52,7 @@ namespace Evote360.Application.Services
                 Id = puesto.Id,
                 Nombre = puesto.Nombre,
                 Descripcion = puesto.Descripcion,
-                Estado = puesto.Estado == EstadoEnum.Activo
+                Estado = puesto.Estado
             };
         }
 
@@ -100,7 +100,7 @@ namespace Evote360.Application.Services
 
             if (!yaFueUtilizado) puesto.Nombre = nombreLimpio;
             puesto.Descripcion = dto.Descripcion.Trim();
-            puesto.Estado = dto.Estado ? EstadoEnum.Activo : EstadoEnum.Inactivo;
+            puesto.Estado = dto.Estado;
 
             await _repository.UpdateAsync(puesto);
             return (true, "Puesto electivo actualizado con éxito.");
