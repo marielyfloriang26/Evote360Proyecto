@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Core.Enums
 {
-    public enum EstadoUsuario
+    public enum EstadoEnum
     {
         Activo,
         Inactivo

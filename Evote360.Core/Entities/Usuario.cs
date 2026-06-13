@@ -9,7 +9,7 @@ namespace Evote360.Core.Entities
         public string Correo { get; set; } = null!;
         public string NombreUsuario { get; set; } = null!;
         public string ClaveHash { get; set; } = null!;
-        public UsuarioRolEnum Rol { get; set; }
+        public RolUsuarioEnum Rol { get; set; }
 
         // Navigation property
         public virtual AsignacionDirigente? AsignacionDirigente { get; set; }
