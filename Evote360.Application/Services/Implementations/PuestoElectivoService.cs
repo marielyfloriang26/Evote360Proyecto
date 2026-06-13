@@ -1,4 +1,4 @@
-using Evote360.Application.DTOs;
+/*using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
@@ -144,4 +144,4 @@ namespace Evote360.Application.Services
             return (true, "Puesto electivo desactivado con éxito.");
         }
     }
-}
+} */

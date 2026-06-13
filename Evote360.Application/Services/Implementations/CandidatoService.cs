@@ -1,6 +1,7 @@
-﻿using Evote360.Application.DTOs;
+﻿/*using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Interfaces;
+using Evote360.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Evote360.Application.Services.Implementations
             });
         }
 
-        public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
+       public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
         {
             var candidatos = await _repository.GetAllAsync();
             return candidatos.Where(c => c.Estado).Select(c => new CandidatoDTO
@@ -61,7 +62,7 @@ namespace Evote360.Application.Services.Implementations
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
                 Estado = c.Estado
             });
-        }
+        } 
 
         public async Task<CandidatoDTO?> GetCandidatoById(int id)
         {
@@ -125,15 +126,15 @@ namespace Evote360.Application.Services.Implementations
             };
         }
 
-        public async Task<bool> AlternarEstadoCandidato(int id)
+       public async Task<bool> AlternarEstadoCandidato(int id)
         {
             var candidato = await _repository.GetByIdAsync(id);
             if (candidato == null) return false;
 
-            candidato.Estado = !candidato.Estado;
+           candidato.Estado = !candidato.Estado;
             await _repository.UpdateAsync(candidato);
             return true;
-        }
+        } 
 
         public async Task<bool> HasActiveElectionAsync()
         {
@@ -151,3 +152,4 @@ namespace Evote360.Application.Services.Implementations
         }
     }
 }
+ */

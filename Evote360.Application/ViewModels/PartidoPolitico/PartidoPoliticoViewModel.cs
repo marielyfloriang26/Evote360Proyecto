@@ -1,3 +1,5 @@
+using Evote360.Core.Enums;
+
 namespace Evote360.Application.ViewModels;
     public class PartidoPoliticoViewModel
     {
@@ -7,5 +9,5 @@ namespace Evote360.Application.ViewModels;
         public string Siglas { get; set; } = null!;
         public string LogoUrl { get; set; } = null!;
         public string? Descripcion { get; set; }
-        public bool Estado { get; set; }
+        public EstadoEnum Estado { get; set; }
     }

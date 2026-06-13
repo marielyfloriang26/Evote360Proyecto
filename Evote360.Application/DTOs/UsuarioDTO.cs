@@ -13,7 +13,7 @@ namespace Evote360.Application.DTOs
         public string Apellido { get; set; }
         public string Correo { get; set; }
         public string NombreUsuario { get; set; }
-        public UsuarioRolEnum Rol { get; set; }
+        public RolUsuarioEnum Rol { get; set; }
 
     }
 }
