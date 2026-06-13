@@ -32,7 +32,7 @@ namespace Evote360.Application.Services.Implementations
                 Apellido = c.Apellido,
                 FotoUrl = c.FotoUrl,
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
-                Estado = c.Estado
+                Estado = c.Estado == EstadoEnum.Activo
             });
         }
 
@@ -46,21 +46,21 @@ namespace Evote360.Application.Services.Implementations
                 Apellido = c.Apellido,
                 FotoUrl = c.FotoUrl,
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
-                Estado = c.Estado
+                Estado = c.Estado == EstadoEnum.Activo
             });
         }
 
        public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
         {
             var candidatos = await _repository.GetAllAsync();
-            return candidatos.Where(c => c.Estado).Select(c => new CandidatoDTO
+            return candidatos.Where(c => c.Estado == EstadoEnum.Activo).Select(c => new CandidatoDTO
             {
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Apellido = c.Apellido,
                 FotoUrl = c.FotoUrl,
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
-                Estado = c.Estado
+                Estado = c.Estado == EstadoEnum.Activo
             });
         } 
 
@@ -76,7 +76,7 @@ namespace Evote360.Application.Services.Implementations
                 Apellido = c.Apellido,
                 FotoUrl = c.FotoUrl,
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
-                Estado = c.Estado
+                Estado = c.Estado == EstadoEnum.Activo
             };
         }
 
@@ -87,7 +87,7 @@ namespace Evote360.Application.Services.Implementations
                 Nombre = candidatoDto.Nombre,
                 Apellido = candidatoDto.Apellido,
                 PartidoId = candidatoDto.PartidoId,
-                Estado = candidatoDto.Estado,
+                Estado = candidatoDto.Estado ? EstadoEnum.Activo : EstadoEnum.Inactivo,
                 FotoUrl = candidatoDto.Foto != null ? "dummy" : null
             };
 
@@ -98,7 +98,7 @@ namespace Evote360.Application.Services.Implementations
                 Id = candidato.Id,
                 Nombre = candidato.Nombre,
                 Apellido = candidato.Apellido,
-                Estado = candidato.Estado,
+                Estado = candidato.Estado == EstadoEnum.Activo,
                 PuestoAsociado = "Sin puesto asociado"
             };
         }
@@ -110,7 +110,7 @@ namespace Evote360.Application.Services.Implementations
 
             candidato.Nombre = candidatoDto.Nombre;
             candidato.Apellido = candidatoDto.Apellido;
-            candidato.Estado = candidatoDto.Estado;
+            candidato.Estado = candidatoDto.Estado ? EstadoEnum.Activo : EstadoEnum.Inactivo;
             candidato.FotoUrl = candidatoDto.FotoUrl ?? candidato.FotoUrl;
 
             await _repository.UpdateAsync(candidato);
@@ -122,7 +122,7 @@ namespace Evote360.Application.Services.Implementations
                 Apellido = candidato.Apellido,
                 FotoUrl = candidato.FotoUrl,
                 PuestoAsociado = candidato.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
-                Estado = candidato.Estado
+                Estado = candidato.Estado == EstadoEnum.Activo
             };
         }
 
@@ -131,7 +131,10 @@ namespace Evote360.Application.Services.Implementations
             var candidato = await _repository.GetByIdAsync(id);
             if (candidato == null) return false;
 
+
            candidato.Estado = !candidato.Estado;
+
+            candidato.Estado = candidato.Estado == EstadoEnum.Activo ? EstadoEnum.Inactivo : EstadoEnum.Activo;
             await _repository.UpdateAsync(candidato);
             return true;
         } 
