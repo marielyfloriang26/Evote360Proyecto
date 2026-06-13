@@ -1,4 +1,4 @@
-/*using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,4 +18,4 @@ namespace Evote360.Application.DTOs
         public bool EstadoDelDirigente { get; set; } // Mejor usar bool para el estado
         public bool EstadoDelPartido { get; set; }
     }
-} */
+} 
