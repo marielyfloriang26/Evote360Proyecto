@@ -13,7 +13,7 @@ namespace Evote360.Infrastructure.Configurations
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Estado)
-                .HasDefaultValue(true)
+                .HasConversion<string>()
                 .IsRequired();
 
             // N:1 with Eleccion

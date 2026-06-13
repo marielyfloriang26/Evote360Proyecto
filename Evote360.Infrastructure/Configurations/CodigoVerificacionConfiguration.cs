@@ -24,7 +24,7 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(c => c.Usado)
-                .HasDefaultValue(false)
+                .HasConversion<string>()
                 .IsRequired();
 
             // N:1 with Ciudadano

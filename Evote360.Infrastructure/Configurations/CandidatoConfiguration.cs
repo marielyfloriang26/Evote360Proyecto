@@ -21,7 +21,7 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired(false);
 
             builder.Property(c => c.Estado)
-                .HasDefaultValue(true)
+                .HasConversion<string>()
                 .IsRequired();
 
             // N:1 with PartidoPolitico

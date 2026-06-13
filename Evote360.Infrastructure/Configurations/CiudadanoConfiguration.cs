@@ -36,7 +36,7 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(c => c.Estado)
-                .HasDefaultValue(true)
+                .HasConversion<string>()
                 .IsRequired();
         }
     }
