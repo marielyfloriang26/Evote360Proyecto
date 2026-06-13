@@ -1,3 +1,4 @@
+using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels.Usuario;
 using Microsoft.AspNetCore.Mvc;
@@ -13,107 +14,141 @@ public class UsuarioController : Controller
         _usuarioService = usuarioService;
     }
 
-
-    // LISTADO PRINCIPAL 
+    // LISTADO PRINCIPAL (INDEX)
+    
     public async Task<IActionResult> Index()
     {
-        var usuarios = await _usuarioService.GetAllViewModelAsync();
-        return View(usuarios);
+        // El servicio retorna una lista de dto
+        var usuariosDto = await _usuarioService.GetAllDtoAsync();
+
+        // Mapeo manual de dto a vm
+        var usuariosVm = usuariosDto.Select(u => new UsuarioViewModel
+        {
+            Id = u.Id,
+            Nombre = u.Nombre,
+            Apellido = u.Apellido,
+            Correo = u.Correo,
+            NombreUsuario = u.NombreUsuario,
+            Rol = u.Rol,
+            Estado = u.Estado
+        }).ToList();
+
+        return View(usuariosVm);
     }
 
-   
-    //CREAR USUARIO (PANTALLA)
-    
-    public IActionResult Crear()
+    // CREAR USUARIO 
+       public IActionResult Crear()
     {
-        // Retorna la vista con un modelo limpio
         return View(new SaveUsuarioViewModel());
     }
 
-    
-    // CREAR USUARIO 
-    
+    // CREAR USUARIO
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Crear(SaveUsuarioViewModel vm)
     {
-        // 1. Validar las anotaciones básicas de datos del ViewModel ([Required], [EmailAddress], etc.)
+        // validacion 
         if (!ModelState.IsValid)
         {
             return View(vm);
         }
 
-        // 2. REGLA DEL PDF: Validar si el Nombre de Usuario ya existe
+        // Valida que sea unico el nombre de usuario mediante el servicio
         if (await _usuarioService.ExisteNombreUsuarioAsync(vm.NombreUsuario))
         {
             ModelState.AddModelError("NombreUsuario", "El nombre de usuario ya se encuentra registrado.");
             return View(vm);
         }
 
-        // 3. REGLA DEL PDF: Validar si el Correo ya existe
+        // valida que sea unico el correo mediante el servicio
         if (await _usuarioService.ExisteCorreoAsync(vm.Correo))
         {
             ModelState.AddModelError("Correo", "Este correo electrónico ya está siendo utilizado por otro usuario.");
             return View(vm);
         }
 
-        // Si pasa todas las validaciones, se registra
-        await _usuarioService.AddAsync(vm);
+        // mapeo del ViewModel al dto
+        var dto = new SaveUsuarioDto
+        {
+            Nombre = vm.Nombre,
+            Apellido = vm.Apellido,
+            Correo = vm.Correo,
+            NombreUsuario = vm.NombreUsuario,
+            Contrasena = vm.Contrasena!,
+            Rol = vm.Rol,
+            Estado = true
+        };
+
+        await _usuarioService.AddAsync(dto);
         return RedirectToAction(nameof(Index));
     }
 
-   
+    // EDITAR USUARIO 
     public async Task<IActionResult> Editar(int id)
     {
-        var vm = await _usuarioService.GetByIdSaveViewModelAsync(id);
+        // solicita el dto a service
+        var dto = await _usuarioService.GetByIdSaveDtoAsync(id);
         
-        if (vm == null)
+        if (dto == null)
         {
             return NotFound();
         }
 
+        // mapea el dto de retorno hacia el vm que procesara la vista
+        var vm = new SaveUsuarioViewModel
+        {
+            Id = dto.Id,
+            Nombre = dto.Nombre,
+            Apellido = dto.Apellido,
+            Correo = dto.Correo,
+            NombreUsuario = dto.NombreUsuario,
+            Rol = dto.Rol,
+            Estado = dto.Estado
+            // Contrasena y ConfirmarContrasena se omiten por seguridad en la carga
+        };
+
         return View(vm);
     }
 
-    
-    //  EDITAR USUARIO 
-    
+    // EDITAR USUARIO 
+   
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(SaveUsuarioViewModel vm)
     {
-        // Para editar, removemos temporalmente la validación requerida de contraseñas de las anotaciones,
-        // ya que el PDF dice que en edición el campo contraseña puede quedarse vacío si no se desea cambiar.
+        if (string.IsNullOrEmpty(vm.Contrasena))
+    {
         ModelState.Remove("Contrasena");
         ModelState.Remove("ConfirmarContrasena");
+    }
 
         if (!ModelState.IsValid)
         {
             return View(vm);
         }
 
-        // REGLA DEL PDF: Si el usuario escribió algo en el campo contraseña, hay que validar que coincida con la confirmación
+        // valida que si escribio una contraseña coincida con su confirmacion
         if (!string.IsNullOrEmpty(vm.Contrasena) && vm.Contrasena != vm.ConfirmarContrasena)
         {
             ModelState.AddModelError("ConfirmarContrasena", "Las contraseñas ingresadas no coinciden.");
             return View(vm);
         }
 
-        // REGLA DEL PDF: Validar Nombre de Usuario único (excluyendo al usuario actual)
+        // Valida duplicidad de username excluyendo al registro actual
         if (await _usuarioService.ExisteNombreUsuarioAsync(vm.NombreUsuario, vm.Id))
         {
             ModelState.AddModelError("NombreUsuario", "El nombre de usuario ya está asignado a otra persona.");
             return View(vm);
         }
 
-        // REGLA DEL PDF: Validar Correo único (excluyendo al usuario actual)
+        // valida duplicidad de correo excluyendo al registro actual
         if (await _usuarioService.ExisteCorreoAsync(vm.Correo, vm.Id))
         {
             ModelState.AddModelError("Correo", "Este correo electrónico ya pertenece a otro usuario.");
             return View(vm);
         }
 
-        // REGLA DEL PDF: Validar que no se desactive o se le cambie el rol al ÚNICO Administrador Activo del sistema
+        // impide que se inactive al unico admn activo del sistema
         if (vm.Rol != "Administrador" || !vm.Estado)
         {
             if (await _usuarioService.EsUnicoAdminActivoAsync(vm.Id))
@@ -123,57 +158,143 @@ public class UsuarioController : Controller
             }
         }
 
-        await _usuarioService.UpdateAsync(vm);
+       
+        var dto = new SaveUsuarioDto
+        {
+            Id = vm.Id,
+            Nombre = vm.Nombre,
+            Apellido = vm.Apellido,
+            Correo = vm.Correo,
+            NombreUsuario = vm.NombreUsuario,
+            Contrasena = vm.Contrasena!, // Puede ir vacia o con texto, el servicio lo manejara
+            Rol = vm.Rol,
+            Estado = vm.Estado
+        };
+
+        await _usuarioService.UpdateAsync(dto);
         return RedirectToAction(nameof(Index));
     }
 
-    // ==========================================
-    // 6. ACCIÓN PARA ACTIVAR / DESACTIVAR (POST directo desde la tabla)
-    // ==========================================
+    
+    // ACTIVAR / DESACTIVAR
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CambiarEstado(int id)
     {
-        // REGLA DEL PDF: El sistema no debe permitir que se inicien procesos de votación si hay elecciones activas.
-        // Aunque esto aplica más a eliminar/desactivar entidades, protegemos el estado de los usuarios.
+        // impide cualquier alteracion transaccional si hay procesos electorales activos
         if (await _usuarioService.ExisteEleccionActivaAsync())
         {
             TempData["ErrorMessage"] = "No se pueden modificar usuarios mientras exista un proceso electoral activo.";
             return RedirectToAction(nameof(Index));
         }
 
-        var usuarioVm = await _usuarioService.GetByIdSaveViewModelAsync(id);
-        if (usuarioVm == null)
+        // Recupera los datos de persistencia
+        var dto = await _usuarioService.GetByIdSaveDtoAsync(id);
+        if (dto == null)
         {
             return NotFound();
         }
 
-        // REGLA DEL PDF: Si está activo y se va a desactivar, validar que no sea el único Admin del sistema
-        if (usuarioVm.Estado) 
+        if (dto.Estado) 
         {
+            // Evita desactivacion si es el unico admn operativo
             if (await _usuarioService.EsUnicoAdminActivoAsync(id))
             {
                 TempData["ErrorMessage"] = "Acción denegada: Este usuario es el único Administrador activo en el sistema.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // REGLA DEL PDF: Si es un Dirigente Político y tiene un partido asignado, no puede ser desactivado/eliminado
-            if (usuarioVm.Rol == "Dirigente Politico" && await _usuarioService.TienePartidoAsignadoAsync(id))
+            // Evita desactivacion si es un dirigente politico con asignacion de partido vigente
+            if (dto.Rol == "Dirigente Politico" && await _usuarioService.TienePartidoAsignadoAsync(id))
             {
                 TempData["ErrorMessage"] = "No se puede desactivar este usuario porque es un Dirigente Político con un partido asignado.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Invertimos el estado de activo a inactivo
-            usuarioVm.Estado = false;
+            dto.Estado = false;
         }
         else
         {
-            // Si estaba inactivo, pasa a activo directamente
-            usuarioVm.Estado = true;
+            dto.Estado = true;
         }
 
-        await _usuarioService.UpdateAsync(usuarioVm);
+        // manda el DTO actualizado de vuelta al servicio para efectuar el cambio en cascada
+        await _usuarioService.UpdateAsync(dto);
+        return RedirectToAction(nameof(Index));
+    }
+    // VISTA CONFIRMAR DESACTIVAR (GET)
+    [HttpGet]
+    public async Task<IActionResult> ConfirmarDesactivar(int id)
+    {
+        var usuario = await _usuarioService.GetByIdSaveDtoAsync(id); 
+        if (usuario == null) return NotFound();
+
+        ViewBag.NombreUsuario = $"{usuario.Nombre} {usuario.Apellido}";
+        return View(id);
+    }
+
+    //  (POST)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Desactivar(int id)
+    {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            TempData["ErrorMessage"] = "No se pueden modificar usuarios mientras exista un proceso electoral activo.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var dto = await _usuarioService.GetByIdSaveDtoAsync(id);
+        if (dto == null) return NotFound();
+
+        if (await _usuarioService.EsUnicoAdminActivoAsync(id))
+        {
+            TempData["ErrorMessage"] = "Acción denegada: Este usuario es el único Administrador activo en el sistema.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        if (dto.Rol == "Dirigente Politico" && await _usuarioService.TienePartidoAsignadoAsync(id))
+        {
+            TempData["ErrorMessage"] = "No se puede desactivar este usuario porque es un Dirigente Político con un partido asignado.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        dto.Estado = false;
+        await _usuarioService.UpdateAsync(dto);
+
+        TempData["SuccessMessage"] = "Usuario desactivado correctamente.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // (GET)
+    [HttpGet]
+    public async Task<IActionResult> ConfirmarActivar(int id)
+    {
+        var usuario = await _usuarioService.GetByIdSaveDtoAsync(id);
+        if (usuario == null) return NotFound();
+
+        ViewBag.NombreUsuario = $"{usuario.Nombre} {usuario.Apellido}";
+        return View(id);
+    }
+
+    // (POST)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Activar(int id)
+    {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            TempData["ErrorMessage"] = "No se pueden modificar usuarios mientras exista un proceso electoral activo.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var dto = await _usuarioService.GetByIdSaveDtoAsync(id);
+        if (dto == null) return NotFound();
+
+        dto.Estado = true;
+        await _usuarioService.UpdateAsync(dto);
+
+        TempData["SuccessMessage"] = "Usuario activado correctamente.";
         return RedirectToAction(nameof(Index));
     }
 }

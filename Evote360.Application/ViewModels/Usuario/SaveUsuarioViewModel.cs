@@ -23,9 +23,15 @@ public class SaveUsuarioViewModel
     [MaxLength(50, ErrorMessage = "El nombre de usuario no puede exceder los 50 caracteres.")]
     public string NombreUsuario { get; set; } = null!;
 
-    // Es opcional aqui para no romper la edicion si se deja vacio
+    [Required(ErrorMessage = "La contraseña es obligatoria para registrar un usuario.")]
+    [StringLength(100, MinimumLength = 8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
+    [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\W_]{8,}$", ErrorMessage = "La contraseña debe contener al menos una letra y al menos un número.")]
+    [DataType(DataType.Password)]
     public string? Contrasena { get; set; }
 
+    [Required(ErrorMessage = "Debe confirmar la contraseña ingresada.")]
+    [DataType(DataType.Password)]
+    [Compare("Contrasena", ErrorMessage = "La contraseña y la confirmación de contraseña deben coincidir.")]
     public string? ConfirmarContrasena { get; set; }
 
     [Required(ErrorMessage = "Debe seleccionar un rol válido para el usuario.")]

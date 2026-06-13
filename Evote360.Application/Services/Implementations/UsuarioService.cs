@@ -1,6 +1,5 @@
+using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
-using Evote360.Application.ViewModels;
-using Evote360.Application.ViewModels.Usuario;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
 
@@ -19,13 +18,13 @@ public class UsuarioService : IUsuarioService
         _asignacionRepository = asignacionRepository;
     }
 
-    // OBTENER TODOS LOS USUARIOS (Para la tabla principal en el Index)
-    public async Task<List<UsuarioViewModel>> GetAllViewModelAsync()
+    // 1. OBTENER TODOS LOS USUARIOS (Retorna DTOs de lectura, sin contraseñas)
+    public async Task<List<UsuarioDto>> GetAllDtoAsync()
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Mapeo manual exacto de la Entidad al ViewModel de lectura plano
-        return usuarios.Select(u => new UsuarioViewModel
+        // Mapeo manual de la Entidad de la BD al DTO plano de lectura
+        return usuarios.Select(u => new UsuarioDto
         {
             Id = u.Id,
             Nombre = u.Nombre,
@@ -37,15 +36,15 @@ public class UsuarioService : IUsuarioService
         }).ToList();
     }
 
-    // OBTENER POR ID (Para cargar los datos en los formularios de edición)
-    public async Task<SaveUsuarioViewModel> GetByIdSaveViewModelAsync(int id)
+    // 2. OBTENER POR ID (Retorna el SaveUsuarioDto para cargar los campos al editar)
+    public async Task<SaveUsuarioDto> GetByIdSaveDtoAsync(int id)
     {
         var usuario = await _usuarioRepository.GetByIdAsync(id);
 
         if (usuario == null) return null!;
 
-        // Mapeo manual de la entidad al ViewModel de persistencia
-        return new SaveUsuarioViewModel
+        // Mapeamos la entidad al DTO de persistencia
+        return new SaveUsuarioDto
         {
             Id = usuario.Id,
             Nombre = usuario.Nombre,
@@ -54,54 +53,62 @@ public class UsuarioService : IUsuarioService
             NombreUsuario = usuario.NombreUsuario,
             Rol = usuario.Rol,
             Estado = usuario.Estado
-            // Nota: Contrasena y ConfirmarContrasena se dejan vacías por seguridad
+            // Nota: La contraseña no se envía desde la BD por seguridad
         };
     }
 
-    // CREAR UN NUEVO USUARIO
-    public async Task AddAsync(SaveUsuarioViewModel vm)
+    // 3. CREAR UN NUEVO USUARIO (Recibe el DTO con la Contrasena limpia)
+    public async Task AddAsync(SaveUsuarioDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Contrasena))
+        {
+            throw new ArgumentException("La contraseña no puede estar vacía o nula para la creación de un usuario.");
+        }
+
         var usuario = new Usuario
         {
-            Nombre = vm.Nombre.Trim(),
-            Apellido = vm.Apellido.Trim(),
-            Correo = vm.Correo.Trim().ToLower(),
-            NombreUsuario = vm.NombreUsuario.Trim(),
-            Rol = vm.Rol,
-            Estado = true, // Todo usuario nuevo nace activo por defecto
+            Nombre = dto.Nombre.Trim(),
+            Apellido = dto.Apellido.Trim(),
+            Correo = dto.Correo.Trim().ToLower(),
+            NombreUsuario = dto.NombreUsuario.Trim(),
+            Rol = dto.Rol,
+            Estado = dto.Estado, //estado = true Todo usuario nuevo nace activo por defecto
             
-            // Hasheamos la contraseña usando BCrypt antes de impactar la BD
-            ClaveHash = BCrypt.Net.BCrypt.HashPassword(vm.Contrasena)
+            // de contrasena limpia a ClaveHash protegida
+            ClaveHash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena)
         };
 
         await _usuarioRepository.AddAsync(usuario);
     }
 
-    // EDITAR UN USUARIO EXISTENTE
-    public async Task UpdateAsync(SaveUsuarioViewModel vm)
+    // 4. EDITAR UN USUARIO EXISTENTE
+    public async Task UpdateAsync(SaveUsuarioDto dto)
     {
-        var usuario = await _usuarioRepository.GetByIdAsync(vm.Id);
+        var usuario = await _usuarioRepository.GetByIdAsync(dto.Id);
 
         if (usuario != null)
         {
-            usuario.Nombre = vm.Nombre.Trim();
-            usuario.Apellido = vm.Apellido.Trim();
-            usuario.Correo = vm.Correo.Trim().ToLower();
-            usuario.NombreUsuario = vm.NombreUsuario.Trim();
-            usuario.Rol = vm.Rol;
-            usuario.Estado = vm.Estado;
+            usuario.Nombre = dto.Nombre.Trim();
+            usuario.Apellido = dto.Apellido.Trim();
+            usuario.Correo = dto.Correo.Trim().ToLower();
+            usuario.NombreUsuario = dto.NombreUsuario.Trim();
+            usuario.Rol = dto.Rol;
+            usuario.Estado = dto.Estado;
 
-            // Regla del PDF: Solo se actualiza la clave si el usuario escribió algo en el campo del formulario
-            if (!string.IsNullOrWhiteSpace(vm.Contrasena))
+            // Regla del PDF: Solo se actualiza la clave si se escribió algo en el formulario
+            if (!string.IsNullOrWhiteSpace(dto.Contrasena))
             {
-                usuario.ClaveHash = BCrypt.Net.BCrypt.HashPassword(vm.Contrasena);
+                usuario.ClaveHash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena);
             }
 
             await _usuarioRepository.UpdateAsync(usuario);
         }
     }
 
-    // VALIDACIÓN: Verificar si el Nombre de Usuario está repetido
+   
+   
+
+    // Validar que el Username no este repetido
     public async Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, int idActual = 0)
     {
         if (string.IsNullOrWhiteSpace(nombreUsuario)) return false;
@@ -109,11 +116,10 @@ public class UsuarioService : IUsuarioService
         string usernameLimpio = nombreUsuario.Trim().ToLower();
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Si idActual > 0 (Modo Edición), excluye al usuario actual de la búsqueda
         return usuarios.Any(u => u.NombreUsuario.Trim().ToLower() == usernameLimpio && u.Id != idActual);
     }
 
-    // VALIDACIÓN: Verificar si el Correo está repetido
+    // Validar que el Correo sea único
     public async Task<bool> ExisteCorreoAsync(string correo, int idActual = 0)
     {
         if (string.IsNullOrWhiteSpace(correo)) return false;
@@ -121,19 +127,15 @@ public class UsuarioService : IUsuarioService
         string correoLimpio = correo.Trim().ToLower();
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Evita que dos personas usen el mismo email (Regla del PDF)
         return usuarios.Any(u => u.Correo.Trim().ToLower() == correoLimpio && u.Id != idActual);
     }
 
-    // VALIDACIÓN: Verificar si es el único Administrador activo del sistema
+    // Validar que no se desactive al último Administrador del sistema
     public async Task<bool> EsUnicoAdminActivoAsync(int id)
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
-
-        // Contamos cuántos administradores activos quedan en el sistema
         int adminsActivos = usuarios.Count(u => u.Rol == "Administrador" && u.Estado);
 
-        // Si solo queda uno, evaluamos si ese único es el ID que intentan desactivar o cambiar de rol
         if (adminsActivos == 1)
         {
             var unicoAdmin = usuarios.FirstOrDefault(u => u.Rol == "Administrador" && u.Estado);
@@ -143,17 +145,16 @@ public class UsuarioService : IUsuarioService
         return false;
     }
 
-    // VALIDACIÓN: Verificar si un dirigente político ya tiene un partido asignado
+    // Validar si un dirigente político ya tiene un partido asignado en el sistema
     public async Task<bool> TienePartidoAsignadoAsync(int usuarioId)
     {
         var asignaciones = await _asignacionRepository.GetAllAsync();
         return asignaciones.Any(a => a.UsuarioId == usuarioId);
     }
 
-    // VALIDACIÓN SIMULADA: Elección activa (Se completará en el módulo de Elecciones)
+    // Bloqueo de seguridad: Evita modificaciones si hay procesos electorales en curso
     public async Task<bool> ExisteEleccionActivaAsync()
     {
-        // Devolvemos false temporalmente para que puedas registrar y hacer pruebas libres
-        return await Task.FromResult(false);
+        return await Task.FromResult(false); // Simulado temporalmente
     }
 }

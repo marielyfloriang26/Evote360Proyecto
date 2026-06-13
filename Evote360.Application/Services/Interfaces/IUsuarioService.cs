@@ -1,4 +1,5 @@
 
+using Evote360.Application.DTOs;
 using Evote360.Application.ViewModels.Usuario;
 
 namespace Evote360.Application.Interfaces;
@@ -6,15 +7,15 @@ namespace Evote360.Application.Interfaces;
 public interface IUsuarioService
 {
     // Para listar todos los usuarios en la tabla principal 
-    Task<List<UsuarioViewModel>> GetAllViewModelAsync();
+    Task<List<UsuarioDto>> GetAllDtoAsync();
 
     // busca un usuario especifico cuando se va a editar o reactivar
-    Task<SaveUsuarioViewModel> GetByIdSaveViewModelAsync(int id);
+    Task<SaveUsuarioDto> GetByIdSaveDtoAsync(int id);
 
     // registra un nuevo usuario
-    Task AddAsync(SaveUsuarioViewModel vm);
+    Task AddAsync(SaveUsuarioDto vm);
 
-    Task UpdateAsync(SaveUsuarioViewModel vm);
+    Task UpdateAsync(SaveUsuarioDto vm);
 
 
     Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, int idActual = 0);

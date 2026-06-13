@@ -1,78 +1,85 @@
 @model Evote360.Application.ViewModels.Usuario.SaveUsuarioViewModel
 
 @{
-    ViewData["Title"] = "Registrar Usuario";
+    ViewData["Title"] = "Crear Usuario";
 }
 
-<div class="container mt-4" style="max-width: 700px;">
-    <div class="mb-4">
-        <a asp-action="Index" class="text-decoration-none small d-flex align-items-center gap-1 text-muted mb-2">
-            <i class="bi bi-arrow-left"></i> Volver al listado
-        </a>
-        <h2 class="text-dark fw-bold m-0">Registrar Usuario</h2>
-        <p class="text-muted small">Completa los datos para dar de alta una nueva cuenta administrativa o de dirigencia.</p>
-    </div>
-
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body p-4">
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Crear Nuevo Usuario</h4>
+        </div>
+        <div class="card-body">
             <form asp-action="Crear" method="post">
-                
-                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Nombre" class="form-label small fw-semibold text-secondary">Nombre real</label>
-                        <input asp-for="Nombre" class="form-control" placeholder="Ej. Carlos" />
-                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nombre" class="form-label fw-bold">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Ej. Juan" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Apellido" class="form-label small fw-semibold text-secondary">Apellido</label>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Apellido" class="form-label fw-bold">Apellido</label>
                         <input asp-for="Apellido" class="form-control" placeholder="Ej. Pérez" />
-                        <span asp-validation-for="Apellido" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Correo" class="form-label small fw-semibold text-secondary">Correo Electrónico</label>
-                        <input asp-for="Correo" type="email" class="form-control" placeholder="carlos.perez@email.com" />
-                        <span asp-validation-for="Correo" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="NombreUsuario" class="form-label small fw-semibold text-secondary">Nombre de Usuario (Login)</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted small">@@</span>
-                            <input asp-for="NombreUsuario" class="form-control" placeholder="cperez" />
-                        </div>
-                        <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Rol" class="form-label small fw-semibold text-secondary">Rol asignado</label>
-                        <select asp-for="Rol" class="form-select">
-                            <option value="">-- Seleccione un Perfil --</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Dirigente Politico">Dirigente Político</option>
-                        </select>
-                        <span asp-validation-for="Rol" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Contrasena" class="form-label small fw-semibold text-secondary">Contraseña</label>
-                        <input asp-for="Contrasena" type="password" class="form-control" placeholder="••••••••" />
-                        <span asp-validation-for="Contrasena" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ConfirmarContrasena" class="form-label small fw-semibold text-secondary">Confirmar Contraseña</label>
-                        <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="••••••••" />
-                        <span asp-validation-for="ConfirmarContrasena" class="text-danger small"></span>
+                        <span asp-validation-for="Apellido" class="text-danger"></span>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                    <a asp-action="Index" class="btn btn-light px-4">Cancelar</a>
-                    <button type="submit" class="btn btn-primary px-4 shadow-sm">Guardar Usuario</button>
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-bold">Correo Electrónico</label>
+                    <input asp-for="Correo" type="email" class="form-control" placeholder="juan.perez@example.com" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreUsuario" class="form-label fw-bold">Nombre de Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@@</span>
+                        <input asp-for="NombreUsuario" class="form-control" placeholder="juanperez" />
+                    </div>
+                    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Contrasena" class="form-label fw-bold">Contraseña</label>
+                        <input asp-for="Contrasena" type="password" class="form-control" placeholder="********" />
+                        <span asp-validation-for="Contrasena" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmarContrasena" class="form-label fw-bold">Confirmar Contraseña</label>
+                        <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="********" />
+                        <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Rol" class="form-label fw-bold">Rol de Acceso</label>
+                    <select asp-for="Rol" class="form-select">
+                        <option value="">-- Seleccione un Rol --</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Dirigente Politico">Dirigente Político</option>
+                    </select>
+                    <span asp-validation-for="Rol" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="form-check form-switch p-3 border rounded bg-light">
+                        <input class="form-check-input ms-0 me-2" type="checkbox" asp-for="Estado" checked />
+                        <label class="form-check-input-label fw-bold" asp-for="Estado">
+                            ¿Usuario Activo?
+                        </label>
+                        <div class="form-text text-muted">
+                            Si está inactivo, el usuario no podrá iniciar sesión en el sistema.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                    <button type="submit" class="btn btn-primary">Crear usuario</button>
                 </div>
             </form>
         </div>
