@@ -2,6 +2,7 @@ using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
+using Evote360.Core.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace Evote360.Application.Services
                 Id = p.Id,
                 Nombre = p.Nombre,
                 Descripcion = p.Descripcion,
-                Estado = p.Estado
+                Estado = p.Estado == Core.Enums.EstadoEnum.Activo
             });
         }
 
@@ -51,7 +52,7 @@ namespace Evote360.Application.Services
                 Id = puesto.Id,
                 Nombre = puesto.Nombre,
                 Descripcion = puesto.Descripcion,
-                Estado = puesto.Estado
+                Estado = puesto.Estado == EstadoEnum.Activo
             };
         }
 
@@ -70,7 +71,7 @@ namespace Evote360.Application.Services
             {
                 Nombre = nombreLimpio,
                 Descripcion = dto.Descripcion.Trim(),
-                Estado = true // Por defecto activo según el PDF
+                Estado = EstadoEnum.Activo // Por defecto activo según el PDF
             };
 
             await _repository.AddAsync(puesto);
@@ -99,7 +100,7 @@ namespace Evote360.Application.Services
 
             if (!yaFueUtilizado) puesto.Nombre = nombreLimpio;
             puesto.Descripcion = dto.Descripcion.Trim();
-            puesto.Estado = dto.Estado;
+            puesto.Estado = dto.Estado ? EstadoEnum.Activo : EstadoEnum.Inactivo;
 
             await _repository.UpdateAsync(puesto);
             return (true, "Puesto electivo actualizado con éxito.");
@@ -113,14 +114,14 @@ namespace Evote360.Application.Services
             var puesto = await _repository.GetByIdAsync(id);
             if (puesto == null) return (false, "El puesto electivo no existe.");
 
-            if (puesto.Estado)
+            if (puesto.Estado == EstadoEnum.Activo)
                 return (false, "Este puesto electivo ya se encuentra activo.");
 
             var puestoDuplicado = await _repository.GetByNombreAsync(puesto.Nombre);
-            if (puestoDuplicado != null && puestoDuplicado.Id != id && puestoDuplicado.Estado)
+            if (puestoDuplicado != null && puestoDuplicado.Id != id && puestoDuplicado.Estado == EstadoEnum.Activo)
                 return (false, "No se puede activar porque ya existe otro puesto activo con el mismo nombre.");
 
-            puesto.Estado = true;
+            puesto.Estado = EstadoEnum.Activo;
             await _repository.UpdateAsync(puesto);
             return (true, "Puesto electivo activado con éxito.");
         }
@@ -133,13 +134,13 @@ namespace Evote360.Application.Services
             var puesto = await _repository.GetByIdAsync(id);
             if (puesto == null) return (false, "El puesto electivo no existe.");
 
-            if (!puesto.Estado)
+            if (puesto.Estado == EstadoEnum.Inactivo)
                 return (false, "Este puesto electivo ya se encuentra inactivo.");
 
             if (await _repository.TieneCandidatosActivosAsignadosAsync(id))
                 return (false, "No se puede desactivar este puesto electivo porque tiene candidatos activos asignados.");
 
-            puesto.Estado = false;
+            puesto.Estado = EstadoEnum.Inactivo;
             await _repository.UpdateAsync(puesto);
             return (true, "Puesto electivo desactivado con éxito.");
         }
