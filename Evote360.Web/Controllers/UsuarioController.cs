@@ -2,9 +2,11 @@ using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels.Usuario;
 using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Authorization; // TEMPORAL AUTORIZACION
 
 namespace Evote360.Web.Controllers;
 
+// [Authorize(Roles = "Administrador")] // AUTORIZACION TEMPORAL
 public class UsuarioController : Controller
 {
     private readonly IUsuarioService _usuarioService;
