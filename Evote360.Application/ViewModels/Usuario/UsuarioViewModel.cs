@@ -1,22 +1,14 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Evote360.Core.Enums;
 
+namespace Evote360.Application.ViewModels.Usuario;
 
-namespace Evote360.Application.DTOs;
-
-public class UsuarioDto
+public class UsuarioViewModel
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = null!;
     public string Apellido { get; set; } = null!;
     public string Correo { get; set; } = null!;
     public string NombreUsuario { get; set; } = null!;
-    public RolUsuarioEnum Rol  { get; set; } 
+    public RolUsuarioEnum Rol { get; set; } 
     public bool Estado { get; set; }
 }
-

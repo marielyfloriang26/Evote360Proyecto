@@ -84,15 +84,15 @@ namespace Evote360.Web.Controllers;
             }
 
             // OJO Captura el valor real del interruptor de la vista de forma segura
-            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true") ? true : false;
+            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true");
+
             var dto = new PartidoPoliticoSaveDto
             {
                 Id = 0,
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
-                Estado = estadoFormulario, //true,
-                //(vm.Estado == true || Request.Form["Estado"] == "true") ? true : false,
+                Estado = estadoFormulario, 
                 LogoUrl = "" // Inicia vacio temporalmente
             };
 
@@ -141,6 +141,8 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(SavePartidoPoliticoViewModel vm)
         {
+            ModelState.Remove("Estado");
+
             if (!string.IsNullOrWhiteSpace(vm.Siglas) && await _partidoService.ExisteSiglasAsync(vm.Siglas, vm.Id))
         {
             ModelState.AddModelError("Siglas", "Ya existe un partido político registrado con estas siglas.");
@@ -162,6 +164,7 @@ namespace Evote360.Web.Controllers;
                 return View(vm); 
             }
 
+
             // instancia el dto de guardado con la info de la pantalla
             var dto = new PartidoPoliticoSaveDto
             {
@@ -169,19 +172,26 @@ namespace Evote360.Web.Controllers;
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
-                Estado = Request.Form["Estado"].ToString().Contains("true") ? true : false
+                LogoUrl = vm.LogoUrl,
+
+                Estado = Request.Form["Estado"].ToString().Contains("true") 
+
             };
 
+            if (vm.File != null && vm.File.Length > 0)
+            {
             var currentDto = await _partidoService.GetByIdSaveDtoAsync(vm.Id);
-            string currentImagePath = "";
+            string currentImagePath = currentDto?.LogoUrl ?? "";
+            
 
-            if (currentDto != null)
+           /* if (currentDto != null)
             {
                 currentImagePath = currentDto.LogoUrl ?? "";
-            }
+            } */
 
             // Ejecuta el helper pasando los datos de edición
-            dto.LogoUrl = await UploadFile.Upload(vm.File!, dto.Id, "Partidos", true, currentImagePath);
+            dto.LogoUrl = await UploadFile.Upload(vm.File, dto.Id, "Partidos", true, currentImagePath);
+            }
 
             // Actualiza el registro completo
             await _partidoService.UpdateAsync(dto);
