@@ -59,8 +59,8 @@
                     <label asp-for="Rol" class="form-label fw-bold">Rol de Acceso</label>
                     <select asp-for="Rol" class="form-select">
                         <option value="">-- Seleccione un Rol --</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Dirigente Politico">Dirigente Político</option>
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.Administrador)">Administrador</option>
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.DirigentePolitico)">Dirigente Político</option>
                     </select>
                     <span asp-validation-for="Rol" class="text-danger"></span>
                 </div>

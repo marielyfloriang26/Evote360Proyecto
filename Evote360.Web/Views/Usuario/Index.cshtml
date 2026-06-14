@@ -1,3 +1,4 @@
+@using Evote360.Core.Enums
 @model List<Evote360.Application.ViewModels.Usuario.UsuarioViewModel>
 
 @{
@@ -55,11 +56,11 @@
                             <td>@usuario.Correo</td>
                             <td><span class="badge bg-dark">@@@usuario.NombreUsuario</span></td>
                             <td>
-                                @if (usuario.Rol == "Administrador")
+                                @if (usuario.Rol == RolUsuarioEnum.Administrador)
                                 {
                                     <span class="badge bg-danger">@usuario.Rol</span>
                                 }
-                                else if (usuario.Rol == "Dirigente Politico" || usuario.Rol == "Dirigente Político")
+                                else if (usuario.Rol == RolUsuarioEnum.DirigentePolitico)
                                 {
                                     <span class="badge bg-info text-dark">@usuario.Rol</span>
                                 }

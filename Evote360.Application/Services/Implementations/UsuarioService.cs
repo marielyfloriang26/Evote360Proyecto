@@ -1,6 +1,7 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Core.Entities;
+using Evote360.Core.Enums;
 using Evote360.Core.Interfaces;
 
 namespace Evote360.Application.Services;
@@ -134,11 +135,12 @@ public class UsuarioService : IUsuarioService
     public async Task<bool> EsUnicoAdminActivoAsync(int id)
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
-        int adminsActivos = usuarios.Count(u => u.Rol == "Administrador" && u.Estado);
+       
+        int adminsActivos = usuarios.Count(u => u.Rol == RolUsuarioEnum.Administrador && u.Estado);
 
         if (adminsActivos == 1)
         {
-            var unicoAdmin = usuarios.FirstOrDefault(u => u.Rol == "Administrador" && u.Estado);
+            var unicoAdmin = usuarios.FirstOrDefault(u => u.Rol == RolUsuarioEnum.Administrador && u.Estado);
             return unicoAdmin != null && unicoAdmin.Id == id;
         }
 

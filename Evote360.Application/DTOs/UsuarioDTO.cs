@@ -16,7 +16,7 @@ public class UsuarioDto
     public string Apellido { get; set; } = null!;
     public string Correo { get; set; } = null!;
     public string NombreUsuario { get; set; } = null!;
-    public string RolUsuarioEnum  { get; set; } 
+    public RolUsuarioEnum Rol  { get; set; } 
     public bool Estado { get; set; }
 }
 

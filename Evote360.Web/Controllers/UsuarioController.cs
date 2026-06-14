@@ -1,6 +1,7 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels.Usuario;
+using Evote360.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Authorization; // TEMPORAL AUTORIZACION
 
@@ -49,6 +50,8 @@ public class UsuarioController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Crear(SaveUsuarioViewModel vm)
     {
+        ModelState.Remove("Estado");
+
         // validacion 
         if (!ModelState.IsValid)
         {
@@ -69,7 +72,9 @@ public class UsuarioController : Controller
             return View(vm);
         }
 
-        // mapeo del ViewModel al dto
+        var estadoFormulario = Request.Form["Estado"].ToString().Contains("true");
+
+        
         var dto = new SaveUsuarioDto
         {
             Nombre = vm.Nombre,
@@ -78,7 +83,7 @@ public class UsuarioController : Controller
             NombreUsuario = vm.NombreUsuario,
             Contrasena = vm.Contrasena!,
             Rol = vm.Rol,
-            Estado = true
+            Estado = estadoFormulario
         };
 
         await _usuarioService.AddAsync(dto);
@@ -96,8 +101,8 @@ public class UsuarioController : Controller
             return NotFound();
         }
 
-        // mapea el dto de retorno hacia el vm que procesara la vista
-        var vm = new SaveUsuarioViewModel
+        
+        var vm = new EditarUsuarioViewModel
         {
             Id = dto.Id,
             Nombre = dto.Nombre,
@@ -116,23 +121,26 @@ public class UsuarioController : Controller
    
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar(SaveUsuarioViewModel vm)
+    public async Task<IActionResult> Editar(EditarUsuarioViewModel vm)
     {
+        ModelState.Remove("Estado");
+
         if (string.IsNullOrEmpty(vm.Contrasena))
     {
         ModelState.Remove("Contrasena");
         ModelState.Remove("ConfirmarContrasena");
     }
 
-        if (!ModelState.IsValid)
-        {
-            return View(vm);
-        }
-
+        
         // valida que si escribio una contraseña coincida con su confirmacion
         if (!string.IsNullOrEmpty(vm.Contrasena) && vm.Contrasena != vm.ConfirmarContrasena)
         {
             ModelState.AddModelError("ConfirmarContrasena", "Las contraseñas ingresadas no coinciden.");
+            return View(vm);
+        }
+
+        if (!ModelState.IsValid)
+        {
             return View(vm);
         }
 
@@ -150,8 +158,10 @@ public class UsuarioController : Controller
             return View(vm);
         }
 
+        var estadoFormulario = Request.Form["Estado"].ToString().Contains("true");
+
         // impide que se inactive al unico admn activo del sistema
-        if (vm.Rol != "Administrador" || !vm.Estado)
+        if (vm.Rol != RolUsuarioEnum.Administrador || !estadoFormulario)
         {
             if (await _usuarioService.EsUnicoAdminActivoAsync(vm.Id))
             {
@@ -170,7 +180,7 @@ public class UsuarioController : Controller
             NombreUsuario = vm.NombreUsuario,
             Contrasena = vm.Contrasena!, // Puede ir vacia o con texto, el servicio lo manejara
             Rol = vm.Rol,
-            Estado = vm.Estado
+            Estado = estadoFormulario
         };
 
         await _usuarioService.UpdateAsync(dto);
@@ -207,7 +217,7 @@ public class UsuarioController : Controller
             }
 
             // Evita desactivacion si es un dirigente politico con asignacion de partido vigente
-            if (dto.Rol == "Dirigente Politico" && await _usuarioService.TienePartidoAsignadoAsync(id))
+            if (dto.Rol == RolUsuarioEnum.DirigentePolitico && await _usuarioService.TienePartidoAsignadoAsync(id))
             {
                 TempData["ErrorMessage"] = "No se puede desactivar este usuario porque es un Dirigente Político con un partido asignado.";
                 return RedirectToAction(nameof(Index));
@@ -255,7 +265,7 @@ public class UsuarioController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        if (dto.Rol == "Dirigente Politico" && await _usuarioService.TienePartidoAsignadoAsync(id))
+        if (dto.Rol == RolUsuarioEnum.DirigentePolitico && await _usuarioService.TienePartidoAsignadoAsync(id))
         {
             TempData["ErrorMessage"] = "No se puede desactivar este usuario porque es un Dirigente Político con un partido asignado.";
             return RedirectToAction(nameof(Index));
