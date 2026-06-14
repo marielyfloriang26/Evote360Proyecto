@@ -1,4 +1,3 @@
-@using Evote360.Core.Enums
 @model Evote360.Application.ViewModels.PuestoElectivo.PuestoElectivoIndexViewModel
 
 @{
@@ -59,7 +58,7 @@
                             <td><strong>@puesto.Nombre</strong></td>
                             <td>@puesto.Descripcion</td>
                             <td>
-                                <span class="badge @(puesto.Estado == EstadoEnum.Activo ? "bg-success" : "bg-secondary")">
+                                <span class="badge @(puesto.Estado == true ? "bg-success" : "bg-secondary")">
                                     @puesto.EstadoTexto
                                 </span>
                             </td>
@@ -67,12 +66,12 @@
                                 @if (Model.ExisteEleccionActiva)
                                 {
                                     <button class="btn btn-sm btn-outline-secondary" disabled>Editar</button>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled>@(puesto.Estado == EstadoEnum.Activo ? "Desactivar" : "Activar")</button>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>@(puesto.Estado == true ? "Desactivar" : "Activar")</button>
                                 }
                                 else
                                 {
                                     <a asp-action="Editar" asp-route-id="@puesto.Id" class="btn btn-sm btn-warning">Editar</a>
-                                    if (puesto.Estado == EstadoEnum.Activo)
+                                    if (puesto.Estado == true)
                                     {
                                         <a asp-action="ConfirmarDesactivar" asp-route-id="@puesto.Id" class="btn btn-sm btn-danger">Desactivar</a>
                                     }

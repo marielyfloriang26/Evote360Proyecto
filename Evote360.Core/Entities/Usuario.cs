@@ -1,5 +1,6 @@
 using Evote360.Core.Common;
 using Evote360.Core.Enums;
+
 namespace Evote360.Core.Entities
 {
     public class Usuario : BaseEntity

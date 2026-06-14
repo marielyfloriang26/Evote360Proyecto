@@ -1,5 +1,5 @@
-@using Evote360.Core.Enums
 @model List<Evote360.Application.ViewModels.PartidoPoliticoViewModel>
+
 
 @{
     ViewData["Title"] = "Mantenimiento de Partidos Políticos";
@@ -51,14 +51,14 @@
                             <td><strong>@partido.Nombre</strong></td>
                             <td>@partido.Descripcion</td>
                             <td>
-                                <span class="badge @(partido.Estado == EstadoEnum.Activo ? "bg-success" : "bg-secondary")">
-                                    @(partido.Estado == EstadoEnum.Activo ? "Activo" : "Inactivo")
+                                <span class="badge @(partido.Estado == true ? "bg-success" : "bg-secondary")">
+                                    @(partido.Estado == true ? "Activo" : "Inactivo")
                                 </span>
                             </td>
                             <td class="text-center">
                                 <a asp-action="Editar" asp-route-id="@partido.Id" class="btn btn-sm btn-warning">Editar</a>
                                 
-                                @if (partido.Estado == EstadoEnum.Activo)
+                                @if (partido.Estado == true)
                                 {
                                     <a asp-action="ConfirmarDesactivar" asp-route-id="@partido.Id" class="btn btn-sm btn-danger">Desactivar</a>
                                 }

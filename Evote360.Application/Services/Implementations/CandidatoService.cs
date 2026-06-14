@@ -2,7 +2,6 @@ using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels.Candidatos;
-using Evote360.Core.Enums;
 using Evote360.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace Evote360.Application.Services.Implementations
             }
 
             var partido = await _partidoPoliticoService.GetByIdSaveDtoAsync(partidoId.Value);
-            if (partido == null || partido.Estado == EstadoEnum.Inactivo)
+            if (partido == null || partido.Estado == false)
             {
                 string msg = action == "Crear"
                     ? "No puede crear candidatos porque el partido político asignado se encuentra inactivo."
@@ -212,7 +211,7 @@ namespace Evote360.Application.Services.Implementations
 
             if (isActivar)
             {
-                if (c.Estado == EstadoEnum.Activo)
+                if (c.Estado == true)
                 {
                     return (false, "Este candidato ya se encuentra activo.", string.Empty);
                 }
@@ -223,7 +222,7 @@ namespace Evote360.Application.Services.Implementations
                 {
                     return (false, "No se puede desactivar este candidato porque está asignado a un puesto electivo.", string.Empty);
                 }
-                if (c.Estado == EstadoEnum.Inactivo)
+                if (c.Estado == false)
                 {
                     return (false, "Este candidato ya se encuentra inactivo.", string.Empty);
                 }
@@ -238,9 +237,9 @@ namespace Evote360.Application.Services.Implementations
             if (!data.Success) return (false, data.ErrorMessage);
 
             var candidato = await _repository.GetByIdAsync(id);
-            if (candidato != null && candidato.Estado == EstadoEnum.Inactivo)
+            if (candidato != null && candidato.Estado == false)
             {
-                candidato.Estado = EstadoEnum.Activo;
+                candidato.Estado = true;
                 await _repository.UpdateAsync(candidato);
             }
             return (true, string.Empty);
@@ -252,9 +251,9 @@ namespace Evote360.Application.Services.Implementations
             if (!data.Success) return (false, data.ErrorMessage);
 
             var candidato = await _repository.GetByIdAsync(id);
-            if (candidato != null && candidato.Estado == EstadoEnum.Activo)
+            if (candidato != null && candidato.Estado == true)
             {
-                candidato.Estado = EstadoEnum.Inactivo;
+                candidato.Estado = false;
                 await _repository.UpdateAsync(candidato);
             }
             return (true, string.Empty);

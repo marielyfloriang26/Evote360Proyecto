@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Evote360.Core.Enums;
-
 namespace Evote360.Application.ViewModels.PuestoElectivo
 {
     public class PuestoElectivoUpdateViewModel
@@ -20,7 +18,7 @@ namespace Evote360.Application.ViewModels.PuestoElectivo
 
         [Required(ErrorMessage = "El estado debe manejarse como booleano.")]
         [Display(Name = "Estado")]
-        public EstadoEnum Estado { get; set; }
+        public bool Estado { get; set; }
 
         public bool YaFueUtilizadoEnEleccion { get; set; }
     }

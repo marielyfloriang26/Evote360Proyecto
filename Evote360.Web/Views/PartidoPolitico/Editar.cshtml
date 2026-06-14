@@ -51,7 +51,7 @@
 
                 <div class="form-check form-switch mb-4">
                 <input class="form-check-input" type="checkbox" role="switch" id="EstadoSwitch" name="Estado" value="true" 
-                    @(Model.Estado == Evote360.Core.Enums.EstadoEnum.Activo ? "checked" : "")>
+                    @(Model.Estado ? "checked" : "")>
                 <label class="form-check-label fw-bold" for="EstadoSwitch">Estado Activo</label>
             </div>
 
