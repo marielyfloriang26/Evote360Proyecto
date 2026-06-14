@@ -1,5 +1,3 @@
-using Evote360.Core.Enums;
-
 namespace Evote360.Application.ViewModels.Candidatos
 {
     public class CandidatoViewModel
@@ -9,6 +7,6 @@ namespace Evote360.Application.ViewModels.Candidatos
         public string Apellido { get; set; } = string.Empty;
         public string? FotoUrl { get; set; }
         public string PuestoAsociado { get; set; } = string.Empty;
-        public EstadoEnum Estado { get; set; }
+        public bool Estado { get; set; }
     }
 }

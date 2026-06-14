@@ -1,7 +1,6 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels;
-using Evote360.Core.Enums;
 using Evote360.Web.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,15 +84,15 @@ namespace Evote360.Web.Controllers;
             }
 
             // OJO Captura el valor real del interruptor de la vista de forma segura
-            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true") ? EstadoEnum.Activo : EstadoEnum.Inactivo;
+            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true") ? true : false;
             var dto = new PartidoPoliticoSaveDto
             {
                 Id = 0,
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
-                Estado = estadoFormulario, //EstadoEnum.Activo,
-                //(vm.Estado == EstadoEnum.Activo || Request.Form["Estado"] == "true") ? EstadoEnum.Activo : EstadoEnum.Inactivo,
+                Estado = estadoFormulario, //true,
+                //(vm.Estado == true || Request.Form["Estado"] == "true") ? true : false,
                 LogoUrl = "" // Inicia vacio temporalmente
             };
 
@@ -174,8 +173,12 @@ namespace Evote360.Web.Controllers;
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
+
                 Estado = estadoFormulario, //Request.Form["Estado"].ToString().Contains("true") ? EstadoEnum.Activo : EstadoEnum.Inactivo
                 LogoUrl = vm.LogoUrl
+
+                Estado = Request.Form["Estado"].ToString().Contains("true") ? true : false
+
             };
 
             if (vm.File != null && vm.File.Length > 0)
@@ -250,7 +253,7 @@ namespace Evote360.Web.Controllers;
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto != null)
         {
-            dto.Estado = EstadoEnum.Activo; 
+            dto.Estado = true; 
             await _partidoService.UpdateAsync(dto);
             TempData["SuccessMessage"] = "El partido político ha sido activado con éxito.";
         }
@@ -275,7 +278,7 @@ namespace Evote360.Web.Controllers;
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto != null)
         {
-            dto.Estado = EstadoEnum.Inactivo; 
+            dto.Estado = false; 
             await _partidoService.UpdateAsync(dto);
             TempData["SuccessMessage"] = "El partido político ha sido desactivado con éxito.";
         }

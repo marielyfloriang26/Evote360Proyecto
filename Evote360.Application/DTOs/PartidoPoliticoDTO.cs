@@ -1,5 +1,3 @@
-using Evote360.Core.Enums;
-
 namespace Evote360.Application.DTOs;
     public class PartidoPoliticoDTO
     {
@@ -8,5 +6,5 @@ namespace Evote360.Application.DTOs;
         public string Siglas { get; set; } = null!;
         public string? LogoUrl { get; set; } 
         public string? Descripcion { get; set; } 
-        public EstadoEnum Estado { get; set; }
+        public bool Estado { get; set; }
     }

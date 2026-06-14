@@ -1,5 +1,4 @@
 using Evote360.Application.DTOs;
-using Evote360.Core.Enums;
 using Evote360.Application.Interfaces;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Interfaces;
@@ -33,8 +32,8 @@ namespace Evote360.Application.Services.Implementations
                 IdPartidoPolitico = a.PartidoId,
                 NombreDelPartido = a.Partido.Nombre,
                 SiglasDelPartido = a.Partido.Siglas,
-                EstadoDelDirigente = a.Usuario.Estado == EstadoEnum.Activo,
-                EstadoDelPartido = a.Partido.Estado == EstadoEnum.Activo
+                EstadoDelDirigente = a.Usuario.Estado == true,
+                EstadoDelPartido = a.Partido.Estado == true
             });
 
             return listaDto;
@@ -53,8 +52,8 @@ namespace Evote360.Application.Services.Implementations
                 IdPartidoPolitico = asignacion.PartidoId,
                 NombreDelPartido = asignacion.Partido.Nombre,
                 SiglasDelPartido = asignacion.Partido.Siglas,
-                EstadoDelDirigente = asignacion.Usuario.Estado == EstadoEnum.Activo,
-                EstadoDelPartido = asignacion.Partido.Estado == EstadoEnum.Activo
+                EstadoDelDirigente = asignacion.Usuario.Estado == true,
+                EstadoDelPartido = asignacion.Partido.Estado == true
             };
         }
 
