@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    // [Authorize(Roles = "Dirigente político")] // Uncomment when Auth is implemented
     public class CandidatosController : Controller
     {
         private readonly ICandidatoService _candidatoService;
@@ -19,13 +18,12 @@ namespace Evote360.Web.Controllers
 
         private int GetUserId()
         {
-            // Simulación o extracción real desde los Claims.
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (int.TryParse(userIdClaim, out int userId))
             {
                 return userId;
             }
-            return 1; // Para pruebas sin auth, retornamos 1 o cualquier ID
+            return 1; // para pruebas sin login
         }
 
         public async Task<IActionResult> Index()

@@ -1,5 +1,3 @@
-using Evote360.Core.Enums;
-
 namespace Evote360.Application.DTOs
 {
     public class PuestoElectivoDto
@@ -7,9 +5,9 @@ namespace Evote360.Application.DTOs
         public int Id { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
-        public EstadoEnum Estado { get; set; }
+        public bool Estado { get; set; }
 
         
-       public string EstadoTexto => Estado == EstadoEnum.Activo ? "Activo" : "Inactivo";
+       public string EstadoTexto => Estado == true ? "Activo" : "Inactivo";
     }
 } 

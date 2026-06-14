@@ -1,5 +1,4 @@
 using Evote360.Core.Entities;
-using Evote360.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,7 +13,7 @@ namespace Evote360.Infrastructure.Configurations
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Estado)
-                .HasDefaultValue(EstadoEnum.Activo)
+                .HasDefaultValue(true)
                 .IsRequired();
 
             // N:1 with Eleccion

@@ -33,10 +33,10 @@ namespace Evote360.Infrastructure.Migrations
                     b.Property<int>("EleccionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Estado")
+                    b.Property<bool>("Estado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("PartidoAliadoId")
                         .HasColumnType("int");
@@ -63,8 +63,8 @@ namespace Evote360.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaAsignacion")
                         .ValueGeneratedOnAdd()
@@ -101,8 +101,8 @@ namespace Evote360.Infrastructure.Migrations
                     b.Property<int>("EleccionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PuestoId")
                         .HasColumnType("int");
@@ -130,10 +130,10 @@ namespace Evote360.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Estado")
+                    b.Property<bool>("Estado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("FotoUrl")
                         .HasMaxLength(250)
@@ -177,10 +177,10 @@ namespace Evote360.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Estado")
+                    b.Property<bool>("Estado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("HaVotado")
                         .ValueGeneratedOnAdd()
@@ -219,8 +219,8 @@ namespace Evote360.Infrastructure.Migrations
                     b.Property<int>("EleccionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaExpiracion")
                         .HasColumnType("datetime2");
@@ -252,8 +252,8 @@ namespace Evote360.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<string>("EstadoElectoral")
                         .IsRequired()
@@ -291,7 +291,7 @@ namespace Evote360.Infrastructure.Migrations
                     b.Property<int>("Estado")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(1);
 
                     b.Property<string>("LogoUrl")
                         .IsRequired()
@@ -329,10 +329,10 @@ namespace Evote360.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("Estado")
+                    b.Property<bool>("Estado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -412,8 +412,8 @@ namespace Evote360.Infrastructure.Migrations
                     b.Property<int>("EleccionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PuestoId")
                         .HasColumnType("int");

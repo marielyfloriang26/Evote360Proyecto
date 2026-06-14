@@ -1,4 +1,12 @@
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Evote360.Core.Enums;
+
+
 namespace Evote360.Application.DTOs;
 
 public class UsuarioDto

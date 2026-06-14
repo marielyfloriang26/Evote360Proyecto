@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Evote360.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -27,5 +26,5 @@ namespace Evote360.Application.ViewModels;
         [MaxLength(500, ErrorMessage = "La descripción no puede exceder los 500 caracteres.")]
         public string? Descripcion { get; set; }
 
-        public EstadoEnum Estado { get; set; } = EstadoEnum.Activo;
+        public bool Estado { get; set; } = true;
     }
