@@ -1,4 +1,5 @@
 using Evote360.Core.Entities;
+using Evote360.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,17 +29,15 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Estado)
-                .HasDefaultValue(true)
+            .HasConversion<int>() 
+            .HasColumnType("int")
+                .HasDefaultValue(EstadoEnum.Activo)
                 .IsRequired();
 
 
             builder.Property(p => p.Descripcion)
                 .HasMaxLength(500) 
-                .IsRequired(false);
-
-            builder.Property(p => p.Descripcion)
-            .HasMaxLength(500) 
-            .IsRequired(false); 
+                .IsRequired(false); 
 
         }
     }

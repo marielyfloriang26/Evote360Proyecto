@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using Evote360.Application.Validations;
+using Evote360.Core.Enums;
 
 namespace Evote360.Application.ViewModels.Candidatos
 {
@@ -23,7 +24,7 @@ namespace Evote360.Application.ViewModels.Candidatos
         public string? FotoUrlActual { get; set; }
 
         [Display(Name = "Estado")]
-        public bool Estado { get; set; }
+        public EstadoEnum Estado { get; set; }
 
         public bool HaParticipado { get; set; }
     }

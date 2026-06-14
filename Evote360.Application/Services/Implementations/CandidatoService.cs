@@ -1,11 +1,13 @@
-﻿using Evote360.Application.Services.Interfaces;
+﻿using Evote360.Application.DTOs;
+using Evote360.Application.Services.Interfaces;
+using Evote360.Core.Interfaces;
+using Evote360.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Evote360.Application.DTOs;
-using Evote360.Core.Interfaces;
+using static Evote360.Core.Interfaces.ICandidatoRepository;
 
 namespace Evote360.Application.Services.Implementations
 {
@@ -48,10 +50,10 @@ namespace Evote360.Application.Services.Implementations
             });
         }
 
-        public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
+       public async Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos()
         {
             var candidatos = await _repository.GetAllAsync();
-            return candidatos.Where(c => c.Estado).Select(c => new CandidatoDTO
+            return candidatos.Where(c => c.Estado == EstadoEnum.Activo).Select(c => new CandidatoDTO
             {
                 Id = c.Id,
                 Nombre = c.Nombre,
@@ -60,7 +62,7 @@ namespace Evote360.Application.Services.Implementations
                 PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
                 Estado = c.Estado
             });
-        }
+        } 
 
         public async Task<CandidatoDTO?> GetCandidatoById(int id)
         {
@@ -86,7 +88,7 @@ namespace Evote360.Application.Services.Implementations
                 Apellido = candidatoDto.Apellido,
                 PartidoId = candidatoDto.PartidoId,
                 Estado = candidatoDto.Estado,
-                FotoUrl = candidatoDto.Foto != null ? "dummy" : null // Should be handled in controller before calling this, or updated later
+                FotoUrl = candidatoDto.Foto != null ? "dummy" : null
             };
 
             await _repository.AddAsync(candidato);
@@ -109,7 +111,7 @@ namespace Evote360.Application.Services.Implementations
             candidato.Nombre = candidatoDto.Nombre;
             candidato.Apellido = candidatoDto.Apellido;
             candidato.Estado = candidatoDto.Estado;
-            candidato.FotoUrl = candidatoDto.FotoUrl ?? candidato.FotoUrl; // Update only if new url provided
+            candidato.FotoUrl = candidatoDto.FotoUrl ?? candidato.FotoUrl;
 
             await _repository.UpdateAsync(candidato);
 
@@ -124,42 +126,33 @@ namespace Evote360.Application.Services.Implementations
             };
         }
 
-        public async Task<bool> AlternarEstadoCandidato(int id)
+       public async Task<bool> AlternarEstadoCandidato(int id)
         {
             var candidato = await _repository.GetByIdAsync(id);
             if (candidato == null) return false;
 
-            candidato.Estado = !candidato.Estado;
+
+           candidato.Estado = candidato.Estado;
+
+            candidato.Estado = candidato.Estado == EstadoEnum.Activo ? EstadoEnum.Inactivo : EstadoEnum.Activo;
             await _repository.UpdateAsync(candidato);
             return true;
-        }
+        } 
 
         public async Task<bool> HasActiveElectionAsync()
         {
-            var elecciones = await _eleccionRepository.GetAllAsync();
-            return elecciones.Any(e => e.EstadoElectoral == "Activa");
+            return await _eleccionRepository.ExisteEleccionActivaAsync();
         }
 
         public async Task<bool> HasParticipatedInElectionAsync(int candidatoId)
         {
-            var candidato = await _repository.GetByIdAsync(candidatoId);
-            if (candidato == null) return false;
-
-            // A candidate has participated if there's an active or finalized election using them.
-            // As per rules, if they are part of an Activa or Finalizada election, they participated.
-            // We check through AsignacionesCandidatos or Votos (since the assignment locks it)
-            return candidato.AsignacionesPuestos.Any(a => 
-                a.Eleccion != null && (a.Eleccion.EstadoElectoral == "Activa" || a.Eleccion.EstadoElectoral == "Finalizada"));
+            return await _repository.HasParticipatedInElectionAsync(candidatoId);
         }
 
         public async Task<bool> HasAssignedPuestoVigenteAsync(int candidatoId)
         {
-            var candidato = await _repository.GetByIdAsync(candidatoId);
-            if (candidato == null) return false;
-
-            // They are assigned to a current elective position (Pendiente or Activa election)
-            return candidato.AsignacionesPuestos.Any(a => 
-                a.Eleccion == null || a.Eleccion.EstadoElectoral == "Pendiente" || a.Eleccion.EstadoElectoral == "Activa");
+            return await _repository.HasAssignedPuestoVigenteAsync(candidatoId);
         }
     }
 }
+ 
