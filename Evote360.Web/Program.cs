@@ -53,6 +53,7 @@ namespace WebApp
             // Register Services
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
             builder.Services.AddScoped<ICandidatoService, CandidatoService>();
+            builder.Services.AddScoped<IAsignacionDirigentePoliticoService, AsignacionDirigentePoliticoService>();
 
 
             var app = builder.Build();

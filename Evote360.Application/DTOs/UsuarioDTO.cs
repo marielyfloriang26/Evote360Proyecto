@@ -9,11 +9,12 @@ namespace Evote360.Application.DTOs
 {
     public class UsuarioDTO
     {
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Correo { get; set; }
-        public string NombreUsuario { get; set; }
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
+        public string NombreUsuario { get; set; } = string.Empty;
         public RolUsuarioEnum Rol { get; set; }
-
+        public bool Estado { get; set; }
     }
 }
