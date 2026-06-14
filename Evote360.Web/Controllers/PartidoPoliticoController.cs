@@ -84,15 +84,15 @@ namespace Evote360.Web.Controllers;
             }
 
             // OJO Captura el valor real del interruptor de la vista de forma segura
-            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true") ? true : false;
+            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true");
+
             var dto = new PartidoPoliticoSaveDto
             {
                 Id = 0,
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
-                Estado = estadoFormulario, //true,
-                //(vm.Estado == true || Request.Form["Estado"] == "true") ? true : false,
+                Estado = estadoFormulario, 
                 LogoUrl = "" // Inicia vacio temporalmente
             };
 
@@ -164,7 +164,6 @@ namespace Evote360.Web.Controllers;
                 return View(vm); 
             }
 
-            var estadoFormulario = Request.Form["Estado"].ToString().Contains("true") ? EstadoEnum.Activo : EstadoEnum.Inactivo;
 
             // instancia el dto de guardado con la info de la pantalla
             var dto = new PartidoPoliticoSaveDto
@@ -173,11 +172,9 @@ namespace Evote360.Web.Controllers;
                 Nombre = vm.Nombre,
                 Siglas = vm.Siglas,
                 Descripcion = vm.Descripcion,
+                LogoUrl = vm.LogoUrl,
 
-                Estado = estadoFormulario, //Request.Form["Estado"].ToString().Contains("true") ? EstadoEnum.Activo : EstadoEnum.Inactivo
-                LogoUrl = vm.LogoUrl
-
-                Estado = Request.Form["Estado"].ToString().Contains("true") ? true : false
+                Estado = Request.Form["Estado"].ToString().Contains("true") 
 
             };
 
