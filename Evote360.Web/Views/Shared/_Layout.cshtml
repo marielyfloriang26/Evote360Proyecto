@@ -40,6 +40,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AsignacionDirigentePolitico" asp-action="Index">Asignación de Dirigentes</a>
                         </li>
+                        @using Evote360.Core.Enums @* Asegúrate de importar tus Enums en el Layout *@
+
+               @* @if (User.Identity.IsAuthenticated && User.IsInRole(nameof(RolUsuarioEnum.DirigentePolitico)))
+                { *@
+                    <li class="nav-item">
+                        <a class="nav-link text-dark d-flex align-items-center gap-1" asp-area="" asp-controller="AlianzaPolitica" asp-action="Index">
+                            <i class="bi bi-diagram-3-fill text-primary"></i> Alianzas Políticas
+                        </a>
+                    </li>
+                @*}*@
                     </ul>
                 </div>
             </div>

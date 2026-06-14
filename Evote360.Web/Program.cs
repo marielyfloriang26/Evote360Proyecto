@@ -48,6 +48,7 @@ namespace WebApp
             // service
             builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
              builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+             builder.Services.AddScoped<IAlianzaPoliticaService, AlianzaPoliticaService>();
 
             // Register Services
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
