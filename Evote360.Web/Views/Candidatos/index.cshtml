@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Mantenimiento de Candidatos</h2>
-        <a asp-action="Crear" class="btn btn-primary">Crear candidato</a>
+        <a asp-action="Crear" class="btn btn-primary @(ViewBag.HasActiveElection == true ? "disabled" : "")">Crear candidato</a>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
@@ -17,6 +17,10 @@
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (ViewBag.HasActiveElection == true)
+    {
+        <div class="alert alert-warning">No se pueden modificar candidatos mientras exista una elección activa.</div>
     }
 
     <div class="table-responsive shadow-sm bg-white rounded">
@@ -64,15 +68,15 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a asp-action="Editar" asp-route-id="@candidato.Id" class="btn btn-sm btn-warning">Editar</a>
+                                <a asp-action="Editar" asp-route-id="@candidato.Id" class="btn btn-sm btn-warning @(ViewBag.HasActiveElection == true ? "disabled" : "")">Editar</a>
                                 
                                 @if (candidato.Estado)
                                 {
-                                    <a asp-action="ConfirmarDesactivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                    <a asp-action="ConfirmarDesactivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-danger @(ViewBag.HasActiveElection == true ? "disabled" : "")">Desactivar</a>
                                 }
                                 else
                                 {
-                                    <a asp-action="ConfirmarActivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-success">Activar</a>
+                                    <a asp-action="ConfirmarActivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-success @(ViewBag.HasActiveElection == true ? "disabled" : "")">Activar</a>
                                 }
                             </td>
                         </tr>
