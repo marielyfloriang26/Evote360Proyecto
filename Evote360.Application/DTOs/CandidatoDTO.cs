@@ -1,4 +1,3 @@
-﻿using Evote360.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Evote360.Application.DTOs
         public IFormFile? Foto { get; set; }
         public string? FotoUrl { get; set; }
         public string PuestoAsociado { get; set; } = string.Empty;
-        public EstadoEnum Estado { get; set; }
+        public bool Estado { get; set; }
 
     }
 }
