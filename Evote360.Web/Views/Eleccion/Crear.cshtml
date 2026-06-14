@@ -1,0 +1,39 @@
+@model Evote360.Application.ViewModels.Eleccion.EleccionCreateViewModel
+
+@{
+    ViewData["Title"] = "Crear Elección";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Registrar Nuevo Proceso Electoral</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Crear" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3 py-2 small" style="list-style: none;"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label fw-bold"></label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ej: Elecciones Ordinarias Generales 2026" />
+                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="FechaRealizacion" class="form-label fw-bold"></label>
+                    <input asp-for="FechaRealizacion" class="form-control" />
+                    <span asp-validation-for="FechaRealizacion" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between border-top pt-3">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Elección</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
