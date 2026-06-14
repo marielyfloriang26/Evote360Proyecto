@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Evote360.Web.Helpers;
 
 public static class UploadFile
 {
-    public static string Upload(IFormFile file, int id, string folderName, bool isEditMode = false, string imagePath = "")
+    public static async Task<string> Upload(IFormFile file, int id, string folderName, bool isEditMode = false, string imagePath = "")
     {
         // Si esta editando y el usuario no subio un archivo nuevo, retorna la ruta de la imagen vieja
         if (isEditMode && file == null)
@@ -38,7 +39,7 @@ public static class UploadFile
 
         using (var stream = new FileStream(fullFilePath, FileMode.Create))
         {
-            file.CopyTo(stream);
+           await file.CopyToAsync(stream);
         }
         
         return $"{basePath}/{fileName}";

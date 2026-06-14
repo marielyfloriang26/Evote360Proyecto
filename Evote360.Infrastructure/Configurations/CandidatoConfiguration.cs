@@ -1,4 +1,5 @@
 using Evote360.Core.Entities;
+using Evote360.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,7 +22,7 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired(false);
 
             builder.Property(c => c.Estado)
-                .HasConversion<string>()
+                .HasDefaultValue(EstadoEnum.Activo)
                 .IsRequired();
 
             // N:1 with PartidoPolitico

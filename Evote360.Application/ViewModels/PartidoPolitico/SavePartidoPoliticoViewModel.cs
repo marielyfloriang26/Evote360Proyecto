@@ -22,7 +22,7 @@ namespace Evote360.Application.ViewModels;
         public IFormFile? File { get; set; }
 
         [ValidateNever]
-        public string LogoUrl { get; set; } 
+        public string? LogoUrl { get; set; } 
 
         [MaxLength(500, ErrorMessage = "La descripción no puede exceder los 500 caracteres.")]
         public string? Descripcion { get; set; }
