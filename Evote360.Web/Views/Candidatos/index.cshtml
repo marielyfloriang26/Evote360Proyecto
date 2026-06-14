@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Mantenimiento de Candidatos";
 }
+@using Evote360.Core.Enums
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -63,14 +64,14 @@
                                 }
                             </td>
                             <td>
-                                <span class="badge @(candidato.Estado ? "bg-success" : "bg-secondary")">
-                                    @(candidato.Estado ? "Activo" : "Inactivo")
+                                <span class="badge @(candidato.Estado == EstadoEnum.Activo ? "bg-success" : "bg-secondary")">
+                                    @(candidato.Estado == EstadoEnum.Activo ? "Activo" : "Inactivo")
                                 </span>
                             </td>
                             <td class="text-center">
                                 <a asp-action="Editar" asp-route-id="@candidato.Id" class="btn btn-sm btn-warning @(ViewBag.HasActiveElection == true ? "disabled" : "")">Editar</a>
                                 
-                                @if (candidato.Estado)
+                                @if (candidato.Estado == EstadoEnum.Activo)
                                 {
                                     <a asp-action="ConfirmarDesactivar" asp-route-id="@candidato.Id" class="btn btn-sm btn-danger @(ViewBag.HasActiveElection == true ? "disabled" : "")">Desactivar</a>
                                 }
