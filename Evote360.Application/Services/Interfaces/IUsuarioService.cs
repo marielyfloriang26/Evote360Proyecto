@@ -1,4 +1,3 @@
-
 using Evote360.Application.DTOs;
 using Evote360.Application.ViewModels.Usuario;
 
@@ -29,3 +28,4 @@ public interface IUsuarioService
 
     Task<bool> ExisteEleccionActivaAsync();
 }
+

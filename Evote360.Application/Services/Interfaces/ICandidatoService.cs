@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Evote360.Application.DTOs;
-using Evote360.Core.Entities;
+using Evote360.Application.ViewModels.Candidatos;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Evote360.Application.Services.Interfaces
 {
     public interface ICandidatoService
     {
-        public Task<IEnumerable<CandidatoDTO>> GetAllCandidatos();
-        public Task<IEnumerable<CandidatoDTO>> GetAllByPartidoAsync(int partidoId);
-        public Task<IEnumerable<CandidatoDTO>> GetCandidatosActivos();
-        public Task<CandidatoDTO?> GetCandidatoById(int id);
-        public Task<CandidatoDTO> CreateCandidato(CrearCandidatoDTO candidato);
-        public Task<CandidatoDTO?> UpdateCandidato(CandidatoDTO candidato);
-        public Task<bool> AlternarEstadoCandidato(int id);
-        public Task<bool> HasActiveElectionAsync();
-        public Task<bool> HasParticipatedInElectionAsync(int candidatoId);
-        public Task<bool> HasAssignedPuestoVigenteAsync(int candidatoId);
+        Task<(bool Success, string ErrorMessage, IEnumerable<CandidatoViewModel>? Candidatos, bool HasActiveElection)> GetIndexDataAsync(int userId);
+        Task<(bool Success, string ErrorMessage)> ValidateCreateAccessAsync(int userId);
+        Task<(bool Success, string ErrorMessage)> CreateCandidatoAsync(int userId, CrearCandidatoViewModel model);
+        Task<(bool Success, string ErrorMessage, EditarCandidatoViewModel? Model)> GetEditarDataAsync(int userId, int id);
+        Task<(bool Success, string ErrorMessage)> UpdateCandidatoAsync(int userId, EditarCandidatoViewModel model);
+        Task<(bool Success, string ErrorMessage, string NombreCandidato)> GetConfirmacionDataAsync(int userId, int id, bool isActivar);
+        Task<(bool Success, string ErrorMessage)> ActivarCandidatoAsync(int userId, int id);
+        Task<(bool Success, string ErrorMessage)> DesactivarCandidatoAsync(int userId, int id);
     }
 }

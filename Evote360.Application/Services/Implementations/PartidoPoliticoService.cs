@@ -1,7 +1,8 @@
+using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
-using Evote360.Application.ViewModels;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
+
 
 namespace Evote360.Application.Services;
     public class PartidoPoliticoService : IPartidoPoliticoService
@@ -14,12 +15,11 @@ namespace Evote360.Application.Services;
         }
 
         // OBTENER TODOS LOS PARTIDOS 
-        public async Task<List<PartidoPoliticoViewModel>> GetAllViewModelAsync()
+        public async Task<List<PartidoPoliticoDTO>> GetAllDtoAsync()
         {
             var partidos = await _partidoRepository.GetAllAsync();
 
-            // Mapeo manual de la entidad al ViewModel de lectura
-            return partidos.Select(p => new PartidoPoliticoViewModel
+            return partidos.Select(p => new PartidoPoliticoDTO
             {
                 Id = p.Id,
                 Nombre = p.Nombre,
@@ -31,14 +31,13 @@ namespace Evote360.Application.Services;
         }
 
         // OBTENER POR ID 
-        public async Task<SavePartidoPoliticoViewModel> GetByIdSaveViewModelAsync(int id)
+        public async Task<PartidoPoliticoSaveDto> GetByIdSaveDtoAsync(int id)
         {
             var partido = await _partidoRepository.GetByIdAsync(id);
             
             if (partido == null) return null!;
 
-            // Mapeo manual de la entidad al ViewModel de edicion
-            return new SavePartidoPoliticoViewModel
+            return new PartidoPoliticoSaveDto
             {
                 Id = partido.Id,
                 Nombre = partido.Nombre,
@@ -50,34 +49,37 @@ namespace Evote360.Application.Services;
         }
 
         // CREAR UN NUEVO PARTIDO
-        public async Task AddAsync(SavePartidoPoliticoViewModel vm)
+        public async Task<PartidoPoliticoSaveDto> AddAsync(PartidoPoliticoSaveDto dto)
         {
             // Mapeo manual del ViewModel que viene de la pantalla a la Entidad de la bd
             var partido = new PartidoPolitico
             {
-                Nombre = vm.Nombre,
-                Siglas = vm.Siglas.Trim().ToUpper(),
-                LogoUrl = vm.LogoUrl,
-                Descripcion = vm.Descripcion?.Trim(),
-                Estado = vm.Estado
+                Nombre = dto.Nombre,
+                Siglas = dto.Siglas.Trim().ToUpper(),
+                LogoUrl = dto.LogoUrl,
+                Descripcion = dto.Descripcion?.Trim(),
+                Estado = dto.Estado
             };
 
             await _partidoRepository.AddAsync(partido);
+
+            dto.Id = partido.Id;
+            return dto;
         }
 
         // EDITAR UN PARTIDO EXISTENTE
-        public async Task UpdateAsync(SavePartidoPoliticoViewModel vm)
+        public async Task UpdateAsync(PartidoPoliticoSaveDto dto)
         {
-            var partido = await _partidoRepository.GetByIdAsync(vm.Id);
+            var partido = await _partidoRepository.GetByIdAsync(dto.Id);
 
             if (partido != null)
             {
                 // Actualiza las propiedades de la entidad con lo que ingreso el usuario
-                partido.Nombre = vm.Nombre;
-                partido.Siglas = vm.Siglas.Trim().ToUpper();
-                partido.LogoUrl = vm.LogoUrl;
-                partido.Descripcion = vm.Descripcion?.Trim();
-                partido.Estado = vm.Estado;
+                partido.Nombre = dto.Nombre;
+                partido.Siglas = dto.Siglas.Trim().ToUpper();
+                partido.LogoUrl = dto.LogoUrl;
+                partido.Descripcion = dto.Descripcion?.Trim();
+                partido.Estado = dto.Estado;
 
                 await _partidoRepository.UpdateAsync(partido);
             }
