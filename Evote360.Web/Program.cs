@@ -59,6 +59,8 @@ namespace WebApp
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles(); // permite guardar y leer fotos 
             app.UseRouting();
 
             app.UseAuthorization();

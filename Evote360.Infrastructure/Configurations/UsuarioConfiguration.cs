@@ -12,6 +12,22 @@ namespace Evote360.Infrastructure.Configurations
 
             builder.HasKey(u => u.Id);
 
+            builder.Property(u => u.Nombre)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(u => u.Apellido)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(u => u.Correo)
+                .HasMaxLength(150)
+                .IsRequired();
+
+         
+            builder.HasIndex(u => u.Correo)
+                .IsUnique();
+
             builder.Property(u => u.NombreUsuario)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -24,11 +40,13 @@ namespace Evote360.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(u => u.Rol)
+                .HasConversion<string>()
                 .HasMaxLength(30)
                 .IsRequired();
 
             builder.Property(u => u.Estado)
-                .HasDefaultValue(true)
+                .HasConversion<string>()
+                .HasMaxLength(30)
                 .IsRequired();
         }
     }

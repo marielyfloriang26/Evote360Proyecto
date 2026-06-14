@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using Evote360.Application.Validations;
+using Evote360.Core.Enums;
 
 namespace Evote360.Application.ViewModels.Candidatos
 {
@@ -20,6 +21,6 @@ namespace Evote360.Application.ViewModels.Candidatos
         public IFormFile Foto { get; set; } = null!;
 
         [Display(Name = "Estado")]
-        public bool Estado { get; set; } = true;
+        public EstadoEnum Estado { get; set; } = EstadoEnum.Activo;
     }
 }

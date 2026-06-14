@@ -1,5 +1,6 @@
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
+using Evote360.Core.Enums;
 using Evote360.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +28,7 @@ namespace Evote360.Infrastructure.Repositories.Implementations
             return await _dbContext.Set<PuestoElectivo>()
                 .Where(p => p.Id == puestoId)
                 .SelectMany(p => p.AsignacionesCandidatos)
-                .AnyAsync(a => a.Estado == true); 
+                .AnyAsync(a => a.Estado == EstadoEnum.Activo); 
                 // Nota: Ajusta 'a.Estado' o el campo de activación según tu entidad AsignarCandidatoPuesto
         }
 

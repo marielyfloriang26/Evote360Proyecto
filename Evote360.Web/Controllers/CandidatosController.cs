@@ -2,11 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels.Candidatos;
-using Evote360.Application.DTOs;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Linq;
-using Evote360.Core.Interfaces;
 
 namespace Evote360.Web.Controllers
 {
@@ -14,67 +11,46 @@ namespace Evote360.Web.Controllers
     public class CandidatosController : Controller
     {
         private readonly ICandidatoService _candidatoService;
-        private readonly IFileStorageService _fileStorageService;
-        private readonly IAsignacionDirigenteRepository _asignacionDirigenteRepository;
 
-        public CandidatosController(
-            ICandidatoService candidatoService, 
-            IFileStorageService fileStorageService,
-            IAsignacionDirigenteRepository asignacionDirigenteRepository)
+        public CandidatosController(ICandidatoService candidatoService)
         {
             _candidatoService = candidatoService;
-            _fileStorageService = fileStorageService;
-            _asignacionDirigenteRepository = asignacionDirigenteRepository;
         }
 
-        // Helper para obtener el PartidoId del usuario logueado
-        private async Task<int?> GetCurrentPartidoIdAsync()
+        private int GetUserId()
         {
-            // Simulación o extracción real desde los Claims. 
-            // Si el ID del usuario se guarda en el NameIdentifier:
+            // Simulación o extracción real desde los Claims.
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (int.TryParse(userIdClaim, out int userId))
             {
-                var asignaciones = await _asignacionDirigenteRepository.GetAllAsync();
-                var asignacion = asignaciones.FirstOrDefault(a => a.UsuarioId == userId);
-                return asignacion?.PartidoId;
+                return userId;
             }
-            
-            // Para propósitos de prueba si no hay auth, retornaremos un ID mock, o puedes lanzar excepción
-            return 1; // MOCK PARTIDO ID
+            return 1; // Para pruebas sin auth, retornamos 1 o cualquier ID
         }
 
         public async Task<IActionResult> Index()
         {
-            var partidoId = await GetCurrentPartidoIdAsync();
-            if (partidoId == null)
+            var result = await _candidatoService.GetIndexDataAsync(GetUserId());
+            if (!result.Success)
             {
-                TempData["ErrorMessage"] = "No tiene un partido político asignado. Por favor, póngase en contacto con un administrador.";
-                return RedirectToAction("Index", "Home"); // O redirigir a Login
+                if (!string.IsNullOrEmpty(result.ErrorMessage))
+                    TempData["ErrorMessage"] = result.ErrorMessage;
+                return RedirectToAction("Index", "Home");
             }
 
-            var dtos = await _candidatoService.GetAllByPartidoAsync(partidoId.Value);
-            var viewModels = dtos.Select(dto => new CandidatoViewModel
-            {
-                Id = dto.Id,
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
-                FotoUrl = dto.FotoUrl,
-                PuestoAsociado = dto.PuestoAsociado,
-                Estado = dto.Estado
-            }).ToList();
-
-            ViewBag.HasActiveElection = await _candidatoService.HasActiveElectionAsync();
-
-            return View(viewModels);
+            ViewBag.HasActiveElection = result.HasActiveElection;
+            return View(result.Candidatos);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Crear()
         {
-            if (await _candidatoService.HasActiveElectionAsync())
+            var result = await _candidatoService.ValidateCreateAccessAsync(GetUserId());
+            if (!result.Success)
             {
-                TempData["ErrorMessage"] = "No se pueden modificar candidatos mientras exista una elección activa.";
-                return RedirectToAction(nameof(Index));
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("elección activa"))
+                    return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
 
             return View(new CrearCandidatoViewModel());
@@ -82,169 +58,130 @@ namespace Evote360.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CrearCandidatoViewModel model)
+        public async Task<IActionResult> Crear(CrearCandidatoViewModel model)
         {
-            if (await _candidatoService.HasActiveElectionAsync())
-            {
-                TempData["ErrorMessage"] = "No se puede crear un candidato mientras exista una elección activa.";
-                return RedirectToAction(nameof(Index));
-            }
+            if (!ModelState.IsValid) return View(model);
 
-            if (!ModelState.IsValid)
+            var result = await _candidatoService.CreateCandidatoAsync(GetUserId(), model);
+            if (!result.Success)
             {
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("elección activa"))
+                    return RedirectToAction(nameof(Index));
+                
+                if (result.ErrorMessage.Contains("partido político"))
+                    return RedirectToAction("Index", "Home");
+
                 return View(model);
-            }
-
-            var partidoId = await GetCurrentPartidoIdAsync();
-            if (partidoId == null)
-            {
-                TempData["ErrorMessage"] = "No puede crear candidatos porque no tiene un partido político asignado.";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Ideally check if party is inactive here but we assume it's checked globally.
-            // If we had a party check, the message would be: "No puede crear candidatos porque el partido político asignado se encuentra inactivo."
-
-            string fotoUrl = string.Empty;
-            if (model.Foto != null)
-            {
-                fotoUrl = await _fileStorageService.SaveFileAsync(model.Foto, "images/candidatos");
-            }
-
-            var dto = new CrearCandidatoDTO
-            {
-                Nombre = model.Nombre,
-                Apellido = model.Apellido,
-                Estado = model.Estado,
-                PartidoId = partidoId.Value,
-                Foto = model.Foto 
-            };
-
-            var createdDto = await _candidatoService.CreateCandidato(dto);
-            
-            if (createdDto != null)
-            {
-                createdDto.FotoUrl = fotoUrl;
-                await _candidatoService.UpdateCandidato(createdDto); 
             }
 
             TempData["SuccessMessage"] = "Candidato creado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Editar(int id)
         {
-            if (await _candidatoService.HasActiveElectionAsync())
+            var result = await _candidatoService.GetEditarDataAsync(GetUserId(), id);
+            if (!result.Success)
             {
-                TempData["ErrorMessage"] = "No se pueden modificar candidatos mientras exista una elección activa.";
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
                 return RedirectToAction(nameof(Index));
             }
 
-            var dto = await _candidatoService.GetCandidatoById(id);
-            if (dto == null) return NotFound();
-
-            var partidoId = await GetCurrentPartidoIdAsync();
-            var allMyCandidates = await _candidatoService.GetAllByPartidoAsync(partidoId ?? 0);
-            if (!allMyCandidates.Any(c => c.Id == id))
-            {
-                TempData["ErrorMessage"] = "No tiene permisos para modificar este candidato.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var haParticipado = await _candidatoService.HasParticipatedInElectionAsync(id);
-
-            var model = new EditarCandidatoViewModel
-            {
-                Id = dto.Id,
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
-                Estado = dto.Estado,
-                FotoUrlActual = dto.FotoUrl,
-                HaParticipado = haParticipado
-            };
-
-            return View(model);
+            return View(result.Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EditarCandidatoViewModel model)
+        public async Task<IActionResult> Editar(int id, EditarCandidatoViewModel model)
         {
             if (id != model.Id) return BadRequest();
 
-            if (await _candidatoService.HasActiveElectionAsync())
-            {
-                TempData["ErrorMessage"] = "No se puede editar un candidato mientras exista una elección activa.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var haParticipado = await _candidatoService.HasParticipatedInElectionAsync(id);
-            if (haParticipado)
+            if (model.HaParticipado)
             {
                 ModelState.Remove("Nombre");
                 ModelState.Remove("Apellido");
                 ModelState.Remove("Foto");
             }
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+
+            var result = await _candidatoService.UpdateCandidatoAsync(GetUserId(), model);
+            if (!result.Success)
             {
-                model.HaParticipado = haParticipado;
-                return View(model);
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
             }
-
-            var currentDto = await _candidatoService.GetCandidatoById(id);
-            if (currentDto == null) return NotFound();
-
-            if (!haParticipado)
-            {
-                currentDto.Nombre = model.Nombre;
-                currentDto.Apellido = model.Apellido;
-
-                if (model.Foto != null)
-                {
-                    if (!string.IsNullOrEmpty(currentDto.FotoUrl))
-                    {
-                        _fileStorageService.DeleteFile(currentDto.FotoUrl);
-                    }
-                    currentDto.FotoUrl = await _fileStorageService.SaveFileAsync(model.Foto, "images/candidatos");
-                }
-            }
-            
-            currentDto.Estado = model.Estado;
-
-            await _candidatoService.UpdateCandidato(currentDto);
 
             TempData["SuccessMessage"] = "Candidato actualizado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleStatus(int id)
+        public async Task<IActionResult> ConfirmarActivar(int id)
         {
-            var dto = await _candidatoService.GetCandidatoById(id);
-            if (dto == null) return NotFound();
-
-            if (await _candidatoService.HasActiveElectionAsync())
+            var result = await _candidatoService.GetConfirmacionDataAsync(GetUserId(), id, true);
+            if (!result.Success)
             {
-                TempData["ErrorMessage"] = dto.Estado 
-                    ? "No se puede desactivar un candidato mientras exista una elección activa." 
-                    : "No se puede activar un candidato mientras exista una elección activa.";
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
                 return RedirectToAction(nameof(Index));
             }
 
-            if (dto.Estado) // Attempting to deactivate
+            ViewBag.NombreCandidato = result.NombreCandidato;
+            return View(id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activar(int id)
+        {
+            var result = await _candidatoService.ActivarCandidatoAsync(GetUserId(), id);
+            if (!result.Success)
             {
-                if (await _candidatoService.HasAssignedPuestoVigenteAsync(id))
-                {
-                    TempData["ErrorMessage"] = "No se puede desactivar este candidato porque está asignado a un puesto electivo.";
-                    return RedirectToAction(nameof(Index));
-                }
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
             }
 
-            await _candidatoService.AlternarEstadoCandidato(id);
-            TempData["SuccessMessage"] = "Estado modificado exitosamente.";
+            TempData["SuccessMessage"] = "Candidato activado exitosamente.";
+            return RedirectToAction(nameof(Index));
+        }
 
+        public async Task<IActionResult> ConfirmarDesactivar(int id)
+        {
+            var result = await _candidatoService.GetConfirmacionDataAsync(GetUserId(), id, false);
+            if (!result.Success)
+            {
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.NombreCandidato = result.NombreCandidato;
+            return View(id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Desactivar(int id)
+        {
+            var result = await _candidatoService.DesactivarCandidatoAsync(GetUserId(), id);
+            if (!result.Success)
+            {
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                if (result.ErrorMessage.Contains("partido político asignado"))
+                    return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["SuccessMessage"] = "Candidato desactivado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
     }
