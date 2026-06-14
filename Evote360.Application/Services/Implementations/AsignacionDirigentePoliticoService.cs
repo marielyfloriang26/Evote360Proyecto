@@ -136,7 +136,7 @@ namespace Evote360.Application.Services.Implementations
             return elecciones.Any(e => e.EstadoElectoral == "Activa");
         }
 
-        public async Task<IEnumerable<UsuarioDTO>> ObtenerUsuariosDirigentesDisponiblesAsync()
+        public async Task<IEnumerable<UsuarioDto>> ObtenerUsuariosDirigentesDisponiblesAsync()
         {
             var usuarios = await _usuarioRepository.GetAllAsync();
             var asignaciones = await _asignacionRepository.GetAllAsync();
@@ -144,7 +144,7 @@ namespace Evote360.Application.Services.Implementations
 
             return usuarios
                 .Where(u => u.Estado && u.Rol == RolUsuarioEnum.DirigentePolitico && !asignadosIds.Contains(u.Id))
-                .Select(u => new UsuarioDTO
+                .Select(u => new UsuarioDto
                 {
                     Id = u.Id,
                     Nombre = u.Nombre,

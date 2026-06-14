@@ -11,7 +11,7 @@ namespace Evote360.Application.Services.Interfaces
         Task<AsignacionDirigentePoliticoDTO> CrearAsignacionAsync(CrearAsignacionDirPolDTO crearAsignacionDirPolDTO);
         Task EliminarAsignacionAsync(int id);
         Task<bool> HayEleccionActivaAsync();
-        Task<IEnumerable<UsuarioDTO>> ObtenerUsuariosDirigentesDisponiblesAsync();
+        Task<IEnumerable<UsuarioDto>> ObtenerUsuariosDirigentesDisponiblesAsync();
         Task<IEnumerable<PartidoPoliticoDTO>> ObtenerPartidosDisponiblesAsync();
     }
 }
