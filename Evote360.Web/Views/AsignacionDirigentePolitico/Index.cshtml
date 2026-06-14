@@ -1,0 +1,85 @@
+@model List<Evote360.Application.ViewModels.AsignacionDirigentePolitico.AsignacionDirigentePoliticoViewModel>
+
+@{
+    ViewData["Title"] = "Asignación de dirigentes políticos";
+    bool hayEleccionActiva = ViewBag.HayEleccionActiva ?? false;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Asignación de dirigentes políticos</h2>
+        @if (hayEleccionActiva)
+        {
+            <button class="btn btn-secondary" disabled>Agregar asignación</button>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">Agregar asignación</a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre del dirigente político</th>
+                    <th>Nombre de usuario</th>
+                    <th>Partido político asignado</th>
+                    <th>Siglas del partido</th>
+                    <th>Estado del dirigente</th>
+                    <th>Estado del partido</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No hay asignaciones registradas.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var asignacion in Model)
+                    {
+                        <tr>
+                            <td>@asignacion.NombreDirigente</td>
+                            <td>@asignacion.NombreUsuario</td>
+                            <td>@asignacion.NombreDelPartido</td>
+                            <td><span class="badge bg-dark">@asignacion.SiglasDelPartido</span></td>
+                            <td>
+                                <span class="badge @(asignacion.EstadoDelDirigente ? "bg-success" : "bg-secondary")">
+                                    @(asignacion.EstadoDelDirigente ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(asignacion.EstadoDelPartido ? "bg-success" : "bg-secondary")">
+                                    @(asignacion.EstadoDelPartido ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                @if (hayEleccionActiva)
+                                {
+                                    <button class="btn btn-sm btn-secondary" disabled>Eliminar relación</button>
+                                }
+                                else
+                                {
+                                    <a asp-action="ConfirmarDesvincular" asp-route-id="@asignacion.Id" class="btn btn-sm btn-danger">Eliminar relación</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

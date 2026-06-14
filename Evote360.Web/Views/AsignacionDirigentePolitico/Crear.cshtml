@@ -1,0 +1,48 @@
+@model Evote360.Application.ViewModels.AsignacionDirigentePolitico.CrearAsignacionDirigentePoliticoViewModel
+
+@{
+    ViewData["Title"] = "Agregar asignación";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="card-title mb-0">Agregar asignación</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Crear" method="post">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="UsuarioId" class="form-label font-weight-bold">Dirigente político</label>
+                            <select asp-for="UsuarioId" asp-items="Model.Usuarios" class="form-select">
+                                <option value="">Seleccione un dirigente político</option>
+                            </select>
+                            <span asp-validation-for="UsuarioId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PartidoId" class="form-label font-weight-bold">Partido político</label>
+                            <select asp-for="PartidoId" asp-items="Model.Partidos" class="form-select">
+                                <option value="">Seleccione un partido político</option>
+                            </select>
+                            <span asp-validation-for="PartidoId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                            <button type="submit" class="btn btn-primary">Crear asignación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
