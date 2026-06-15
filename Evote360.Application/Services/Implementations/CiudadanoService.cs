@@ -1,5 +1,6 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
+using Evote360.Core.Common;
 using Evote360.Core.Entities;
 using Evote360.Core.Interfaces;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Evote360.Application.Services
         public async Task<bool> ExisteEleccionActivaAsync()
         {
             var elecciones = await _eleccionRepository.GetAllAsync();
-            return elecciones.Any(e => e.Estado);
+            return elecciones.Any(e => e.EstadoElectoral == EstadosEleccion.Activa);
         }
 
         public async Task<bool> HaParticipadoEnEleccionesAsync(int id)
