@@ -35,7 +35,7 @@
         <div class="alert alert-danger" role="alert">
             <h5 class="fw-bold">No se puede activar la elección por fallas de configuración:</h5>
             <ul>
-                @foreach (var error in (List<string>)TempData["ErrorList"]!)
+                @foreach (var error in (string[])TempData["ErrorList"]!)
                 {
                     <li>@error</li>
                 }

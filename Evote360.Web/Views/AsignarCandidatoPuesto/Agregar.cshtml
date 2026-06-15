@@ -1,0 +1,47 @@
+@model Evote360.Application.ViewModels.Asignaciones.CrearAsignacionViewModel
+
+@{
+    ViewData["Title"] = "Agregar Asignación";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Nueva Asignación de Candidato</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Agregar" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="CandidatoId" class="form-label font-weight-bold"></label>
+                    <select asp-for="CandidatoId" asp-items="Model.CandidatosDisponibles" class="form-select">
+                        <option value="">-- Seleccione un candidato (Propios o Aliados) --</option>
+                    </select>
+                    <span asp-validation-for="CandidatoId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PuestoId" class="form-label font-weight-bold"></label>
+                    <select asp-for="PuestoId" asp-items="Model.PuestosDisponibles" class="form-select">
+                        <option value="">-- Seleccione un puesto electivo disponible --</option>
+                    </select>
+                    <span asp-validation-for="PuestoId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver atrás
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Crear asignación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

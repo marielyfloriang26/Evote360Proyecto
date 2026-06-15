@@ -1,0 +1,110 @@
+@model Evote360.Application.ViewModels.Asignaciones.AsignacionPuestoListViewModel
+
+@{
+    ViewData["Title"] = "Asignación de Candidatos a Puestos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Gestión de Asignaciones de Candidatos</h2>
+        
+        @if (Model.TieneEleccionActiva)
+        {
+            <button class="btn btn-primary" disabled title="No se puede agregar mientras exista una elección activa">
+                <i class="bi bi-plus-circle"></i> Agregar asignación
+            </button>
+        }
+        else
+        {
+            <a asp-action="Agregar" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Agregar asignación
+            </a>
+        }
+    </div>
+
+    @if (Model.TieneEleccionActiva)
+    {
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>
+                No se pueden modificar asignaciones de candidatos a puestos mientras exista una elección activa.
+            </div>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 vertical-align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre del candidato</th>
+                            <th>Apellido del candidato</th>
+                            <th>Partido de origen</th>
+                            <th>Puesto electivo asociado</th>
+                            <th>Tipo de candidatura</th>
+                            <th class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Asignaciones == null || !Model.Asignaciones.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    No hay asignaciones registradas para su partido político.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.Asignaciones)
+                            {
+                                <tr>
+                                    <td>@item.NombreCandidato</td>
+                                    <td>@item.ApellidoCandidato</td>
+                                    <td>@item.PartidoOrigenCandidato</td>
+                                    <td>@item.PuestoElectivoAsociado</td>
+                                    <td>
+                                        <span class="badge @(item.TipoCandidatura == "Propio" ? "bg-success" : "bg-info text-dark")">
+                                            @item.TipoCandidatura
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (Model.TieneEleccionActiva)
+                                        {
+                                            <button class="btn btn-outline-danger btn-sm" disabled>
+                                                <i class="bi bi-trash"></i> Eliminar relación
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="ConfirmarEliminar" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Eliminar relación
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

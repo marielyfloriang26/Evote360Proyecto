@@ -58,6 +58,27 @@ public class UsuarioService : IUsuarioService
         };
     }
 
+    public async Task<UsuarioDto?> LoginAsync(string nombreUsuario, string contrasena)
+    {
+        var usuarios = await _usuarioRepository.GetAllAsync();
+        var usuario = usuarios.FirstOrDefault(u => u.NombreUsuario.Trim().ToLower() == nombreUsuario.Trim().ToLower() && u.Estado);
+
+        if (usuario != null && BCrypt.Net.BCrypt.Verify(contrasena, usuario.ClaveHash))
+        {
+            return new UsuarioDto
+            {
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                Correo = usuario.Correo,
+                NombreUsuario = usuario.NombreUsuario,
+                Rol = usuario.Rol,
+                Estado = usuario.Estado
+            };
+        }
+        return null;
+    }
+
     // 3. CREAR UN NUEVO USUARIO (Recibe el DTO con la Contrasena limpia)
     public async Task AddAsync(SaveUsuarioDto dto)
     {

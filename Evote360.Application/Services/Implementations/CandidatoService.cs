@@ -66,17 +66,20 @@ namespace Evote360.Application.Services.Implementations
             if (!partyAccess.Success) return (false, partyAccess.ErrorMessage, null, false);
 
             var candidatos = await _repository.GetAllAsync();
+            bool hasActiveElection = await _eleccionRepository.ExisteEleccionActivaAsync();
+            var elecciones = await _eleccionRepository.GetAllAsync();
+            var currentElection = elecciones.FirstOrDefault(e => e.EstadoElectoral == "Activa" || e.EstadoElectoral == "Pendiente");
+
             var dtos = candidatos.Where(c => c.PartidoId == partyAccess.PartidoId).Select(c => new CandidatoViewModel
             {
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Apellido = c.Apellido,
                 FotoUrl = c.FotoUrl,
-                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault()?.Puesto?.Nombre ?? "Sin puesto asociado",
+                PuestoAsociado = c.AsignacionesPuestos?.FirstOrDefault(a => currentElection == null || a.EleccionId == currentElection.Id)?.Puesto?.Nombre ?? "Sin puesto asignado",
                 Estado = c.Estado
             }).ToList();
 
-            bool hasActiveElection = await _eleccionRepository.ExisteEleccionActivaAsync();
             return (true, string.Empty, dtos, hasActiveElection);
         }
 

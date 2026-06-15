@@ -32,5 +32,10 @@ namespace Evote360.Infrastructure.Repositories.Implementations
             
             return ciudadano.HaVotado;
         }
+        public async Task ResetearEstadoVotacionAsync()
+        {
+            await _dbContext.Set<Ciudadano>()
+                .ExecuteUpdateAsync(s => s.SetProperty(c => c.HaVotado, false));
+        }
     }
 }

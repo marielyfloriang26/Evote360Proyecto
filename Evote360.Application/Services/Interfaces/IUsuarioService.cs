@@ -11,6 +11,8 @@ public interface IUsuarioService
     // busca un usuario especifico cuando se va a editar o reactivar
     Task<SaveUsuarioDto> GetByIdSaveDtoAsync(int id);
 
+    Task<UsuarioDto?> LoginAsync(string nombreUsuario, string contrasena);
+
     // registra un nuevo usuario
     Task AddAsync(SaveUsuarioDto vm);
 
