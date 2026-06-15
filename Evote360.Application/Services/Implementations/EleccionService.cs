@@ -13,10 +13,12 @@ namespace Evote360.Application.Services.Implementations
     public class EleccionService : IEleccionService
     {
         private readonly IEleccionRepository _eleccionRepository;
+        private readonly ICiudadanoRepository _ciudadanoRepository;
 
-        public EleccionService(IEleccionRepository eleccionRepository)
+        public EleccionService(IEleccionRepository eleccionRepository, ICiudadanoRepository ciudadanoRepository)
         {
             _eleccionRepository = eleccionRepository;
+            _ciudadanoRepository = ciudadanoRepository;
         }
 
         public async Task<bool> ExisteEleccionActivaAsync()
@@ -119,6 +121,9 @@ namespace Evote360.Application.Services.Implementations
 
             eleccion.EstadoElectoral = EstadosEleccion.Activa;
             await _eleccionRepository.UpdateAsync(eleccion);
+
+            // Resetea el estado de votación de todos los ciudadanos para la nueva elección
+            await _ciudadanoRepository.ResetearEstadoVotacionAsync();
 
             return (true, new List<string> { "La elección ha sido activada de forma satisfactoria." });
         }

@@ -75,7 +75,11 @@ namespace Evote360.Application.Services.Implementations
                 .Select(al => al.PartidoMayoristaId == dirigente.PartidoId ? al.PartidoAliadoId : al.PartidoMayoristaId)
                 .ToList();
 
+            var elecciones = await _eleccionRepo.GetAllAsync();
+            var currentElection = elecciones.FirstOrDefault(e => e.EstadoElectoral == "Activa" || e.EstadoElectoral == "Pendiente");
+
             var asignacionesFiltradas = todasAsignaciones
+                .Where(a => currentElection == null || a.EleccionId == currentElection.Id)
                 .Where(a => a.Candidato.PartidoId == dirigente.PartidoId || partidosAliadosIds.Contains(a.Candidato.PartidoId))
                 .Select(a => new AsignacionPuestoIndexViewModel
                 {
@@ -94,12 +98,12 @@ namespace Evote360.Application.Services.Implementations
         public async Task<(bool Success, string ErrorMessage, CrearAsignacionViewModel Form)> GetFormFieldsAsync(int userId)
         {
             var form = new CrearAsignacionViewModel();
-            var (partidoId, _, error) = await ValidarDirigenteYEleccionAsync(userId);
+            var (partidoId, eleccionId, error) = await ValidarDirigenteYEleccionAsync(userId);
             if (!string.IsNullOrEmpty(error)) return (false, error, form);
 
             var todosCandidatos = await _candidatoRepo.GetAllAsync();
             var todosPuestos = await _puestoRepo.GetAllAsync();
-            var todasAsignaciones = await _asignarRepo.GetAllAsync();
+            var todasAsignaciones = (await _asignarRepo.GetAllAsync()).Where(a => a.EleccionId == eleccionId).ToList();
             var todasAlianzas = await _alianzaRepo.GetAllAsync();
 
             var puestosOcupados = todasAsignaciones
@@ -142,7 +146,7 @@ namespace Evote360.Application.Services.Implementations
             if (candidato == null || !candidato.Estado) return (false, "El candidato seleccionado no existe o está inactivo.");
             if (puesto == null || !puesto.Estado) return (false, "El puesto electivo seleccionado no existe o está inactivo.");
 
-            var todasAsignaciones = await _asignarRepo.GetAllAsync();
+            var todasAsignaciones = (await _asignarRepo.GetAllAsync()).Where(a => a.EleccionId == eleccionId).ToList();
 
             if (todasAsignaciones.Any(a => a.PuestoId == puesto.Id && a.Candidato.PartidoId == partidoId))
                 return (false, "Este puesto electivo ya tiene un candidato asignado dentro del partido.");
