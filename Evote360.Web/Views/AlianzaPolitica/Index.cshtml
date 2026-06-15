@@ -48,7 +48,7 @@
     @* *@
     <div class="row">
         
-        @* SECCIÓN 1: Solicitudes Recibidas (Pendientes de mi respuesta) *@
+        @* Solicitudes Recibidas (Pendientes de mi respuesta) *@
         <div class="col-12 mb-4">
             <div class="card shadow-sm border-warning">
                 <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
@@ -62,6 +62,8 @@
                                 <tr>
                                     <th>Partido Solicitante</th>
                                     <th>Siglas</th>
+                                    <th>Fecha de Solicitud</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -69,7 +71,7 @@
                                 @if (!Model.SolicitudesPendientes.Any())
                                 {
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted py-3">No tienes solicitudes pendientes de respuesta.</td>
+                                        <td colspan="5" class="text-center text-muted py-3">No tienes solicitudes pendientes de respuesta.</td>
                                     </tr>
                                 }
                                 else
@@ -79,6 +81,13 @@
                                         <tr>
                                             <td><strong>@item.PartidoNombre</strong></td>
                                             <td><span class="badge bg-secondary">@item.PartidoSiglas</span></td>
+
+                                    <td>@item.FechaSolicitud</td>
+                                    
+                                    @* Estado *@
+                                    <td>
+                                        <span class="badge bg-warning text-dark">En espera de respuesta</span>
+                                    </td> 
                                             <td>
                                                 <div class="d-flex gap-2">
                                                     <form asp-action="Aceptar" asp-route-id="@item.Id" method="post">
@@ -103,121 +112,9 @@
             </div>
         </div>
 
-        @* SECCIÓN 2: Solicitudes Enviadas (Realizadas por mi partido) *@
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm border-info">
-                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-send"></i> Solicitudes Enviadas</h5>
-                    <span class="badge bg-white text-info">@Model.SolicitudesRealizadas.Count</span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Partido Receptor</th>
-                                    <th>Estado</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (!Model.SolicitudesRealizadas.Any())
-                                {
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted py-3">No has enviado ninguna solicitud recientemente.</td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    @foreach (var item in Model.SolicitudesRealizadas)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <strong>@item.PartidoNombre</strong> <br />
-                                                <small class="text-muted">@item.PartidoSiglas</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge @(item.Estado == "Aceptada" ? "bg-success" : "bg-warning text-dark")">
-                                                    @item.Estado
-                                                </span>
-                                            </td>
-                                            <td>
-                                                @if (item.Estado != "Aceptada")
-                                                {
-                                                    <form asp-action="EliminarSolicitud" asp-route-id="@item.Id" method="post">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" @(Model.ExisteEleccionActiva ? "disabled" : "") onclick="return confirm('¿Desea cancelar esta solicitud enviada?');">
-                                                            <i class="bi bi-trash"></i> Cancelar
-                                                        </button>
-                                                    </form>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted small"><i class="bi bi-lock-fill"></i> Consolidada</span>
-                                                }
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @* SECCIÓN 3: Alianzas Vigentes (Establecidas oficialmente) *@
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm border-success">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-handshake"></i> Alianzas Vigentes</h5>
-                    <span class="badge bg-white text-success">@Model.AlianzasVigentes.Count</span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Partido Aliado</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (!Model.AlianzasVigentes.Any())
-                                {
-                                    <tr>
-                                        <td colspan="2" class="text-center text-muted py-3">Tu partido no posee alianzas vigentes para este proceso.</td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    @foreach (var item in Model.AlianzasVigentes)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-shield-check text-success fs-4 me-2"></i>
-                                                    <div>
-                                                        <strong>@item.PartidoAliadoNombre</strong> <br />
-                                                        <span class="badge bg-light text-dark border">@item.PartidoAliadoSiglas</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <form asp-action="EliminarAlianza" asp-route-id="@item.Id" method="post">
-                                                    <button type="submit" class="btn btn-sm btn-danger" @(Model.ExisteEleccionActiva ? "disabled" : "") onclick="return confirm('ATENCIÓN: Disolver esta alianza política afectará las postulaciones conjuntas. ¿Desea continuar?');">
-                                                        <i class="bi bi-unindent"></i> Disolver
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @* LLAMADA A LAS DOS VISTAS PARCIALES *@
+        <partial name="SolicitudEnviada" model="Model" />
+        <partial name="AlianzaVigente" model="Model" />
 
     </div>
 </div>

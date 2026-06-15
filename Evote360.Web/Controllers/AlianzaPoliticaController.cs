@@ -6,6 +6,7 @@ using Evote360.Application.DTOs.Alianza;
 using Evote360.Application.ViewModels.AlianzaPolitica;
 using Evote360.Application.Interfaces;
 using Evote360.Core.Enums;
+using Evote360.Application.DTOs.AlianzaPolitica;
 
 namespace Evote360.Web.Controllers;
 
@@ -99,21 +100,41 @@ public class AlianzaPoliticaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+        int partidoId = 1; // delete
+        // COMENTADO PARA PRUEBAS
+       /* int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); */
 
+        
+        var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // delete
         // Obtiene partidos disponibles mapeados desde el DTO del servicio
-        var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value);
+       /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
 
+// TEMPORAL ESTE IF, BORRAR
+        if (partidosDto == null)
+    {
+        partidosDto = new List<SelectListItemDto>(); // O la clase DTO que maneje tu servicio
+    }
         // Construir el vm para la vista del formulario
-        var viewModel = new CrearSolicitudAlianzaViewModel
+       /* var viewModel = new CrearSolicitudAlianzaViewModel
         {
             PartidosDisponibles = partidosDto.Select(p => new SelectListItem
             {
                 Value = p.Value,
                 Text = p.Text
             }).ToList()
-        };
+        }; */
+
+        // DELETE ESTE
+        var viewModel = new CrearSolicitudAlianzaViewModel
+    {
+        // El operador '?' asegura que si por alguna razón sigue vacío, no explote
+        PartidosDisponibles = partidosDto?.Select(p => new SelectListItem
+        {
+            Value = p.Value ?? "",
+            Text = p.Text ?? "Partido Sin Nombre"
+        }).ToList() ?? new List<SelectListItem>()
+    };
 
         return View(viewModel);
     }
@@ -122,13 +143,16 @@ public class AlianzaPoliticaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Crear(CrearSolicitudAlianzaViewModel viewModel)
     {
-        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+        int partidoId = 1; // delete
+        // COMENTADO PARA PRUEBAS
+       /* int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); */
 
         // Si la validacion de DataAnnotations del ViewModel falla 
         if (!ModelState.IsValid)
         {
-            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value);
+            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // DELETE
+           /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
             viewModel.PartidosDisponibles = partidosDto.Select(p => new SelectListItem { Value = p.Value, Text = p.Text }).ToList();
             return View(viewModel);
         }
@@ -136,7 +160,8 @@ public class AlianzaPoliticaController : Controller
         // Mapea el ViewModel que vino de la vista a un dto de guardado para el servicio
         var saveDto = new SaveSolicitudAlianzaDto
         {
-            PartidoSolicitanteId = partidoId!.Value,
+            PartidoSolicitanteId = partidoId, // DELETE
+          //  PartidoSolicitanteId = partidoId!.Value, 
             PartidoReceptorId = viewModel.PartidoReceptorId
         };
 
@@ -146,7 +171,8 @@ public class AlianzaPoliticaController : Controller
         if (errorNegocio != null)
         {
             ModelState.AddModelError(string.Empty, errorNegocio);
-            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value);
+            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // DELETE
+           /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
             viewModel.PartidosDisponibles = partidosDto.Select(p => new SelectListItem { Value = p.Value, Text = p.Text }).ToList();
             return View(viewModel);
         }
