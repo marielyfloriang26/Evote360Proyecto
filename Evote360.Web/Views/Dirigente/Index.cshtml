@@ -1,0 +1,113 @@
+@model Evote360.Application.ViewModels.Dirigente.HomeDirigenteViewModel
+
+@{
+    ViewData["Title"] = "Panel del Dirigente Político";
+}
+
+<div class="container my-4">
+    <!-- REQUERIMIENTO: Información del partido político asignado (Exclusiva del partido asignado) -->
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body d-flex align-items-center py-4">
+            <div class="me-4">
+                @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                {
+                    <img src="@Model.LogoUrl" alt="Logo del partido" class="img-thumbnail rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" />
+                }
+                else
+                {
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 100px; height: 100px; font-size: 2rem; font-weight: bold;">
+                        @Model.SiglasPartido
+                    </div>
+                }
+            </div>
+            <div>
+                <!-- Ejemplo de visualización exigido: Partido Nacional Democrático (PND) -->
+                <h1 class="h2 text-dark mb-1">@Model.NombrePartido (@Model.SiglasPartido)</h1>
+                <p class="text-muted mb-0">Módulo de gestión del Dirigente Político Autenticado.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUERIMIENTO: Menú principal del dirigente con las 3 opciones obligatorias -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white font-weight-bold py-3 text-secondary fw-bold">
+            📌 Menú Principal de Gestión
+        </div>
+        <div class="card-body">
+            <div class="row g-3 justify-content-center">
+                <!-- Opción 1: Candidatos -->
+                <div class="col-md-4">
+                    <a asp-controller="Candidatos" asp-action="Index" class="btn btn-outline-primary btn-lg w-100 py-3 shadow-sm d-flex flex-column align-items-center">
+                        <span class="fs-4 mb-1">👥</span> Candidatos
+                    </a>
+                </div>
+                <!-- Opción 2: Asignar candidato a puesto -->
+                <div class="col-md-4">
+                    <a asp-controller="AsignarCandidatoPuesto" asp-action="Index" class="btn btn-outline-primary btn-lg w-100 py-3 shadow-sm d-flex flex-column align-items-center">
+                        <span class="fs-4 mb-1">📍</span> Asignar Candidato a Puesto
+                    </a>
+                </div>
+                <!-- Opción 3: Alianzas políticas -->
+                <div class="col-md-4">
+                    <a asp-controller="AlianzaPolitica" asp-action="Index" class="btn btn-outline-primary btn-lg w-100 py-3 shadow-sm d-flex flex-column align-items-center">
+                        <span class="fs-4 mb-1">🤝</span> Alianzas Políticas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUERIMIENTO: Indicadores del Home del dirigente (Cero por defecto garantizado desde el servicio) -->
+    <h3 class="h4 text-secondary mb-3 mt-4 fw-bold">📊 Indicadores del Partido</h3>
+    <div class="row g-3">
+        <!-- Indicador 1: Cantidad de candidatos activos -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-0 border-start border-success border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase fs-7 mb-2 fw-bold">Candidatos Activos</h6>
+                    <h2 class="display-6 fw-bold text-success mb-0">@Model.CantidadCandidatosActivos</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador 2: Cantidad de candidatos inactivos -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-0 border-start border-danger border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase fs-7 mb-2 fw-bold">Candidatos Inactivos</h6>
+                    <h2 class="display-6 fw-bold text-danger mb-0">@Model.CantidadCandidatosInactivos</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador 5: Cantidad de candidatos asignados a puestos electivos -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-0 border-start border-primary border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase fs-7 mb-2 fw-bold">Asignados a Puestos</h6>
+                    <h2 class="display-6 fw-bold text-primary mb-0">@Model.CantidadCandidatosAsignadosPuestos</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador 3: Cantidad de alianzas políticas -->
+        <div class="col-md-6 col-sm-6">
+            <div class="card border-0 border-start border-info border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase fs-7 mb-2 fw-bold">Alianzas Aprobadas</h6>
+                    <h2 class="display-6 fw-bold text-info mb-0">@Model.CantidadAlianzasAprobadas</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador 4: Cantidad de solicitudes de alianzas políticas pendientes de responder -->
+        <div class="col-md-6 col-sm-12">
+            <div class="card border-0 border-start border-warning border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase fs-7 mb-2 fw-bold">Solicitudes Pendientes de Respuesta</h6>
+                    <h2 class="display-6 fw-bold text-warning mb-0">@Model.CantidadSolicitudesAlianzasPendientes</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

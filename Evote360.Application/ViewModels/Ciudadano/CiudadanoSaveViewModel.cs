@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Evote360.Web.ViewModels
+namespace Evote360.Application.ViewModels.Ciudadano
 {
     public class CiudadanoSaveViewModel
     {
