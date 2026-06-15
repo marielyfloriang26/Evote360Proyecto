@@ -51,7 +51,7 @@ namespace WebApp
             builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
             builder.Services.AddScoped<IEleccionService, EleccionService>();
-            
+            builder.Services.AddScoped<IAsignarCandidatoPuestoService, AsignarCandidatoPuestoService>();
 
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
             builder.Services.AddScoped<IOcrService, OcrService>();
