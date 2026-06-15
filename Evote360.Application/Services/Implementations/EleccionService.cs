@@ -251,5 +251,38 @@ namespace Evote360.Application.Services.Implementations
 
             return mensajes;
         }
+
+        public async Task<List<int>> ObtenerAniosConEleccionesAsync()
+        {
+            return await _eleccionRepository.ObtenerAniosConEleccionesAsync();
+        }
+
+        public async Task<List<ResumenElectoralDto>> ObtenerResumenElectoralPorAnioAsync(int anio)
+        {
+            var todas = await _eleccionRepository.ObtenerTodasOrdenadasAsync();
+            // Filtramos las elecciones que pertenecen al año seleccionado
+            var eleccionesDelAnio = todas.Where(e => e.FechaInicio.Year == anio).ToList();
+            
+            var resumen = new List<ResumenElectoralDto>();
+
+            foreach (var e in eleccionesDelAnio)
+            {
+                int partidos = await _eleccionRepository.ObtenerCantidadPartidosPorEleccionAsync(e.Id);
+                int candidatos = await _eleccionRepository.ObtenerCantidadCandidatosRealesPorEleccionAsync(e.Id);
+                int ciudadanos = await _eleccionRepository.ObtenerCantidadCiudadanosQueVotaronAsync(e.Id);
+
+                resumen.Add(new ResumenElectoralDto
+                {
+                    NombreEleccion = e.Nombre,
+                    FechaRealizacion = e.FechaInicio,
+                    CantidadPartidos = partidos,
+                    CantidadCandidatos = candidatos,
+                    CantidadCiudadanosVotaron = ciudadanos
+                });
+            }
+
+            return resumen;
+        }
+
     }
 }

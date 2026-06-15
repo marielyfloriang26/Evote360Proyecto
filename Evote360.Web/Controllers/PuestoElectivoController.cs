@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    // [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador")]
     public class PuestoElectivoController : Controller
     {
         private readonly IPuestoElectivoService _puestoService;
