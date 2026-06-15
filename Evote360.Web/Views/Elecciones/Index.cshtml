@@ -1,0 +1,100 @@
+@model IEnumerable<Evote360.Application.DTOs.EleccionDto>
+@using Evote360.Core.Common
+
+@{
+    ViewData["Title"] = "Elecciones";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Control de Procesos Electorales</h2>
+        @if (!(ViewBag.ExisteEleccionActiva ?? false))
+        {
+            <a asp-action="Crear" class="btn btn-primary shadow-sm">Nueva Elección</a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorList"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <h5 class="fw-bold">No se puede activar la elección por fallas de configuración:</h5>
+            <ul>
+                @foreach (var error in (List<string>)TempData["ErrorList"]!)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Fecha Planificada</th>
+                        <th>Estado</th>
+                        <th>Transacciones de Voto</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var rowClass = item.EstadoElectoral == EstadosEleccion.Activa ? "table-primary fw-bold" : "";
+                        <tr class="@rowClass">
+                            <td>@item.Nombre</td>
+                            <td>@item.FechaInicio.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (item.EstadoElectoral == EstadosEleccion.Pendiente)
+                                {
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                }
+                                else if (item.EstadoElectoral == EstadosEleccion.Activa)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Finalizada</span>
+                                }
+                            </td>
+                            <td>@item.CantidadCiudadanosVotaron</td>
+                            <td class="text-center">
+                                @if (item.EstadoElectoral == EstadosEleccion.Pendiente)
+                                {
+                                    <a asp-action="ConfirmarActivacion" asp-route-id="@item.Id" class="btn btn-sm btn-success">Activar</a>
+                                }
+                                else if (item.EstadoElectoral == EstadosEleccion.Activa)
+                                {
+                                    <a asp-action="ConfirmarFinalizacion" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Finalizar</a>
+                                }
+                                else if (item.EstadoElectoral == EstadosEleccion.Finalizada)
+                                {
+                                    <a asp-action="Resultados" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Resultados</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
