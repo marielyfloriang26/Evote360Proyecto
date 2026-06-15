@@ -89,7 +89,8 @@ namespace Evote360.Web.Controllers
                 return View(vm);
             }
 
-            // Exitoso: se envió el correo. Ir a la pantalla de validación de código.
+            // Exitoso: se envió el correo o se generó el fallback.
+            TempData["MensajeCodigo"] = result.Message;
             return RedirectToAction("VerificacionCodigo");
         }
 

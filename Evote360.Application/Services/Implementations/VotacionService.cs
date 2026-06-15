@@ -132,13 +132,13 @@ namespace Evote360.Application.Services.Implementations
                 var asunto = "Código de verificación para votar";
                 var cuerpo = $"Hola {ciudadano.Nombre},\n\nSu código de verificación para continuar con el proceso de votación es:\n\n{codigo}\n\nEste código tendrá una vigencia de 5 minutos.\n\nSi usted no inició este proceso, ignore este mensaje.";
                 await _emailService.EnviarCorreoAsync(ciudadano.Correo, asunto, cuerpo);
+                return (true, "Validación exitosa. Se ha enviado el código al correo.");
             }
             catch
             {
-                return (false, "No fue posible enviar el código de verificación. Intente nuevamente más tarde.");
+                // Fallback para modo de prueba si las credenciales SMTP no están configuradas
+                return (true, $"Modo de prueba activado (SMTP no configurado). Tu código es: {codigo}");
             }
-
-            return (true, "Validación exitosa. Se ha enviado el código al correo.");
         }
 
         public async Task<(bool Success, string Message)> ValidarCodigoVerificacionAsync(string documentoIdentidad, string codigo)

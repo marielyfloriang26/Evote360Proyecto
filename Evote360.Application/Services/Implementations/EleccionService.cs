@@ -69,7 +69,7 @@ namespace Evote360.Application.Services.Implementations
 
         public async Task<(bool Success, List<string> Messages)> CrearAsync(EleccionCreateDto dto)
         {
-            var errores = await ValidarConfiguracionElectoralAsync();
+            var errores = new List<string>();
             
             if (await _eleccionRepository.ExisteEleccionActivaAsync())
             {

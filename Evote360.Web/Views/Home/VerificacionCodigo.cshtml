@@ -18,9 +18,18 @@
                         </div>
                     }
 
-                    <div class="alert alert-info text-center" role="alert">
-                        Se ha enviado un código de seguridad a su correo electrónico. Este código expira en 5 minutos.
-                    </div>
+                    @if (TempData["MensajeCodigo"] != null)
+                    {
+                        <div class="alert alert-success text-center fw-bold shadow-sm" role="alert">
+                            @TempData["MensajeCodigo"]
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center" role="alert">
+                            Se ha enviado un código de seguridad a su correo electrónico. Este código expira en 5 minutos.
+                        </div>
+                    }
 
                     <form asp-action="VerificacionCodigo" method="post">
                         <div class="mb-4">
