@@ -1,6 +1,6 @@
-@model Evote360.Application.ViewModels.Votacion.LoginElectorViewModel
+@model Evote360.Application.ViewModels.Votacion.VerificacionCodigoViewModel
 @{
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Verificación de Código";
 }
 
 <div class="container mt-5">
@@ -8,8 +8,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm border-0 rounded-lg">
                 <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0 fw-bold">eVote360 Pro</h3>
-                    <p class="mb-0 text-white-50">Proceso de Votación Electoral</p>
+                    <h3 class="mb-0 fw-bold">Verificar Código</h3>
                 </div>
                 <div class="card-body p-5">
                     @if (ViewBag.ErrorMessage != null)
@@ -19,20 +18,20 @@
                         </div>
                     }
 
-                    <p class="text-muted text-center mb-4">
-                        Por favor, ingrese su número de documento de identidad para iniciar el proceso de votación.
-                    </p>
+                    <div class="alert alert-info text-center" role="alert">
+                        Se ha enviado un código de seguridad a su correo electrónico. Este código expira en 5 minutos.
+                    </div>
 
-                    <form asp-action="Index" method="post">
+                    <form asp-action="VerificacionCodigo" method="post">
                         <div class="mb-4">
-                            <label asp-for="DocumentoIdentidad" class="form-label fw-bold text-secondary"></label>
-                            <input asp-for="DocumentoIdentidad" class="form-control form-control-lg bg-light" placeholder="Ej. 40212345678" />
-                            <span asp-validation-for="DocumentoIdentidad" class="text-danger small"></span>
+                            <label asp-for="CodigoVerificacion" class="form-label fw-bold text-secondary"></label>
+                            <input asp-for="CodigoVerificacion" class="form-control form-control-lg bg-light text-center" placeholder="Ej. 123456" />
+                            <span asp-validation-for="CodigoVerificacion" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
-                                Votar
+                                Validar código
                             </button>
                         </div>
                     </form>

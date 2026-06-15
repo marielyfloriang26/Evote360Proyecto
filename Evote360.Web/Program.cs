@@ -18,6 +18,12 @@ namespace WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            
+            builder.Services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             // Register DbContext
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -46,8 +52,11 @@ namespace WebApp
              builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+            builder.Services.AddScoped<IOcrService, OcrService>();
+            builder.Services.AddScoped<IEmailService, Evote360.Infrastructure.Shared.Services.EmailService>();
             builder.Services.AddScoped<ICandidatoService, CandidatoService>();
             builder.Services.AddScoped<IAsignacionDirigentePoliticoService, AsignacionDirigentePoliticoService>();
+            builder.Services.AddScoped<IVotacionService, VotacionService>();
 
 
 
@@ -66,6 +75,7 @@ namespace WebApp
             app.UseStaticFiles(); // permite guardar y leer fotos 
             app.UseRouting();
 
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapStaticAssets();
