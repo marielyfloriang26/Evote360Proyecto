@@ -1,0 +1,97 @@
+@using Evote360.Core.Enums
+@model List<Evote360.Application.ViewModels.Usuario.UsuarioViewModel>
+
+@{
+    ViewData["Title"] = "Mantenimiento de Usuarios";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Mantenimiento de Usuarios</h2>
+        <a asp-action="Crear" class="btn btn-primary">Crear nuevo usuario</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive shadow-sm bg-white rounded">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo Electrónico</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No hay usuarios registrados en el sistema.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td><strong>@usuario.Nombre</strong></td>
+                            <td><strong>@usuario.Apellido</strong></td>
+                            <td>@usuario.Correo</td>
+                            <td><span class="badge bg-dark">@@@usuario.NombreUsuario</span></td>
+                            <td>
+                                @if (usuario.Rol == RolUsuarioEnum.Administrador)
+                                {
+                                    <span class="badge bg-danger">@usuario.Rol</span>
+                                }
+                                else if (usuario.Rol == RolUsuarioEnum.DirigentePolitico)
+                                {
+                                    <span class="badge bg-info text-dark">@usuario.Rol</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">@usuario.Rol</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @(usuario.Estado ? "bg-success" : "bg-secondary")">
+                                    @(usuario.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a asp-action="Editar" asp-route-id="@usuario.Id" class="btn btn-sm btn-warning">Editar</a>
+                                    
+                                    @if (usuario.Estado)
+                                    {
+                                        <a asp-action="ConfirmarDesactivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="ConfirmarActivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-success">Activar</a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

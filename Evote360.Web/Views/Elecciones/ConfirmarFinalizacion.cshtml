@@ -1,0 +1,11 @@
+@model Evote360.Application.DTOs.EleccionDto
+<div class="container mt-5 text-center" style="max-width: 500px;">
+    <div class="card card-body shadow py-4">
+        <h4 class="mb-4">¿Está seguro que desea finalizar el proceso electoral?</h4>
+        <p class="text-muted">Esta acción bloqueará definitivamente las votaciones para: <strong>@Model.Nombre</strong></p>
+        <form asp-action="Finalizar" asp-route-id="@Model.Id" method="post">
+            <a asp-action="Index" class="btn btn-secondary me-2">Cancelar</a>
+            <button type="submit" class="btn btn-danger">Cerrar Urnas</button>
+        </form>
+    </div>
+</div>

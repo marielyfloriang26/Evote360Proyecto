@@ -11,6 +11,14 @@ namespace Evote360.Infrastructure.Repositories.Implementations
         {
         }
 
+        public override async Task<IReadOnlyList<Candidato>> GetAllAsync()
+        {
+            return await _dbContext.Set<Candidato>()
+                .Include(c => c.AsignacionesPuestos)
+                .ThenInclude(a => a.Puesto)
+                .ToListAsync();
+        }
+
         public async Task<bool> HasParticipatedInElectionAsync(int candidatoId)
             {
                 return await _dbContext.AsignacionesCandidatosPuestos
