@@ -21,8 +21,11 @@ public class AuthController : Controller
     {
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
+            if (User.IsInRole("Administrador"))
+                return RedirectToAction("Index", "Administrador");
+
             if (User.IsInRole("DirigentePolitico"))
-                return RedirectToAction("Index", "Candidatos");
+                return RedirectToAction("Index", "Dirigente");
             return RedirectToAction("Index", "Elecciones");
         }
         return View(new LoginViewModel());
@@ -64,11 +67,25 @@ public class AuthController : Controller
             new ClaimsPrincipal(claimsIdentity),
             authProperties);
 
+        if (usuario.Rol == Evote360.Core.Enums.RolUsuarioEnum.Administrador) // Asegúrate de usar el nombre exacto de tu Enum (Admin o Administrador)
+        {
+            return RedirectToAction("Index", "Administrador");
+        }
+
+        // CAMBIO: Si es Dirigente Político, lo mandamos directo a su Panel Dirigente
         if (usuario.Rol == Evote360.Core.Enums.RolUsuarioEnum.DirigentePolitico)
+        {
+            return RedirectToAction("Index", "Dirigente");
+        }
+
+        // Por defecto (Elector)
+        return RedirectToAction("Index", "Elecciones");
+
+        /*if (usuario.Rol == Evote360.Core.Enums.RolUsuarioEnum.DirigentePolitico)
         {
             return RedirectToAction("Index", "Candidatos");
         }
-        return RedirectToAction("Index", "Elecciones");
+        return RedirectToAction("Index", "Elecciones");*/
     }
 
     public async Task<IActionResult> Logout()
