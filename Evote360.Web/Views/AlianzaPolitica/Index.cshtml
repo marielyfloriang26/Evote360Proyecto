@@ -90,19 +90,19 @@
                                     </td> 
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <form asp-action="Aceptar" asp-route-id="@item.Id" method="post">
-                                                        <button type="submit" class="btn btn-sm btn-success" @(Model.ExisteEleccionActiva ? "disabled" : "")>
-                                                            <i class="bi bi-check-lg"></i> Aceptar
-                                                        </button>
-                                                    </form>
-                                                    <form asp-action="Rechazar" asp-route-id="@item.Id" method="post">
-                                                        <button type="submit" class="btn btn-sm btn-danger" @(Model.ExisteEleccionActiva ? "disabled" : "") onclick="return confirm('¿Está seguro de que desea rechazar esta solicitud?');">
-                                                            <i class="bi bi-xl"></i> Rechazar
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                                <a asp-action="Aceptar" asp-route-id="@item.Id" 
+                                                class="btn btn-sm btn-success @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                    <i class="bi bi-check-lg"></i> Aceptar
+                                                </a>
+
+                                                <a asp-action="Rechazar" asp-route-id="@item.Id" 
+                                                class="btn btn-sm btn-danger @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                    <i class="bi bi-x-lg"></i> Rechazar
+                                                </a>
+                                            </div>
                                             </td>
-                                        </tr>
+                                                
+                                            </tr>
                                     }
                                 }
                             </tbody>

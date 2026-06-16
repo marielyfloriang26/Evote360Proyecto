@@ -51,7 +51,8 @@ public class AlianzaPoliticaService : IAlianzaPoliticaService
                     PartidoReceptorId = a.PartidoAliadoId,
                     PartidoReceptorNombre = receptor?.Nombre ?? "Desconocido",
                     PartidoReceptorSiglas = receptor?.Siglas ?? "N/A",
-                    Estado = "En espera de respuesta" // el dto le pasa el string exacto 
+                    Estado = "En espera de respuesta", // el dto le pasa el string exacto 
+                    FechaSolicitud = a.FechaSolicitud
                 };
             }).ToList();
     }
@@ -79,7 +80,8 @@ public class AlianzaPoliticaService : IAlianzaPoliticaService
                     PartidoReceptorNombre = receptor?.Nombre ?? "Desconocido",
                     PartidoReceptorSiglas = receptor?.Siglas ?? "N/A",
                     // Traduce el booleano al texto que el controlador mapeara al vm
-                    Estado = a.Estado ? "Aceptada" : "En espera de respuesta" 
+                    Estado = a.Estado ? "Aceptada" : "En espera de respuesta",
+                    FechaSolicitud = a.FechaSolicitud
                 };
             }).ToList();
     }
@@ -197,11 +199,12 @@ public class AlianzaPoliticaService : IAlianzaPoliticaService
             EleccionId = eleccionId,
             PartidoMayoristaId = dto.PartidoSolicitanteId,
             PartidoAliadoId = dto.PartidoReceptorId,
-            Estado = false // false = "En espera de respuesta"
+            Estado = false, // false = "En espera de respuesta"
+            FechaSolicitud = DateTime.Now
         };
 
         await _allianceRepository.AddAsync(nuevaAlianza);
-        return null; // Éxito
+        return null; 
     }
 
     // ACEPTAR SOLICITUD DE ALIANZA

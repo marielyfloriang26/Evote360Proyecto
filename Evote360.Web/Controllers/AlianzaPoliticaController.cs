@@ -10,7 +10,7 @@ using Evote360.Application.DTOs.AlianzaPolitica;
 
 namespace Evote360.Web.Controllers;
 
-// [Authorize(Roles = nameof(RolUsuarioEnum.DirigentePolitico))] // Asegura que solo los dirigentes entren a este módulo
+[Authorize(Roles = nameof(RolUsuarioEnum.DirigentePolitico))] // Asegura que solo los dirigentes entren a este módulo
 public class AlianzaPoliticaController : Controller
 {
     private readonly IAlianzaPoliticaService _allianceService;
@@ -24,32 +24,26 @@ public class AlianzaPoliticaController : Controller
 
     public async Task<IActionResult> Index()
     {
-        int usuarioId = 1;
-        int partidoId = 1;
-       /* COMENTADO PA PROBAR // Obtiene el id del Usuario Autenticado desde los Claims
+        // Obtiene el id del Usuario Autenticado desde los Claims
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int usuarioId))
         {
             return RedirectToAction("Login", "Account");
-        } */
+        } 
 
         // Busca el PartidoId asignado a este dirigente a traves del servicio
-      /*  int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+       int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
         if (partidoId == null)
         {
             TempData["ErrorMessage"] = "Usted no tiene un partido político asignado. Contacte al administrador.";
             return RedirectToAction("Index", "Home");
-        } */
+        } 
   
         // El controlador llama al servicio y recibe estrictamente dtos
-        var recibidasDto = await _allianceService.GetSolicitudesRecibidasAsync(partidoId);
-        var enviadasDto = await _allianceService.GetSolicitudesEnviadasAsync(partidoId);
-        var vigentesDto = await _allianceService.GetAlianzasVigentesAsync(partidoId);
-        bool existeEleccionActiva = await _allianceService.ExisteEleccionActivaAsync();
-      /*  var recibidasDto = await _allianceService.GetSolicitudesRecibidasAsync(partidoId.Value);
+        var recibidasDto = await _allianceService.GetSolicitudesRecibidasAsync(partidoId.Value);
         var enviadasDto = await _allianceService.GetSolicitudesEnviadasAsync(partidoId.Value);
         var vigentesDto = await _allianceService.GetAlianzasVigentesAsync(partidoId.Value);
-        bool existeEleccionActiva = await _allianceService.ExisteEleccionActivaAsync(); */
+        bool existeEleccionActiva = await _allianceService.ExisteEleccionActivaAsync(); 
 
         // Mapeo de dto hacia el ViewModel requerido por la Vista
         var viewModel = new AlianzaPoliticaViewModel
@@ -76,13 +70,12 @@ public class AlianzaPoliticaController : Controller
 
             AlianzasVigentes = vigentesDto.Select(dto => new AlianzaVigenteViewModel
             {
-                PartidoAliadoNombre = dto.PartidoMayoristaId == partidoId ? dto.PartidoAliadoNombre : dto.PartidoMayoristaNombre,
-            PartidoAliadoSiglas = dto.PartidoMayoristaId == partidoId ? dto.PartidoAliadoSiglas : dto.PartidoMayoristaSiglas
-               /* Id = dto.Id,
-                // Si mi partido es el mayorista, muestro el nombre del aliado de lo contrario el del mayorista
+                
+               Id = dto.Id,
+               // Si mi partido es el mayorista, muestro el nombre del aliado de lo contrario el del mayorista
                 PartidoAliadoNombre = dto.PartidoMayoristaId == partidoId.Value ? dto.PartidoAliadoNombre : dto.PartidoMayoristaNombre,
                 PartidoAliadoSiglas = dto.PartidoMayoristaId == partidoId.Value ? dto.PartidoAliadoSiglas : dto.PartidoMayoristaSiglas,
-                FechaAceptacion = dto.FechaAceptacion.ToString("dd/MM/yyyy hh:mm tt") */
+                FechaAceptacion = dto.FechaAceptacion.ToString("dd/MM/yyyy hh:mm tt") 
             }).ToList()
         };
 
@@ -100,41 +93,24 @@ public class AlianzaPoliticaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        int partidoId = 1; // delete
-        // COMENTADO PARA PRUEBAS
-       /* int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); */
+        
+        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); 
 
         
-        var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // delete
         // Obtiene partidos disponibles mapeados desde el DTO del servicio
-       /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
+       var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); 
 
-// TEMPORAL ESTE IF, BORRAR
-        if (partidosDto == null)
-    {
-        partidosDto = new List<SelectListItemDto>(); // O la clase DTO que maneje tu servicio
-    }
         // Construir el vm para la vista del formulario
-       /* var viewModel = new CrearSolicitudAlianzaViewModel
+       var viewModel = new CrearSolicitudAlianzaViewModel
         {
             PartidosDisponibles = partidosDto.Select(p => new SelectListItem
             {
                 Value = p.Value,
                 Text = p.Text
             }).ToList()
-        }; */
+        }; 
 
-        // DELETE ESTE
-        var viewModel = new CrearSolicitudAlianzaViewModel
-    {
-        // El operador '?' asegura que si por alguna razón sigue vacío, no explote
-        PartidosDisponibles = partidosDto?.Select(p => new SelectListItem
-        {
-            Value = p.Value ?? "",
-            Text = p.Text ?? "Partido Sin Nombre"
-        }).ToList() ?? new List<SelectListItem>()
-    };
 
         return View(viewModel);
     }
@@ -143,16 +119,15 @@ public class AlianzaPoliticaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Crear(CrearSolicitudAlianzaViewModel viewModel)
     {
-        int partidoId = 1; // delete
-        // COMENTADO PARA PRUEBAS
-       /* int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); */
+        
+       int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId); 
 
         // Si la validacion de DataAnnotations del ViewModel falla 
         if (!ModelState.IsValid)
         {
-            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // DELETE
-           /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
+            
+           var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); 
             viewModel.PartidosDisponibles = partidosDto.Select(p => new SelectListItem { Value = p.Value, Text = p.Text }).ToList();
             return View(viewModel);
         }
@@ -160,8 +135,8 @@ public class AlianzaPoliticaController : Controller
         // Mapea el ViewModel que vino de la vista a un dto de guardado para el servicio
         var saveDto = new SaveSolicitudAlianzaDto
         {
-            PartidoSolicitanteId = partidoId, // DELETE
-          //  PartidoSolicitanteId = partidoId!.Value, 
+            
+            PartidoSolicitanteId = partidoId!.Value, 
             PartidoReceptorId = viewModel.PartidoReceptorId
         };
 
@@ -171,8 +146,7 @@ public class AlianzaPoliticaController : Controller
         if (errorNegocio != null)
         {
             ModelState.AddModelError(string.Empty, errorNegocio);
-            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId); // DELETE
-           /* var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); */
+            var partidosDto = await _allianceService.GetPartidosDisponiblesParaAlianzaAsync(partidoId!.Value); 
             viewModel.PartidosDisponibles = partidosDto.Select(p => new SelectListItem { Value = p.Value, Text = p.Text }).ToList();
             return View(viewModel);
         }
@@ -184,9 +158,69 @@ public class AlianzaPoliticaController : Controller
 
     // Acciones de Control
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpGet]
     public async Task<IActionResult> Aceptar(int id)
+    {
+        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+
+        // Busca la solicitud especifica en las recibidas para armar el modelo
+        var recibidasDto = await _allianceService.GetSolicitudesRecibidasAsync(partidoId!.Value);
+        var solicitud = recibidasDto.FirstOrDefault(s => s.Id == id);
+
+        if (solicitud == null)
+        {
+            TempData["ErrorMessage"] = "La solicitud no fue encontrada o no pertenece a su partido.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var viewModel = new SolicitudAlianzaViewModel
+        {
+            Id = solicitud.Id,
+            PartidoNombre = solicitud.PartidoSolicitanteNombre,
+            PartidoSiglas = solicitud.PartidoSolicitanteSiglas,
+            FechaSolicitud = solicitud.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt"),
+            Estado = solicitud.Estado
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Rechazar(int id)
+    {
+        // Consigue el id del partido del usuario actual
+        int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+
+        // Buscar la solicitud especifica en las recibidas
+        var recibidasDto = await _allianceService.GetSolicitudesRecibidasAsync(partidoId!.Value);
+        var solicitud = recibidasDto.FirstOrDefault(s => s.Id == id);
+
+        if (solicitud == null)
+        {
+            TempData["ErrorMessage"] = "La solicitud no fue encontrada o no pertenece a su partido.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Mapea al ViewModel
+        var viewModel = new SolicitudAlianzaViewModel
+        {
+            Id = solicitud.Id,
+            PartidoNombre = solicitud.PartidoSolicitanteNombre,
+            PartidoSiglas = solicitud.PartidoSolicitanteSiglas,
+            FechaSolicitud = solicitud.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt"),
+            Estado = solicitud.Estado
+        };
+
+        return View(viewModel);
+    }
+
+   
+    [HttpPost]
+    [ActionName("Aceptar")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AceptarPost(int id)
     {
         int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
@@ -199,8 +233,9 @@ public class AlianzaPoliticaController : Controller
     }
 
     [HttpPost]
+    [ActionName("Rechazar")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Rechazar(int id)
+    public async Task<IActionResult> RechazarPost(int id)
     {
         int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
