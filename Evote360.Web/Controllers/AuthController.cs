@@ -77,8 +77,10 @@ public class AuthController : Controller
         return RedirectToAction("Index", "Home");
     }
     
-    public IActionResult AccessDenied()
+    public IActionResult AccessDenied(string mensaje)
     {
+        // Si viene un mensaje personalizado lo usamos, si no, uno por defecto
+        ViewBag.ErrorMessage = mensaje;
         return View();
     }
 }

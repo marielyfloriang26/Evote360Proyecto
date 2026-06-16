@@ -13,87 +13,46 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">eVote360 Pro</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        
-                    @*    <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PuestoElectivo" asp-action="Index">Puesto Electivo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ciudadano" asp-action="Index">Ciudadanos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PartidoPolitico" asp-action="Index">Partidos Políticos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AsignacionDirigentePolitico" asp-action="Index">Asignación de Dirigentes</a>
-                        </li>
-
-                      
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Candidatos" asp-action="Index">Candidatos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Elecciones" asp-action="Index">Elecciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> *@
-
-                       <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio Elector</a>
-                      </li> 
-                     
-                     
+                        </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("Administrador"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Elecciones" asp-action="Index">Elecciones</a>
+                                    <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Administrador" asp-action="Index">Panel Admin</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="PuestoElectivo" asp-action="Index">Puesto Electivo</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Ciudadano" asp-action="Index">Ciudadanos</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="PartidoPolitico" asp-action="Index">Partido Politico</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AsignacionDirigentePolitico" asp-action="Index">Asignar Dirigente</a>
-                                </li>
-                                
                             }
 
                             @if (User.IsInRole("DirigentePolitico"))
                             {
+                                <!-- Opción Principal: Home del Dirigente -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-success fw-bold" asp-area="" asp-controller="Dirigente" asp-action="Index">Panel Dirigente</a>
+                                </li>
+                                
+                                /*<!-- Opción: Candidatos -->
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Candidatos" asp-action="Index">Candidatos</a>
                                 </li>
+                                
+                                <!-- Opción: Asignar candidato a puesto -->
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AsignarCandidatoPuesto" asp-action="Index">Asignar Candidato</a>
                                 </li>
+                                
+                                <!-- Opción: Alianzas políticas (Faltaba en tu layout anterior) -->
                                 <li class="nav-item">
-                                <a class="nav-link text-dark d-flex align-items-center gap-1" asp-area="" asp-controller="AlianzaPolitica" asp-action="Index">
-                                    <i class="bi bi-diagram-3-fill text-primary"></i> Alianzas Políticas
-                                </a>
-                            </li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AlianzaPolitica" asp-action="Index">Alianzas Políticas</a>
+                                </li>*/
                             }
                         }
                     </ul>
@@ -115,7 +74,6 @@
                                 <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Auth" asp-action="Login">Acceso Administrativo</a>
                             </li>
                         }
-
                     </ul>
                 </div>
             </div>
@@ -129,7 +87,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - eVote360 Pro - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

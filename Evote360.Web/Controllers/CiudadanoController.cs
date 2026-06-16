@@ -1,13 +1,13 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
-using Evote360.Web.ViewModels;
+using Evote360.Application.ViewModels.Ciudadano;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    // [Authorize(Roles = "Administrador")] // Solo administradores acceden
+    [Authorize(Roles = "Administrador")] // Solo administradores acceden
     public class CiudadanoController : Controller
     {
         private readonly ICiudadanoService _ciudadanoService;

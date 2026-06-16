@@ -7,6 +7,7 @@ using Evote360.Application.Services;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.Services.Implementations;
 using Evote360.Infrastructure.Services.Implementations;
+using Evote360.Core.Entities;
 
 namespace WebApp
 {
@@ -52,6 +53,11 @@ namespace WebApp
             builder.Services.AddScoped<IVotoRepository, VotoRepository>();
             builder.Services.AddScoped<ICodigoVerificacionRepository, CodigoVerificacionRepository>();
 
+            builder.Services.AddScoped<IRepositoryAsync<AsignacionDirigente>, RepositoryAsync<AsignacionDirigente>>();
+
+            builder.Services.AddScoped<IRepositoryAsync<AsignarCandidatoPuesto>, RepositoryAsync<AsignarCandidatoPuesto>>();
+            
+
             // registrar service
             builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
             builder.Services.AddScoped<ICiudadanoService, CiudadanoService>();
@@ -63,6 +69,14 @@ namespace WebApp
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
             builder.Services.AddScoped<IEleccionService, EleccionService>();
             builder.Services.AddScoped<IAsignarCandidatoPuestoService, AsignarCandidatoPuestoService>();
+
+
+            builder.Services.AddScoped<IDirigenteService, DirigenteService>();
+
+
+            builder.Services.AddScoped<IAdministradorService, AdministradorService>();
+
+
 
 
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();

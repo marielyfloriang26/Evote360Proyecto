@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    //[Authorize(Roles = "Dirigente político")]
+    [Authorize(Roles = "DirigentePolitico")]
     public class AsignarCandidatoPuestoController : Controller
     {
         private readonly IAsignarCandidatoPuestoService _asignacionService;
@@ -31,7 +31,10 @@ namespace Evote360.Web.Controllers
             
             if (!result.Success)
             {
-                TempData["ErrorMessage"] = result.ErrorMessage;
+                string mensaje = "Usted no tiene un partido político asignado. Por favor, comuníquese con el administrador.";
+        
+                // Redirige al AccessDenied de Auth y le pasa el mensaje por parámetro
+                return RedirectToAction("AccessDenied", "Auth", new { mensaje = mensaje });
             }
 
             return View(result.Data);

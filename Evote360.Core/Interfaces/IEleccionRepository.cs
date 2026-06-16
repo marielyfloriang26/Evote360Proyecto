@@ -16,5 +16,11 @@ namespace Evote360.Core.Interfaces
         Task<List<PartidoPolitico>> ObtenerPartidosActivosAsync();
         Task<List<AsignarCandidatoPuesto>> ObtenerAsignacionesPorPuestoAsync(int puestoId);
         Task<bool> ExisteAsignacionCandidatoAsync(int puestoId, int partidoId);
+
+
+        // funcionalidades del administrador
+        Task<List<int>> ObtenerAniosConEleccionesAsync();
+        Task<int> ObtenerCantidadCandidatosRealesPorEleccionAsync(int eleccionId);
+        Task<int> ObtenerCantidadPartidosPorEleccionAsync(int eleccionId);
     }
 }

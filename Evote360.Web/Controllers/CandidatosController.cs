@@ -31,9 +31,11 @@ namespace Evote360.Web.Controllers
             var result = await _candidatoService.GetIndexDataAsync(GetUserId());
             if (!result.Success)
             {
-                if (!string.IsNullOrEmpty(result.ErrorMessage))
-                    TempData["ErrorMessage"] = result.ErrorMessage;
-                return RedirectToAction("Index", "Home");
+                string mensaje = !string.IsNullOrEmpty(result.ErrorMessage) 
+                    ? result.ErrorMessage 
+                    : "Usted no tiene un partido político asignado. Por favor, comuníquese con el administrador.";
+                    
+                return RedirectToAction("AccessDenied", "Auth", new { mensaje = mensaje });
             }
 
             ViewBag.HasActiveElection = result.HasActiveElection;
