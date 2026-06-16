@@ -13,6 +13,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Partido Receptor</th>
+                                    <th>Fecha de Solicitud</th>
                                     <th>Estado</th>
                                     <th>Acción</th>
                                 </tr>
@@ -21,7 +22,7 @@
                                 @if (!Model.SolicitudesRealizadas.Any())
                                 {
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted py-3">No has enviado ninguna solicitud recientemente.</td>
+                                        <td colspan="4" class="text-center text-muted py-3">No has enviado ninguna solicitud recientemente.</td>
                                     </tr>
                                 }
                                 else
@@ -33,6 +34,7 @@
                                                 <strong>@item.PartidoNombre</strong> <br />
                                                 <small class="text-muted">@item.PartidoSiglas</small>
                                             </td>
+                                            <td>@item.FechaSolicitud</td>
                                             <td>
                                                 <span class="badge @(item.Estado == "Aceptada" ? "bg-success" : "bg-warning text-dark")">
                                                     @item.Estado
@@ -41,17 +43,16 @@
                                             <td>
                                                 @if (item.Estado != "Aceptada")
                                                 {
-                                                    <form asp-action="EliminarSolicitud" asp-route-id="@item.Id" method="post">
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" @(Model.ExisteEleccionActiva ? "disabled" : "") onclick="return confirm('¿Desea cancelar esta solicitud enviada?');">
-                                                            <i class="bi bi-trash"></i> Cancelar
-                                                        </button>
-                                                    </form>
+                                                    <a asp-action="EliminarSolicitud"
+                                                    asp-route-id="@item.Id" 
+                                                    class="btn btn-sm btn-outline-danger @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                        <i class="bi bi-trash"></i> Eliminar
+                                                    </a>
                                                 }
                                                 else
                                                 {
                                                     <span class="text-muted small"><i class="bi bi-lock-fill"></i> Consolidada</span>
                                                 }
-                                            </td>
                                         </tr>
                                     }
                                 }

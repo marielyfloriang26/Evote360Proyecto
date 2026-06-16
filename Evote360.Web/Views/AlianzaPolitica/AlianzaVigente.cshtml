@@ -13,6 +13,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Partido Aliado</th>
+                                    <th>Fecha de Aceptación</th>
                                     <th>Acción</th>
                                 </tr>
                             </thead>
@@ -37,12 +38,11 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td>@item.FechaAceptacion</td>
                                             <td>
-                                                <form asp-action="EliminarAlianza" asp-route-id="@item.Id" method="post">
-                                                    <button type="submit" class="btn btn-sm btn-danger" @(Model.ExisteEleccionActiva ? "disabled" : "") onclick="return confirm('ATENCIÓN: Disolver esta alianza política afectará las postulaciones conjuntas. ¿Desea continuar?');">
-                                                        <i class="bi bi-unindent"></i> Disolver
-                                                    </button>
-                                                </form>
+                                                <a asp-action="EliminarAlianza" asp-route-id="@item.Id" class="btn btn-sm btn-danger @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </a>
                                             </td>
                                         </tr>
                                     }

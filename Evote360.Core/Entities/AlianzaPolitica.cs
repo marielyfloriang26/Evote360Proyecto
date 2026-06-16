@@ -7,6 +7,7 @@ namespace Evote360.Core.Entities
         public int PartidoMayoristaId { get; set; }
         public int PartidoAliadoId { get; set; }
         public DateTime FechaSolicitud {get; set;}
+        public DateTime? FechaAceptacion {get; set;}
 
         // Navigation properties
         public virtual Eleccion Eleccion { get; set; } = null!;

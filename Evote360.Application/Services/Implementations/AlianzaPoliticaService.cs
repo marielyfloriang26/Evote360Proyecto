@@ -108,7 +108,8 @@ public class AlianzaPoliticaService : IAlianzaPoliticaService
                     PartidoMayoristaSiglas = mayorista?.Siglas ?? "",
                     PartidoAliadoId = a.PartidoAliadoId,
                     PartidoAliadoNombre = aliado?.Nombre ?? "",
-                    PartidoAliadoSiglas = aliado?.Siglas ?? ""
+                    PartidoAliadoSiglas = aliado?.Siglas ?? "",
+                    FechaAceptacion = a.FechaAceptacion ?? a.FechaSolicitud
                 };
             }).ToList();
     }
@@ -233,6 +234,7 @@ public class AlianzaPoliticaService : IAlianzaPoliticaService
 
         // pasa a true (Aceptada / Alianza Vigente)
         alianza.Estado = true;
+        alianza.FechaAceptacion = DateTime.Now;
         await _allianceRepository.UpdateAsync(alianza);
         return null;
     }

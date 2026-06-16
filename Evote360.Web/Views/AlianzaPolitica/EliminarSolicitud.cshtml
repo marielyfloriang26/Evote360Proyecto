@@ -1,0 +1,48 @@
+@model Evote360.Application.ViewModels.AlianzaPolitica.SolicitudAlianzaViewModel
+
+@{
+    ViewData["Title"] = "Confirmar Eliminación de Solicitud";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow border-danger animate__animated animate__fadeIn">
+                <div class="card-header bg-danger text-white d-flex align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Eliminación</h5>
+                </div>
+                <div class="card-body py-4">
+                    
+                    <p class="fs-5 text-dark">
+                        ¿Está seguro que desea eliminar la solicitud de alianza con el partido 
+                        <strong>@Model.PartidoNombre</strong> (<strong>@Model.PartidoSiglas</strong>)?
+                    </p>
+
+                    <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                        <div>
+                            Esta acción retirará la solicitud de forma permanente del sistema.
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left-short"></i> Cancelar
+                        </a>
+
+                        
+                        <form asp-action="EliminarSolicitud" asp-route-id="@Model.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash-fill"></i> Aceptar
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Evote360.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260616023230_IniciaIizacion")]
+    [Migration("20260616040552_IniciaIizacion")]
     partial class IniciaIizacion
     {
         /// <inheritdoc />
@@ -40,6 +40,9 @@ namespace Evote360.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("FechaAceptacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaSolicitud")
                         .HasColumnType("datetime2");

@@ -247,9 +247,38 @@ public class AlianzaPoliticaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+public async Task<IActionResult> EliminarSolicitud(int id)
+{
+    int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+
+    
+    var enviadasDto = await _allianceService.GetSolicitudesEnviadasAsync(partidoId!.Value);
+    var solicitud = enviadasDto.FirstOrDefault(s => s.Id == id);
+
+    if (solicitud == null)
+    {
+        TempData["ErrorMessage"] = "La solicitud de alianza seleccionada no existe o ya fue eliminada.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    var viewModel = new SolicitudAlianzaViewModel
+    {
+        Id = solicitud.Id,
+        PartidoNombre = solicitud.PartidoReceptorNombre, // Usa Receptor porque es la que envia
+        PartidoSiglas = solicitud.PartidoReceptorSiglas,
+        FechaSolicitud = solicitud.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt"),
+        Estado = solicitud.Estado
+    };
+
+    return View(viewModel);
+}
+
     [HttpPost]
+    [ActionName("EliminarSolicitud")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EliminarSolicitud(int id)
+    public async Task<IActionResult> EliminarSolicitudPost(int id)
     {
         int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
@@ -261,9 +290,45 @@ public class AlianzaPoliticaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+public async Task<IActionResult> EliminarAlianza(int id)
+{
+    int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
+
+    if (partidoId == null)
+    {
+        TempData["ErrorMessage"] = "No se pudo determinar el partido político de su cuenta.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // Busca en el listado de vigentes para recuperar nombres y siglas mapeadas
+    var vigentesDto = await _allianceService.GetAlianzasVigentesAsync(partidoId.Value);
+    var alianza = vigentesDto.FirstOrDefault(a => a.Id == id);
+
+    // La alianza debe existir o estar vigente
+    if (alianza == null)
+    {
+        TempData["ErrorMessage"] = "La alianza política seleccionada no existe o ya fue eliminada.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    
+    var viewModel = new AlianzaVigenteViewModel
+    {
+        Id = alianza.Id,
+        PartidoAliadoNombre = alianza.PartidoMayoristaId == partidoId.Value ? alianza.PartidoAliadoNombre : alianza.PartidoMayoristaNombre,
+        PartidoAliadoSiglas = alianza.PartidoMayoristaId == partidoId.Value ? alianza.PartidoAliadoSiglas : alianza.PartidoMayoristaSiglas,
+        FechaAceptacion = alianza.FechaAceptacion.ToString("dd/MM/yyyy hh:mm tt")
+    };
+
+    return View(viewModel);
+}
+
     [HttpPost]
+    [ActionName("EliminarAlianza")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EliminarAlianza(int id)
+    public async Task<IActionResult> EliminarAlianzaPost(int id)
     {
         int usuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);

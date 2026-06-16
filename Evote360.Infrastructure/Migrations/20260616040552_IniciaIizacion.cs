@@ -138,6 +138,7 @@ namespace Evote360.Infrastructure.Migrations
                     PartidoMayoristaId = table.Column<int>(type: "int", nullable: false),
                     PartidoAliadoId = table.Column<int>(type: "int", nullable: false),
                     FechaSolicitud = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaAceptacion = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
