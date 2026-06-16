@@ -20,17 +20,12 @@ namespace Evote360.Web.Controllers
         {
             // Extrae el nombre de usuario de la sesión actual
             string nombreUsuario = User.Identity?.Name ?? "";
-
             var model = await _dirigenteService.ObtenerDashboardDirigenteAsync(nombreUsuario);
 
-            // Si saltó alguna regla de negocio (Inactivo, sin partido, etc.)
             if (!string.IsNullOrEmpty(model.ErrorAcceso))
             {
-                // Guardamos el mensaje específico exigido por la rúbrica
-                TempData["ErrorMessage"] = model.ErrorAcceso;
-                
-                // CORRECCIÓN: Redirigimos al Login de tu AuthController para que pinte el error allá
-                return RedirectToAction("Login", "Auth"); 
+                // En vez de mandarlo al Login, le muestras tu vista de acceso denegado con el error
+                return RedirectToAction("AccessDenied", "Auth", new { mensaje = model.ErrorAcceso }); 
             }
 
             return View(model);
