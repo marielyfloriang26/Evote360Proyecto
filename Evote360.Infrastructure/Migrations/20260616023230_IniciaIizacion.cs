@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Evote360.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class IniciaIizacion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -137,6 +137,7 @@ namespace Evote360.Infrastructure.Migrations
                     EleccionId = table.Column<int>(type: "int", nullable: false),
                     PartidoMayoristaId = table.Column<int>(type: "int", nullable: false),
                     PartidoAliadoId = table.Column<int>(type: "int", nullable: false),
+                    FechaSolicitud = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>

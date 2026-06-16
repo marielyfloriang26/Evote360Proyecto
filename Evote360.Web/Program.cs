@@ -62,14 +62,21 @@ namespace WebApp
             builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
             builder.Services.AddScoped<ICiudadanoService, CiudadanoService>();
             builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
+
+             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+             builder.Services.AddScoped<IAlianzaPoliticaService, AlianzaPoliticaService>();
+
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
             builder.Services.AddScoped<IEleccionService, EleccionService>();
             builder.Services.AddScoped<IAsignarCandidatoPuestoService, AsignarCandidatoPuestoService>();
+
 
             builder.Services.AddScoped<IDirigenteService, DirigenteService>();
 
 
             builder.Services.AddScoped<IAdministradorService, AdministradorService>();
+
+
 
 
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
