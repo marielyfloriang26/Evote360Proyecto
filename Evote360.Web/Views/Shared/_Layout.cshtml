@@ -30,44 +30,22 @@
                                 <li class="nav-item">
 
                                     <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Administrador" asp-action="Index">Panel Admin</a>
-                                </li>
+                                </li>                               
 
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Elecciones" asp-action="Index">Elecciones</a>
-                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="PuestoElectivo" asp-action="Index">Puesto Electivo</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Ciudadano" asp-action="Index">Ciudadanos</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="PartidoPolitico" asp-action="Index">Partido Politico</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AsignacionDirigentePolitico" asp-action="Index">Asignar Dirigente</a>
-
-
                                 </li>
                                 
-
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="PuestoElectivo" asp-action="Index">Puesto Electivo</a>
-                                </li>
-                                <!-- Opción: Candidatos -->
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Ciudadano" asp-action="Index">Ciudadano</a>
                                 </li>
                                 
-                                <!-- Opción: Asignar candidato a puesto -->
+                                
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="PartidoPolitico" asp-action="Index">Partido Politico</a>
                                 </li>
                                 
-                                <!-- Opción: Alianzas políticas (Faltaba en tu layout anterior) -->
+                              
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
                                 </li>
@@ -84,21 +62,21 @@
 
                             @if (User.IsInRole("DirigentePolitico"))
                             {
-                                <!-- Opción Principal: Home del Dirigente -->
+                                
                                 <li class="nav-item">
                                     <a class="nav-link text-success fw-bold" asp-area="" asp-controller="Dirigente" asp-action="Index">Panel Dirigente</a>
                                 </li>
-                                <!-- Opción: Candidatos -->
+                                
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Candidatos" asp-action="Index">Candidatos</a>
                                 </li>
                                 
-                                <!-- Opción: Asignar candidato a puesto -->
+                                
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AsignarCandidatoPuesto" asp-action="Index">Asignar Candidato</a>
                                 </li>
                                 
-                                <!-- Opción: Alianzas políticas (Faltaba en tu layout anterior) -->
+
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AlianzaPolitica" asp-action="Index">Alianzas Políticas</a>
                                 </li>
