@@ -13,5 +13,9 @@ namespace Evote360.Application.Services.Interfaces
         Task<(bool Success, string Message)> FinalizarAsync(int id);
         Task<List<ResultadoPuestoDto>> ObtenerResultadosAsync(int id);
         Task<EleccionDto?> ObtenerPorIdAsync(int id);
+
+        // funcionalidades del administrador
+        Task<List<int>> ObtenerAniosConEleccionesAsync();
+        Task<List<ResumenElectoralDto>> ObtenerResumenElectoralPorAnioAsync(int anio);
     }
 }
