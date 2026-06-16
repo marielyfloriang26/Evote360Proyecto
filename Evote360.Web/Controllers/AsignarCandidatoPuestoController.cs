@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    //[Authorize(Roles = "Dirigente político")]
+    [Authorize(Roles = "DirigentePolitico")]
     public class AsignarCandidatoPuestoController : Controller
     {
         private readonly IAsignarCandidatoPuestoService _asignacionService;

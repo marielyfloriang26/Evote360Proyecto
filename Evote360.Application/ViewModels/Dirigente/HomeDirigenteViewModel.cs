@@ -1,19 +1,23 @@
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Evote360.Application.ViewModels.Dirigente
 {
     public class HomeDirigenteViewModel
     {
-        // Información del Partido Político Asignado
+        // Información del Partido
+        public int PartidoId { get; set; }
         public string NombrePartido { get; set; } = null!;
-        public string SiglasPartido { get; set; } = null!;
+        public string Siglas { get; set; } = null!;
         public string LogoUrl { get; set; } = null!;
 
-        // Indicadores requeridos 
+        // Indicadores requeridos
         public int CantidadCandidatosActivos { get; set; }
         public int CantidadCandidatosInactivos { get; set; }
-        public int CantidadAlianzasAprobadas { get; set; }
-        public int CantidadSolicitudesAlianzasPendientes { get; set; }
-        public int CantidadCandidatosAsignadosPuestos { get; set; }
+        public int CantidadAlianzasPoliticas { get; set; }
+        public int CantidadSolicitudesPendientes { get; set; }
+        public int CantidadCandidatosAsignados { get; set; }
+        
+        // Control de errores de los prerrequisitos
+        public string? ErrorAcceso { get; set; }
     }
 }

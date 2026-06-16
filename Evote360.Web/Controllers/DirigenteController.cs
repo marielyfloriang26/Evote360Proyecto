@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Evote360.Application.Interfaces;
 
 namespace Evote360.Web.Controllers
 {
-    // Asegúrate de que el string "DirigentePolitico" coincida exactamente con el que guardas al loguearte
-    [Authorize(Roles = "DirigentePolitico")] 
+    [Authorize(Roles = "DirigentePolitico")] // Restringe el acceso solo a Dirigentes Políticos
     public class DirigenteController : Controller
     {
         private readonly IDirigenteService _dirigenteService;
@@ -17,26 +15,22 @@ namespace Evote360.Web.Controllers
             _dirigenteService = dirigenteService;
         }
 
+        // GET: /Dirigente
         public async Task<IActionResult> Index()
         {
-            // Extraemos el ID del usuario de forma flexible
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
-                              ?? User.FindFirst(ClaimTypes.Sid)?.Value 
-                              ?? User.FindFirst("Id")?.Value;
+            // Extrae el nombre de usuario de la sesión actual
+            string nombreUsuario = User.Identity?.Name ?? "";
 
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int usuarioId))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+            var model = await _dirigenteService.ObtenerDashboardDirigenteAsync(nombreUsuario);
 
-            // Llamamos al servicio para compilar el modelo del Home del Dirigente
-            var model = await _dirigenteService.ObtenerDashboardDirigenteAsync(usuarioId);
-            
-            if (model == null)
+            // Si saltó alguna regla de negocio (Inactivo, sin partido, etc.)
+            if (!string.IsNullOrEmpty(model.ErrorAcceso))
             {
-                // Si el servicio retorna null, aplicamos la regla del PDF inyectando el mensaje sugerido
-                TempData["ErrorMessage"] = "No tiene un partido político asignado o se encuentra inactivo. Por favor, póngase en contacto con un administrador.";
-                return RedirectToAction("Index", "Home"); 
+                // Guardamos el mensaje específico exigido por la rúbrica
+                TempData["ErrorMessage"] = model.ErrorAcceso;
+                
+                // CORRECCIÓN: Redirigimos al Login de tu AuthController para que pinte el error allá
+                return RedirectToAction("Login", "Auth"); 
             }
 
             return View(model);

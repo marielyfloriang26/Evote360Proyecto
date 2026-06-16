@@ -1,6 +1,7 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels.AsignacionDirigentePolitico;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    // [Authorize(Roles = "Administrador")] // Descomentar si se está usando Identity o claims roles
+    [Authorize(Roles = "Administrador")] // Descomentar si se está usando Identity o claims roles
     public class AsignacionDirigentePoliticoController : Controller
     {
         private readonly IAsignacionDirigentePoliticoService _asignacionService;
