@@ -1,18 +1,20 @@
 using Evote360.Application.DTOs;
 using Evote360.Application.Interfaces;
+using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels;
-using Evote360.Web.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Evote360.Web.Controllers;
     public class PartidoPoliticoController : Controller
     {
         private readonly IPartidoPoliticoService _partidoService;
+        private readonly IFileStorageService _fileStorageService;
 
         // Inyecta el servicio
-        public PartidoPoliticoController(IPartidoPoliticoService partidoService)
+        public PartidoPoliticoController(IPartidoPoliticoService partidoService, IFileStorageService fileStorageService)
         {
             _partidoService = partidoService;
+            _fileStorageService = fileStorageService;
         }
 
         // LISTADO PRINCIPAL (Index)
@@ -103,7 +105,7 @@ namespace Evote360.Web.Controllers;
             dto.Id = returnPartido.Id;
 
             // Llama al helper usando el id real obtenido
-            dto.LogoUrl = await UploadFile.Upload(vm.File!, dto.Id, "Partidos");
+            dto.LogoUrl = await _fileStorageService.SaveFileAsync(vm.File!, "Partidos");
 
             //Actualiza con la ruta definitiva
             await _partidoService.UpdateAsync(dto);
@@ -182,50 +184,20 @@ namespace Evote360.Web.Controllers;
             {
             var currentDto = await _partidoService.GetByIdSaveDtoAsync(vm.Id);
             string currentImagePath = currentDto?.LogoUrl ?? "";
-            
+    
 
-           /* if (currentDto != null)
+            if (!string.IsNullOrEmpty(currentImagePath))
             {
-                currentImagePath = currentDto.LogoUrl ?? "";
-            } */
+                _fileStorageService.DeleteFile(currentImagePath);
+            }
 
-            // Ejecuta el helper pasando los datos de edición
-            dto.LogoUrl = await UploadFile.Upload(vm.File, dto.Id, "Partidos", true, currentImagePath);
+            // Ejecuta  pasando los datos de edicion
+            dto.LogoUrl = await _fileStorageService.SaveFileAsync(vm.File, "Partidos");
             }
 
             // Actualiza el registro completo
             await _partidoService.UpdateAsync(dto);
             
-        /*    // procesa la nueva imagen solo si el usuario subio una
-        if (vm.File != null && vm.File.Length > 0)
-        {
-            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\partidos");
-            
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            string uniqueFileName = Guid.NewGuid().ToString() + "_" + vm.File.FileName;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await vm.File.CopyToAsync(fileStream);
-            }
-
-            // Si sube un archivo nuevo, sobreescribe la propiedad logo con la nueva ruta
-            vm.LogoUrl = "/images/partidos/" + uniqueFileName;
-        }
-            var updateDto = new PartidoPoliticoSaveDto
-        {
-            Id = vm.Id,
-            Nombre = vm.Nombre,
-            Siglas = vm.Siglas,
-            LogoUrl = vm.LogoUrl,
-            Descripcion = vm.Descripcion,
-            Estado = vm.Estado
-        }; */
 
            TempData["SuccessMessage"] = "Partido político actualizado exitosamente.";
            return RedirectToAction(nameof(Index));

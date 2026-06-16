@@ -3,11 +3,11 @@ using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels.Usuario;
 using Evote360.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Authorization; // TEMPORAL AUTORIZACION
+using Microsoft.AspNetCore.Authorization;
 
 namespace Evote360.Web.Controllers;
 
-// [Authorize(Roles = "Administrador")] // AUTORIZACION TEMPORAL
+[Authorize(Roles = nameof(RolUsuarioEnum.Administrador))] // AUTORIZACION 
 public class UsuarioController : Controller
 {
     private readonly IUsuarioService _usuarioService;
@@ -309,4 +309,4 @@ public class UsuarioController : Controller
         TempData["SuccessMessage"] = "Usuario activado correctamente.";
         return RedirectToAction(nameof(Index));
     }
-}
+} 

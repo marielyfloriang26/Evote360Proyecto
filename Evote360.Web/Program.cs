@@ -71,11 +71,16 @@ namespace WebApp
             builder.Services.AddScoped<IAsignarCandidatoPuestoService, AsignarCandidatoPuestoService>();
 
 
+
             builder.Services.AddScoped<IDirigenteService, DirigenteService>();
 
 
             builder.Services.AddScoped<IAdministradorService, AdministradorService>();
 
+
+
+
+            builder.Services.AddScoped<IAdministradorService, AdministradorService>();
 
 
 

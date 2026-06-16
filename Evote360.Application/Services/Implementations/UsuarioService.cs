@@ -19,12 +19,12 @@ public class UsuarioService : IUsuarioService
         _asignacionRepository = asignacionRepository;
     }
 
-    // 1. OBTENER TODOS LOS USUARIOS (Retorna DTOs de lectura, sin contraseñas)
+    // OBT TODOS LOS USUARIOS 
     public async Task<List<UsuarioDto>> GetAllDtoAsync()
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
 
-        // Mapeo manual de la Entidad de la BD al DTO plano de lectura
+        // Mapeo de la Entidad de la bd al dto de lectura
         return usuarios.Select(u => new UsuarioDto
         {
             Id = u.Id,
@@ -37,14 +37,14 @@ public class UsuarioService : IUsuarioService
         }).ToList();
     }
 
-    // 2. OBTENER POR ID (Retorna el SaveUsuarioDto para cargar los campos al editar)
+    // OBT POR ID 
     public async Task<SaveUsuarioDto> GetByIdSaveDtoAsync(int id)
     {
         var usuario = await _usuarioRepository.GetByIdAsync(id);
 
         if (usuario == null) return null!;
 
-        // Mapeamos la entidad al DTO de persistencia
+        // Mapea la entidad al DTO de persistencia
         return new SaveUsuarioDto
         {
             Id = usuario.Id,
@@ -54,7 +54,7 @@ public class UsuarioService : IUsuarioService
             NombreUsuario = usuario.NombreUsuario,
             Rol = usuario.Rol,
             Estado = usuario.Estado
-            // Nota: La contraseña no se envía desde la BD por seguridad
+            // La contrasena no se envia desde la bd por seguridad
         };
     }
 
@@ -79,7 +79,7 @@ public class UsuarioService : IUsuarioService
         return null;
     }
 
-    // 3. CREAR UN NUEVO USUARIO (Recibe el DTO con la Contrasena limpia)
+    // CREAR UN NUEVO USUARIO
     public async Task AddAsync(SaveUsuarioDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Contrasena))
@@ -103,7 +103,7 @@ public class UsuarioService : IUsuarioService
         await _usuarioRepository.AddAsync(usuario);
     }
 
-    // 4. EDITAR UN USUARIO EXISTENTE
+    // EDITAR UN USUARIO EXISTENTE
     public async Task UpdateAsync(SaveUsuarioDto dto)
     {
         var usuario = await _usuarioRepository.GetByIdAsync(dto.Id);
@@ -117,7 +117,7 @@ public class UsuarioService : IUsuarioService
             usuario.Rol = dto.Rol;
             usuario.Estado = dto.Estado;
 
-            // Regla del PDF: Solo se actualiza la clave si se escribió algo en el formulario
+            // Solo se actualiza la clave si se escribio algo en el formulario
             if (!string.IsNullOrWhiteSpace(dto.Contrasena))
             {
                 usuario.ClaveHash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena);
@@ -130,7 +130,7 @@ public class UsuarioService : IUsuarioService
    
    
 
-    // Validar que el Username no este repetido
+    // Valida que el Username no este repetido
     public async Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, int idActual = 0)
     {
         if (string.IsNullOrWhiteSpace(nombreUsuario)) return false;
@@ -141,7 +141,7 @@ public class UsuarioService : IUsuarioService
         return usuarios.Any(u => u.NombreUsuario.Trim().ToLower() == usernameLimpio && u.Id != idActual);
     }
 
-    // Validar que el Correo sea único
+    // Valida que el Correo sea unico
     public async Task<bool> ExisteCorreoAsync(string correo, int idActual = 0)
     {
         if (string.IsNullOrWhiteSpace(correo)) return false;
@@ -152,7 +152,7 @@ public class UsuarioService : IUsuarioService
         return usuarios.Any(u => u.Correo.Trim().ToLower() == correoLimpio && u.Id != idActual);
     }
 
-    // Validar que no se desactive al último Administrador del sistema
+    // Valida que no se desactive al ultimo admn del sistema
     public async Task<bool> EsUnicoAdminActivoAsync(int id)
     {
         var usuarios = await _usuarioRepository.GetAllAsync();
@@ -168,16 +168,16 @@ public class UsuarioService : IUsuarioService
         return false;
     }
 
-    // Validar si un dirigente político ya tiene un partido asignado en el sistema
+    // Valida si un dirigente politico ya tiene un partido asignado en el sistema
     public async Task<bool> TienePartidoAsignadoAsync(int usuarioId)
     {
         var asignaciones = await _asignacionRepository.GetAllAsync();
         return asignaciones.Any(a => a.UsuarioId == usuarioId);
     }
 
-    // Bloqueo de seguridad: Evita modificaciones si hay procesos electorales en curso
+    //Evita modificaciones si hay procesos electorales en curso
     public async Task<bool> ExisteEleccionActivaAsync()
     {
-        return await Task.FromResult(false); // Simulado temporalmente
+        return await Task.FromResult(false); 
     }
 }

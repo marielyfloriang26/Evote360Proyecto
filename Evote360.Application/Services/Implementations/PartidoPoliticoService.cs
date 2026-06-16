@@ -8,6 +8,7 @@ namespace Evote360.Application.Services;
     public class PartidoPoliticoService : IPartidoPoliticoService
     {
         private readonly IPartidoPoliticoRepository _partidoRepository;
+        
 
         public PartidoPoliticoService(IPartidoPoliticoRepository partidoRepository)
         {
