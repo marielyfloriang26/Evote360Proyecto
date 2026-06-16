@@ -81,5 +81,35 @@ namespace Evote360.Infrastructure.Repositories.Implementations
                                && a.Estado == true);
         }
 
+        public async Task<List<int>> ObtenerAniosConEleccionesAsync()
+        {
+            return await _dbContext.Elecciones
+                .Select(e => e.FechaInicio.Year)
+                .Distinct()
+                .OrderByDescending(y => y)
+                .ToListAsync();
+        }
+
+        public async Task<int> ObtenerCantidadCandidatosRealesPorEleccionAsync(int eleccionId)
+        {
+            // Cuenta candidatos únicos reales (sin duplicar por alianzas) en una elección
+            return await _dbContext.AsignacionesCandidatosPuestos
+                .Where(a => a.EleccionId == eleccionId)
+                .Select(a => a.CandidatoId)
+                .Distinct()
+                .CountAsync();
+        }
+
+        public async Task<int> ObtenerCantidadPartidosPorEleccionAsync(int eleccionId)
+        {
+            // Cuenta los partidos que tienen asignaciones en esta elección específica
+            return await _dbContext.AsignacionesCandidatosPuestos
+                .Where(a => a.EleccionId == eleccionId)
+                .Include(a => a.Candidato)
+                .Select(a => a.Candidato.PartidoId)
+                .Distinct()
+                .CountAsync();
+        }
+
     }
 }
