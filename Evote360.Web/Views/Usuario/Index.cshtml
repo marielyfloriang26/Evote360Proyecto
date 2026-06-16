@@ -3,13 +3,29 @@
 
 @{
     ViewData["Title"] = "Mantenimiento de Usuarios";
+    bool isEleccionActiva = ViewBag.ExisteEleccionActiva ?? false;
 }
 
 <div class="container mt-4">
+    @if (isEleccionActiva && !string.IsNullOrEmpty(ViewBag.EleccionMessage))
+    {
+        <div class="alert alert-warning animate__animated animate__fadeIn" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @ViewBag.EleccionMessage
+        </div>
+    }
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Mantenimiento de Usuarios</h2>
-        <a asp-action="Crear" class="btn btn-primary">Crear nuevo usuario</a>
-    </div>
+        
+        @if (isEleccionActiva)
+        {
+            <button class="btn btn-secondary" disabled title="No se pueden modificar usuarios mientras exista una elección activa.">Crear nuevo usuario</button>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">Crear nuevo usuario</a>
+        }
+        </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -76,17 +92,25 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a asp-action="Editar" asp-route-id="@usuario.Id" class="btn btn-sm btn-warning">Editar</a>
-                                    
-                                    @if (usuario.Estado)
+                                    @if (isEleccionActiva)
                                     {
-                                        <a asp-action="ConfirmarDesactivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>Editar</button>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>Cambiar Estado</button>
                                     }
                                     else
                                     {
-                                        <a asp-action="ConfirmarActivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-success">Activar</a>
+                                        <a asp-action="Editar" asp-route-id="@usuario.Id" class="btn btn-sm btn-warning text-white">Editar</a>
+                                        
+                                        @if (usuario.Estado)
+                                        {
+                                            <a asp-action="ConfirmarDesactivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger">Desactivar</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="ConfirmarActivar" asp-route-id="@usuario.Id" class="btn btn-sm btn-success">Activar</a>
+                                        }
                                     }
-                                </div>
+                                    </div>
                             </td>
                         </tr>
                     }

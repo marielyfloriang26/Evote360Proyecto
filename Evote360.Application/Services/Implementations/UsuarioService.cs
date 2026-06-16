@@ -10,13 +10,15 @@ public class UsuarioService : IUsuarioService
 {
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IRepositoryAsync<AsignacionDirigente> _asignacionRepository;
+    private readonly IEleccionRepository _eleccionRepository;
 
     public UsuarioService(
         IUsuarioRepository usuarioRepository, 
-        IRepositoryAsync<AsignacionDirigente> asignacionRepository)
+        IRepositoryAsync<AsignacionDirigente> asignacionRepository, IEleccionRepository eleccionRepository)
     {
         _usuarioRepository = usuarioRepository;
         _asignacionRepository = asignacionRepository;
+        _eleccionRepository = eleccionRepository;
     }
 
     // OBT TODOS LOS USUARIOS 
@@ -178,6 +180,6 @@ public class UsuarioService : IUsuarioService
     //Evita modificaciones si hay procesos electorales en curso
     public async Task<bool> ExisteEleccionActivaAsync()
     {
-        return await Task.FromResult(false); 
+        return await _eleccionRepository.ExisteEleccionActivaAsync();
     }
 }

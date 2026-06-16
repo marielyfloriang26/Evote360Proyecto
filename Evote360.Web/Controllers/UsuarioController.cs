@@ -21,6 +21,13 @@ public class UsuarioController : Controller
     
     public async Task<IActionResult> Index()
     {
+        bool eleccionActiva = await _usuarioService.ExisteEleccionActivaAsync();
+        ViewBag.ExisteEleccionActiva = eleccionActiva;
+        
+        if (eleccionActiva)
+        {
+            ViewBag.EleccionMessage = "No se pueden modificar usuarios mientras exista una elección activa.";
+        }
         // El servicio retorna una lista de dto
         var usuariosDto = await _usuarioService.GetAllDtoAsync();
 
@@ -40,8 +47,13 @@ public class UsuarioController : Controller
     }
 
     // CREAR USUARIO 
-       public IActionResult Crear()
+       public async Task<IActionResult> Crear()
     {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            TempData["ErrorMessage"] = "No se puede crear un usuario mientras exista una elección activa.";
+            return RedirectToAction(nameof(Index));
+        }
         return View(new SaveUsuarioViewModel());
     }
 
@@ -50,6 +62,11 @@ public class UsuarioController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Crear(SaveUsuarioViewModel vm)
     {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            ModelState.AddModelError(string.Empty, "No se puede crear un usuario mientras exista una elección activa.");
+            return View(vm);
+        }
         ModelState.Remove("Estado");
 
         // validacion 
@@ -93,6 +110,11 @@ public class UsuarioController : Controller
     // EDITAR USUARIO 
     public async Task<IActionResult> Editar(int id)
     {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            TempData["ErrorMessage"] = "No se puede editar un usuario mientras exista una elección activa.";
+            return RedirectToAction(nameof(Index));
+        }
         // solicita el dto a service
         var dto = await _usuarioService.GetByIdSaveDtoAsync(id);
         
@@ -123,6 +145,11 @@ public class UsuarioController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(EditarUsuarioViewModel vm)
     {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            ModelState.AddModelError(string.Empty, "No se puede editar un usuario mientras exista una elección activa.");
+            return View(vm);
+        }
         ModelState.Remove("Estado");
 
         if (string.IsNullOrEmpty(vm.Contrasena))
@@ -160,6 +187,18 @@ public class UsuarioController : Controller
 
         var estadoFormulario = Request.Form["Estado"].ToString().Contains("true");
 
+        // Valida cambio de rol de dirigente politico con partido asignado
+        var usuarioActual = await _usuarioService.GetByIdSaveDtoAsync(vm.Id);
+
+        if (usuarioActual != null && usuarioActual.Rol == RolUsuarioEnum.DirigentePolitico && vm.Rol != RolUsuarioEnum.DirigentePolitico)
+        {
+            if (await _usuarioService.TienePartidoAsignadoAsync(vm.Id))
+            {
+                ModelState.AddModelError(string.Empty, "No se puede cambiar el rol de este usuario porque tiene un partido político asignado como dirigente.");
+                return View(vm);
+            }
+        }
+
         // impide que se inactive al unico admn activo del sistema
         if (vm.Rol != RolUsuarioEnum.Administrador || !estadoFormulario)
         {
@@ -184,11 +223,12 @@ public class UsuarioController : Controller
         };
 
         await _usuarioService.UpdateAsync(dto);
+        TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
         return RedirectToAction(nameof(Index));
     }
 
     
-    // ACTIVAR / DESACTIVAR
+   /* // ACTIVAR / DESACTIVAR
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CambiarEstado(int id)
@@ -233,11 +273,18 @@ public class UsuarioController : Controller
         // manda el DTO actualizado de vuelta al servicio para efectuar el cambio en cascada
         await _usuarioService.UpdateAsync(dto);
         return RedirectToAction(nameof(Index));
-    }
+    } */
     // VISTA CONFIRMAR DESACTIVAR (GET)
+    
     [HttpGet]
     public async Task<IActionResult> ConfirmarDesactivar(int id)
     {
+        if (await _usuarioService.ExisteEleccionActivaAsync())
+        {
+            TempData["ErrorMessage"] = "No se puede desactivar un usuario mientras exista una elección activa.";
+            return RedirectToAction(nameof(Index));
+        }
+
         var usuario = await _usuarioService.GetByIdSaveDtoAsync(id); 
         if (usuario == null) return NotFound();
 
@@ -252,7 +299,7 @@ public class UsuarioController : Controller
     {
         if (await _usuarioService.ExisteEleccionActivaAsync())
         {
-            TempData["ErrorMessage"] = "No se pueden modificar usuarios mientras exista un proceso electoral activo.";
+            TempData["ErrorMessage"] = "No se puede desactivar un usuario mientras exista una elección activa.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -296,7 +343,7 @@ public class UsuarioController : Controller
     {
         if (await _usuarioService.ExisteEleccionActivaAsync())
         {
-            TempData["ErrorMessage"] = "No se pueden modificar usuarios mientras exista un proceso electoral activo.";
+            TempData["ErrorMessage"] = "No se puede activar un usuario mientras exista una elección activo.";
             return RedirectToAction(nameof(Index));
         }
 
