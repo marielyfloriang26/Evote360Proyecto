@@ -26,6 +26,10 @@
     {
         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
     }
+    @if (hayEleccionActiva)
+    {
+        <div class="alert alert-warning">No se pueden modificar asignaciones de dirigentes políticos mientras exista una elección activa.</div>
+    }
 
     <div class="table-responsive shadow-sm bg-white rounded">
         <table class="table table-striped align-middle mb-0">

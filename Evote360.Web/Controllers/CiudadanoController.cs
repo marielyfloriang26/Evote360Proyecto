@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "Administrador")] // Solo administradores acceden
+    [Authorize(Roles = "Administrador")] // requerimiento para el módulo administrativo
     public class CiudadanoController : Controller
     {
         private readonly ICiudadanoService _ciudadanoService;

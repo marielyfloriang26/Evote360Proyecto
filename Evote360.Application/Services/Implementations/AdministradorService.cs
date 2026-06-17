@@ -50,7 +50,7 @@ namespace Evote360.Application.Services.Implementations
             var elecciones = await _eleccionRepository.GetAllAsync();
             if (elecciones == null) return new List<ResumenEleccionViewModel>();
 
-            // Filtrar elecciones del año seleccionado usando la propiedad correcta: FechaInicio
+            // Filtrar elecciones del año seleccionado usando la propiedad, FechaInicio
             var eleccionesFiltradas = elecciones
                 .Where(e => e.FechaInicio.Year == anio)
                 .OrderByDescending(e => e.FechaInicio)
@@ -64,7 +64,6 @@ namespace Evote360.Application.Services.Implementations
 
             foreach (var eleccion in eleccionesFiltradas)
             {
-                // REEMPLAZA TU BLOQUE ANTERIOR POR ESTAS 3 LÍNEAS ASÍNCRONAS:
                 int partidosParticipantes = await _eleccionRepositoryEspecializado.ObtenerCantidadPartidosPorEleccionAsync(eleccion.Id);
                 int candidatosReales = await _eleccionRepositoryEspecializado.ObtenerCantidadCandidatosRealesPorEleccionAsync(eleccion.Id);
                 int ciudadanosQueVotaron = await _eleccionRepositoryEspecializado.ObtenerCantidadCiudadanosQueVotaronAsync(eleccion.Id);

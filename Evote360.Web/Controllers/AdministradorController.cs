@@ -6,7 +6,7 @@ using Evote360.Application.ViewModels.Administrador;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "Administrador")] // Seguridad requerida para el módulo administrativo
+    [Authorize(Roles = "Administrador")] // requerimiento para el módulo administrativo
     public class AdministradorController : Controller
     {
         private readonly IAdministradorService _adminService;
@@ -27,7 +27,7 @@ namespace Evote360.Web.Controllers
                 return View(model);
             }
 
-            // Regla: Por defecto se selecciona el año más reciente disponible
+            // Por defecto se selecciona el año más reciente disponible
             if (!anioElectoral.HasValue)
             {
                 model.AnioElectoral = model.AniosDisponibles[0];

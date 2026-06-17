@@ -5,7 +5,7 @@ using Evote360.Application.Interfaces;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "DirigentePolitico")] // Restringe el acceso solo a Dirigentes Políticos
+    [Authorize(Roles = "DirigentePolitico")] // requerimiento para el módulo DirigentePolitico
     public class DirigenteController : Controller
     {
         private readonly IDirigenteService _dirigenteService;
@@ -24,7 +24,7 @@ namespace Evote360.Web.Controllers
 
             if (!string.IsNullOrEmpty(model.ErrorAcceso))
             {
-                // En vez de mandarlo al Login, le muestras tu vista de acceso denegado con el error
+                // le muestras una vista de acceso denegado con el error
                 return RedirectToAction("AccessDenied", "Auth", new { mensaje = model.ErrorAcceso }); 
             }
 

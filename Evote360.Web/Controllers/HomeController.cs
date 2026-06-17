@@ -201,17 +201,27 @@ namespace Evote360.Web.Controllers
 
             var puestos = await _votacionService.ObtenerPuestosDisponiblesAsync(documento);
             var selecciones = new System.Collections.Generic.Dictionary<int, int>();
+            var puestosFaltantes = new System.Collections.Generic.List<string>();
 
             foreach (var puesto in puestos)
             {
                 var seleccion = HttpContext.Session.GetInt32($"Voto_{puesto.PuestoId}");
                 if (!seleccion.HasValue)
                 {
-                    TempData.Keep("DocumentoElector");
-                    TempData.Keep("CodigoValidado");
-                    return RedirectToAction("PuestosDisponibles"); // Faltan votos
+                    puestosFaltantes.Add(puesto.NombrePuesto);
                 }
-                selecciones[puesto.PuestoId] = seleccion.Value;
+                else
+                {
+                    selecciones[puesto.PuestoId] = seleccion.Value;
+                }
+            }
+
+            if (puestosFaltantes.Count > 0)
+            {
+                TempData.Keep("DocumentoElector");
+                TempData.Keep("CodigoValidado");
+                TempData["ErrorMessage"] = $"Debe completar su selección para los siguientes puestos electivos: {string.Join(", ", puestosFaltantes)}.";
+                return RedirectToAction("PuestosDisponibles");
             }
 
             var result = await _votacionService.FinalizarVotacionAsync(documento, selecciones);

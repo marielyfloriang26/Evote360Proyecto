@@ -10,7 +10,7 @@
         <h2>Control de Procesos Electorales</h2>
         @if (!(ViewBag.ExisteEleccionActiva ?? false))
         {
-            <a asp-action="Crear" class="btn btn-primary shadow-sm">Nueva Elección</a>
+            <a asp-action="Crear" class="btn btn-primary shadow-sm">Crear elección</a>
         }
     </div>
 
@@ -48,10 +48,15 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Descripción</th>
-                        <th>Fecha Planificada</th>
+                        <th>Nombre de la elección</th>
+                        <th>Fecha de realización</th>
                         <th>Estado</th>
-                        <th>Transacciones de Voto</th>
+                        
+                        <!-- CAMBIO: Centrado de encabezados de cantidad -->
+                        <th class="text-center">Cantidad de partidos participantes</th>
+                        <th class="text-center">Cantidad de puestos disputados</th>
+                        <th class="text-center">Cantidad de ciudadanos que votaron</th>
+                        
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -76,7 +81,12 @@
                                     <span class="badge bg-secondary">Finalizada</span>
                                 }
                             </td>
-                            <td>@item.CantidadCiudadanosVotaron</td>
+                            
+                            <!-- CAMBIO: Centrado de las celdas de datos numéricos -->
+                            <td class="text-center">@item.CantidadPartidos</td>
+                            <td class="text-center">@item.CantidadPuestos</td>
+                            <td class="text-center">@item.CantidadCiudadanosVotaron</td>
+                            
                             <td class="text-center">
                                 @if (item.EstadoElectoral == EstadosEleccion.Pendiente)
                                 {
@@ -88,7 +98,7 @@
                                 }
                                 else if (item.EstadoElectoral == EstadosEleccion.Finalizada)
                                 {
-                                    <a asp-action="Resultados" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Resultados</a>
+                                    <a asp-action="Resultados" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Ver resultados</a>
                                 }
                             </td>
                         </tr>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador")] // requerimiento para el módulo Administrador
     public class PuestoElectivoController : Controller
     {
         private readonly IPuestoElectivoService _puestoService;

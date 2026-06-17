@@ -38,7 +38,7 @@ namespace Evote360.Application.Services.Implementations
         {
             var model = new HomeDirigenteViewModel();
 
-            // 1. Validar que el usuario existe en el sistema
+            // Validar que el usuario existe en el sistema
             var usuarios = await _usuarioRepository.GetAllAsync();
             var usuarioAuth = usuarios.FirstOrDefault(u => u.NombreUsuario.Equals(nombreUsuario, StringComparison.OrdinalIgnoreCase));
 
@@ -48,7 +48,7 @@ namespace Evote360.Application.Services.Implementations
                 return model;
             }
 
-            // 2. Buscar la asignación directamente en su repositorio correspondiente para evitar problemas de Include/LazyLoading
+            // Buscar la asignación directamente en su repositorio correspondiente para evitar problemas de Include/LazyLoading
             var todasLasAsignaciones = await _asignacionDirigenteRepository.GetAllAsync() ?? new List<AsignacionDirigente>();
             var asignacion = todasLasAsignaciones.FirstOrDefault(a => a.UsuarioId == usuarioAuth.Id);
 
@@ -62,7 +62,7 @@ namespace Evote360.Application.Services.Implementations
             int partidoId = asignacion.PartidoId;
             var partido = await _partidoRepository.GetByIdAsync(partidoId);
 
-            // 3. Validar si el partido político asignado se encuentra activo
+            // Validar si el partido político asignado se encuentra activo
             if (partido == null || !partido.Estado)
             {
                 model.ErrorAcceso = "El partido político asignado a este usuario se encuentra inactivo.";
@@ -74,8 +74,6 @@ namespace Evote360.Application.Services.Implementations
             model.NombrePartido = partido.Nombre;
             model.Siglas = partido.Siglas;
             model.LogoUrl = partido.LogoUrl;
-
-            // --- CÁLCULO DE INDICADORES EN BASE AL ALCANCE DEL PARTIDO (DATA SCOPING) ---
             
             // Carga de datos relacionales requeridos en memoria de forma segura
             var todosLosCandidatos = await _candidatoRepository.GetAllAsync() ?? new List<Candidato>();
@@ -85,23 +83,22 @@ namespace Evote360.Application.Services.Implementations
             // Filtrar la lista global de candidatos para dejar únicamente los pertenecientes al partido del dirigente
             var candidatosDelPartido = todosLosCandidatos.Where(c => c.PartidoId == partidoId).ToList();
 
-            // Indicador 1: Cantidad de candidatos activos
+            // Cantidad de candidatos activos
             model.CantidadCandidatosActivos = candidatosDelPartido.Count(c => c.Estado);
 
-            // Indicador 2: Cantidad de candidatos inactivos
+            // Cantidad de candidatos inactivos
             model.CantidadCandidatosInactivos = candidatosDelPartido.Count(c => !c.Estado);
 
-            // Indicador 3: Cantidad de alianzas políticas aprobadas (Estado = true)
+            //  Cantidad de alianzas políticas aprobadas
             // Se contabiliza si el partido participa como solicitante (Mayorista) o receptor (Aliado)
             model.CantidadAlianzasPoliticas = todasLasAlianzas.Count(a => 
                 a.Estado && (a.PartidoMayoristaId == partidoId || a.PartidoAliadoId == partidoId));
 
-            // Indicador 4: Cantidad de solicitudes de alianzas pendientes de responder
-            // Condiciones: Enviadas por otro partido (Mayorista != miPartido), dirigidas a mí (Aliado == miPartido) y en espera (Estado == false)
+            // Cantidad de solicitudes de alianzas pendientes de responder
             model.CantidadSolicitudesPendientes = todasLasAlianzas.Count(a => 
                 !a.Estado && a.PartidoAliadoId == partidoId && a.PartidoMayoristaId != partidoId);
 
-            // Indicador 5: Cantidad de candidatos asignados a puestos electivos vigentes
+            // Cantidad de candidatos asignados a puestos electivos vigentes
             model.CantidadCandidatosAsignados = todasLasAsignacionesPuestos.Count(asig => 
                 asig.Estado && asig.Candidato != null && asig.Candidato.PartidoId == partidoId);
 
