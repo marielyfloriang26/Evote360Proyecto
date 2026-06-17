@@ -8,6 +8,8 @@ using Evote360.Application.Services.Interfaces;
 using Evote360.Application.Services.Implementations;
 using Evote360.Infrastructure.Services.Implementations;
 using Evote360.Core.Entities;
+using Evote360.Shared;
+using Evote360.Shared.Services;
 
 namespace WebApp
 {
@@ -86,7 +88,7 @@ namespace WebApp
 
             builder.Services.AddScoped<IFileStorageService, FileStorageService>();
             builder.Services.AddScoped<IOcrService, OcrService>();
-            builder.Services.AddScoped<IEmailService, Evote360.Infrastructure.Shared.Services.EmailService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<ICandidatoService, CandidatoService>();
             builder.Services.AddScoped<IAsignacionDirigentePoliticoService, AsignacionDirigentePoliticoService>();
             builder.Services.AddScoped<IVotacionService, VotacionService>();

@@ -8,8 +8,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Evote360.Application\Evote360.Application.csproj" />
-    <ProjectReference Include="..\Evote360.Infrastructure\Evote360.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\Evote360.Application\Evote360.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Evote360.Infrastructure.Persistence\Evote360.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Evote360.Shared\Evote360.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Evote360.Core\Evote360.Core.csproj" />
-    <ProjectReference Include="..\Evote360.Application\Evote360.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Evote360.Core.Domain\Evote360.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Evote360.Application\Evote360.Application.csproj" />
+    <ProjectReference Include="..\Evote360.Shared\Evote360.Shared.csproj" />
   </ItemGroup>
 
 </Project>

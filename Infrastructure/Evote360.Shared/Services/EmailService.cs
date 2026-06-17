@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Threading.Tasks;
 
-namespace Evote360.Infrastructure.Shared.Services
+namespace Evote360.Shared.Services
 {
     public class EmailService : IEmailService
     {

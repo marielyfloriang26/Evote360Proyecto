@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Evote360.Core\Evote360.Core.csproj" />
+    <ProjectReference Include="..\Evote360.Core.Domain\Evote360.Core.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

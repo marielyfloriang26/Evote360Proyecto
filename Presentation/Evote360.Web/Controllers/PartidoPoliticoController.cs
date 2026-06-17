@@ -72,7 +72,7 @@ namespace Evote360.Web.Controllers;
             var extension = Path.GetExtension(vm.File.FileName).ToLower();
             var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
 
-            if (!extensionesPermitidas.Contains(extension) || vm.File.Length < 100)
+            if (!extensionesPermitidas.Contains(extension) || vm.File.Length < 100 || !ValidarImagenReal(vm.File))
             {
                 ModelState.AddModelError("File", "El logo del partido debe ser una imagen válida.");
             }
@@ -171,7 +171,7 @@ namespace Evote360.Web.Controllers;
             var extension = Path.GetExtension(vm.File.FileName).ToLower();
             var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
 
-            if (!extensionesPermitidas.Contains(extension) || vm.File.Length < 100)
+            if (!extensionesPermitidas.Contains(extension) || vm.File.Length < 100 || !ValidarImagenReal(vm.File))
             {
                 ModelState.AddModelError("File", "El logo del partido debe ser una imagen válida.");
             }
@@ -303,4 +303,28 @@ namespace Evote360.Web.Controllers;
         }
             return RedirectToAction(nameof(Index));
         }
+
+        private bool ValidarImagenReal(IFormFile file)
+        {
+            try
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    if (stream.Length < 4) return false;
+                    byte[] buffer = new byte[4];
+                    int bytesRead = stream.Read(buffer, 0, 4);
+                    if (bytesRead < 4) return false;
+
+                    // JPEG magic bytes: FF D8 FF
+                    if (buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF) return true;
+                    // PNG magic bytes: 89 50 4E 47
+                    if (buffer[0] == 0x89 && buffer[1] == 0x50 && buffer[2] == 0x4E && buffer[3] == 0x47) return true;
+                }
             }
+            catch
+            {
+                return false;
+            }
+            return false;
+        }
+    }
