@@ -6,7 +6,7 @@ using Evote360.Application.DTOs.Alianza;
 using Evote360.Application.ViewModels.AlianzaPolitica;
 using Evote360.Application.Interfaces;
 using Evote360.Core.Enums;
-using Evote360.Application.DTOs.AlianzaPolitica;
+
 
 namespace Evote360.Web.Controllers;
 
@@ -20,7 +20,7 @@ public class AlianzaPoliticaController : Controller
         _allianceService = allianceService;
     }
 
-    // Pantalla de Inicio (Listados)
+    // Pantalla de inicio
 
     public async Task<IActionResult> Index()
     {
@@ -35,10 +35,7 @@ public class AlianzaPoliticaController : Controller
        int? partidoId = await _allianceService.ObtenerPartidoIdPorUsuarioIdAsync(usuarioId);
         if (partidoId == null)
         {
-            // 1. Mensaje unificado para la advertencia
             string mensaje = "Usted no tiene un partido político asignado. Por favor, comuníquese con el administrador.";
-            
-            // 2. CAMBIO CLAVE: Redirección directa a tu pantalla de Acceso Denegado
             return RedirectToAction("AccessDenied", "Auth", new { mensaje = mensaje });
         }
   
