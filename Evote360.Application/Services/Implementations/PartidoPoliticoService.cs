@@ -82,8 +82,9 @@ namespace Evote360.Application.Services;
         string nombreOriginal = partido.Nombre.Trim().ToUpper();
         string nombreNuevo = dto.Nombre.Trim().ToUpper();
 
-        
-        if (siglasOriginales != siglasNuevas || nombreOriginal != nombreNuevo)
+        bool cambioLogo = !string.IsNullOrEmpty(dto.LogoUrl) && partido.LogoUrl != dto.LogoUrl;
+
+        if (siglasOriginales != siglasNuevas || nombreOriginal != nombreNuevo || cambioLogo)
         {
             
             var partidoConRelaciones = await _partidoRepository.GetPartidoConRelacionesOptimizadoAsync(dto.Id);
@@ -104,6 +105,10 @@ namespace Evote360.Application.Services;
                 if (nombreOriginal != nombreNuevo)
                 {
                     throw new Exception("No se puede modificar el nombre de este partido político porque ya participó en una elección.");
+                }
+                if (cambioLogo)
+                {
+                    throw new Exception("No se puede modificar el logo de este partido político porque ya participó en una elección.");
                 }
         }
 
