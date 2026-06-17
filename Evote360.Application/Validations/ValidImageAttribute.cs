@@ -16,7 +16,8 @@ namespace Evote360.Application.Validations
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
                 if (string.IsNullOrEmpty(extension) || !_validExtensions.Contains(extension))
                 {
-                    return new ValidationResult("El archivo seleccionado no tiene un formato de imagen válido (.jpg, .jpeg, .png).");
+                    var message = ErrorMessage ?? "El archivo seleccionado no tiene un formato de imagen válido (.jpg, .jpeg, .png).";
+                    return new ValidationResult(message, new[] { validationContext.MemberName! });
                 }
             }
             return ValidationResult.Success;
