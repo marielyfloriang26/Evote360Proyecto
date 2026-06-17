@@ -9,17 +9,26 @@ namespace Evote360.Web.Controllers;
     {
         private readonly IPartidoPoliticoService _partidoService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IEleccionService _eleccionService;
 
         
-        public PartidoPoliticoController(IPartidoPoliticoService partidoService, IFileStorageService fileStorageService)
+        public PartidoPoliticoController(IPartidoPoliticoService partidoService, IFileStorageService fileStorageService, IEleccionService eleccionService)
         {
             _partidoService = partidoService;
             _fileStorageService = fileStorageService;
+            _eleccionService = eleccionService;
         }
 
         // LISTADO PRINCIPAL 
         public async Task<IActionResult> Index()
         {
+            bool hayEleccionActiva = await _eleccionService.ExisteEleccionActivaAsync(); 
+        ViewBag.EleccionActiva = hayEleccionActiva;
+
+        if (hayEleccionActiva)
+        {
+            TempData["ErrorMessage"] = "No se pueden modificar partidos políticos mientras exista una elección activa.";
+        }
             var dtos = await _partidoService.GetAllDtoAsync();
             
             var listado = dtos.Select(p => new PartidoPoliticoViewModel
@@ -32,13 +41,14 @@ namespace Evote360.Web.Controllers;
             Estado = p.Estado 
         }).ToList();
 
-            return View(listado); // Pasa la lista de vm a la vista
+            return View(listado); 
         }
 
         // CREAR (GET)
-        public IActionResult Crear()
+        public async Task<IActionResult> Crear()
         {
-            // Manda el vm de guardado vacio para limpiar el formulario
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+
             return View(new SavePartidoPoliticoViewModel());
         }
 
@@ -47,9 +57,10 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(SavePartidoPoliticoViewModel vm)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
             ModelState.Remove("Estado");
 
-            // validacion manual, el archivo es obligatorio
+            
             if (vm.File == null || vm.File.Length == 0)
             {
                 // Esto vincula el error directamente al campo File de la vista
@@ -118,6 +129,8 @@ namespace Evote360.Web.Controllers;
         // EDITAR (GET)
         public async Task<IActionResult> Editar(int id)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
         
         if (dto == null)
@@ -135,7 +148,7 @@ namespace Evote360.Web.Controllers;
             Estado = dto.Estado
         };
 
-            return View(partidoVm); // Envia los datos actuales del partido al formulario
+            return View(partidoVm); 
         }
 
         // EDITAR (POST)
@@ -143,6 +156,8 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(SavePartidoPoliticoViewModel vm)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+
             ModelState.Remove("Estado");
 
             if (!string.IsNullOrWhiteSpace(vm.Siglas) && await _partidoService.ExisteSiglasAsync(vm.Siglas, vm.Id))
@@ -207,6 +222,7 @@ namespace Evote360.Web.Controllers;
         // (GET)
         public async Task<IActionResult> ConfirmarActivar(int id)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto == null) return NotFound();
             
@@ -219,6 +235,7 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Activar(int id)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto != null)
         {
@@ -232,6 +249,8 @@ namespace Evote360.Web.Controllers;
         //  CONFIRMAR DESACTIVACION (GET)
         public async Task<IActionResult> ConfirmarDesactivar(int id)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto == null) return NotFound();
 
@@ -256,6 +275,8 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Desactivar(int id)
         {
+            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto != null)
         {

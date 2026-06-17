@@ -3,12 +3,20 @@
 
 @{
     ViewData["Title"] = "Mantenimiento de Partidos Políticos";
+    bool eleccionActiva = ViewBag.EleccionActiva ?? false;
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Mantenimiento de Partidos Políticos</h2>
-        <a asp-action="Crear" class="btn btn-primary">Crear partido político</a>
+        @if (eleccionActiva)
+        {
+            <a class="btn btn-secondary disabled" title="No disponible en elección activa">Crear partido político</a>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">Crear partido político</a>
+        }
     </div>
 
     @if (TempData["SuccessMessage"] != null)
@@ -56,6 +64,20 @@
                                 </span>
                             </td>
                             <td class="text-center">
+                                @if (eleccionActiva)
+                                {
+                                    <a class="btn btn-sm btn-secondary disabled">Editar</a>
+                                    @if (partido.Estado == true)
+                                    {
+                                        <a class="btn btn-sm btn-secondary disabled">Desactivar</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-sm btn-secondary disabled">Activar</a>
+                                    }
+                                }
+                                else
+                                {
                                 <a asp-action="Editar" asp-route-id="@partido.Id" class="btn btn-sm btn-warning">Editar</a>
                                 
                                 @if (partido.Estado == true)
@@ -65,6 +87,7 @@
                                 else
                                 {
                                     <a asp-action="ConfirmarActivar" asp-route-id="@partido.Id" class="btn btn-sm btn-success">Activar</a>
+                                }
                                 }
                             </td>
                         </tr>
