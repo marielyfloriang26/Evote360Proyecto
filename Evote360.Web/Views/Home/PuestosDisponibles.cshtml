@@ -7,6 +7,11 @@
     <h2 class="mb-4 text-center fw-bold text-primary">Puestos Electivos</h2>
     <p class="text-center text-muted mb-5">Seleccione un candidato para cada puesto electivo disponible.</p>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center mb-4">@TempData["ErrorMessage"]</div>
+    }
+
     <div class="row">
         @foreach (var puesto in Model)
         {
