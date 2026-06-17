@@ -52,9 +52,12 @@ namespace Evote360.Application.Services.Implementations
             var partido = await _partidoPoliticoService.GetByIdSaveDtoAsync(partidoId.Value);
             if (partido == null || partido.Estado == false)
             {
-                string msg = action == "Crear"
-                    ? "No puede crear candidatos porque el partido político asignado se encuentra inactivo."
-                    : "El partido político asignado a este usuario se encuentra inactivo.";
+                string msg = action switch
+                {
+                    "Crear" => "No puede crear candidatos porque el partido político asignado se encuentra inactivo.",
+                    "Activar" => "No se puede activar este candidato porque su partido político se encuentra inactivo.",
+                    _ => "El partido político asignado a este usuario se encuentra inactivo."
+                };
                 return (false, msg, 0);
             }
             return (true, string.Empty, partidoId.Value);
@@ -196,7 +199,7 @@ namespace Evote360.Application.Services.Implementations
 
         public async Task<(bool Success, string ErrorMessage, string NombreCandidato)> GetConfirmacionDataAsync(int userId, int id, bool isActivar)
         {
-            var partyAccess = await ValidatePartyAccessAsync(userId);
+            var partyAccess = await ValidatePartyAccessAsync(userId, isActivar ? "Activar" : "");
             if (!partyAccess.Success) return (false, partyAccess.ErrorMessage, string.Empty);
 
             var c = await _repository.GetByIdAsync(id);
