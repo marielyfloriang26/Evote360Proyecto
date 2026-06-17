@@ -104,8 +104,16 @@ public class UsuarioController : Controller
             Estado = estadoFormulario
         };
 
-        await _usuarioService.AddAsync(dto);
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _usuarioService.AddAsync(dto);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (System.Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(vm);
+        }
     }
 
     // EDITAR USUARIO 
@@ -223,9 +231,17 @@ public class UsuarioController : Controller
             Estado = estadoFormulario
         };
 
-        await _usuarioService.UpdateAsync(dto);
-        TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _usuarioService.UpdateAsync(dto);
+            TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (System.Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(vm);
+        }
     }
 
     
@@ -320,9 +336,15 @@ public class UsuarioController : Controller
         }
 
         dto.Estado = false;
-        await _usuarioService.UpdateAsync(dto);
-
-        TempData["SuccessMessage"] = "Usuario desactivado correctamente.";
+        try
+        {
+            await _usuarioService.UpdateAsync(dto);
+            TempData["SuccessMessage"] = "Usuario desactivado correctamente.";
+        }
+        catch (System.Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
         return RedirectToAction(nameof(Index));
     }
 
@@ -352,9 +374,15 @@ public class UsuarioController : Controller
         if (dto == null) return NotFound();
 
         dto.Estado = true;
-        await _usuarioService.UpdateAsync(dto);
-
-        TempData["SuccessMessage"] = "Usuario activado correctamente.";
+        try
+        {
+            await _usuarioService.UpdateAsync(dto);
+            TempData["SuccessMessage"] = "Usuario activado correctamente.";
+        }
+        catch (System.Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
         return RedirectToAction(nameof(Index));
     }
 } 
