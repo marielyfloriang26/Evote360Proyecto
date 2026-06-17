@@ -4,5 +4,6 @@ namespace Evote360.Core.Interfaces
 {
     public interface IPartidoPoliticoRepository : IRepositoryAsync<PartidoPolitico>
     {
+        Task<PartidoPolitico> GetPartidoConRelacionesOptimizadoAsync(int id);
     }
 }

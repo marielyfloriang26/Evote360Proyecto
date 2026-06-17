@@ -10,14 +10,14 @@ namespace Evote360.Web.Controllers;
         private readonly IPartidoPoliticoService _partidoService;
         private readonly IFileStorageService _fileStorageService;
 
-        // Inyecta el servicio
+        
         public PartidoPoliticoController(IPartidoPoliticoService partidoService, IFileStorageService fileStorageService)
         {
             _partidoService = partidoService;
             _fileStorageService = fileStorageService;
         }
 
-        // LISTADO PRINCIPAL (Index)
+        // LISTADO PRINCIPAL 
         public async Task<IActionResult> Index()
         {
             var dtos = await _partidoService.GetAllDtoAsync();
@@ -38,7 +38,7 @@ namespace Evote360.Web.Controllers;
         // CREAR (GET)
         public IActionResult Crear()
         {
-            // Manda el ViewModel de guardado vacio para limpiar el formulario
+            // Manda el vm de guardado vacio para limpiar el formulario
             return View(new SavePartidoPoliticoViewModel());
         }
 
@@ -104,7 +104,7 @@ namespace Evote360.Web.Controllers;
             {
             dto.Id = returnPartido.Id;
 
-            // Llama al helper usando el id real obtenido
+           
             dto.LogoUrl = await _fileStorageService.SaveFileAsync(vm.File!, "Partidos");
 
             //Actualiza con la ruta definitiva
@@ -112,7 +112,7 @@ namespace Evote360.Web.Controllers;
             }
 
                 TempData["SuccessMessage"] = "Partido político registrado exitosamente.";
-                return RedirectToAction(nameof(Index)); // Si todo sale bien, vuelve al listado
+                return RedirectToAction(nameof(Index)); 
             }
 
         // EDITAR (GET)
@@ -234,6 +234,18 @@ namespace Evote360.Web.Controllers;
         {
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto == null) return NotFound();
+
+            if (await _partidoService.TieneDirigenteActivoAsync(id))
+        {
+        TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene un dirigente político asignado.";
+        return RedirectToAction(nameof(Index));
+        }
+        
+        if (await _partidoService.TieneCandidatosActivosAsync(id))
+        {
+            TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene candidatos activos registrados.";
+            return RedirectToAction(nameof(Index));
+        }
         
             ViewBag.NombrePartido = $"{dto.Nombre} ({dto.Siglas})";
             return View(dto.Id);  
@@ -247,6 +259,16 @@ namespace Evote360.Web.Controllers;
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto != null)
         {
+            if (await _partidoService.TieneDirigenteActivoAsync(id))
+        {
+            TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene un dirigente político asignado.";
+            return RedirectToAction(nameof(Index));
+        }
+        if (await _partidoService.TieneCandidatosActivosAsync(id))
+        {
+            TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene candidatos activos registrados.";
+            return RedirectToAction(nameof(Index));
+        }
             dto.Estado = false; 
             await _partidoService.UpdateAsync(dto);
             TempData["SuccessMessage"] = "El partido político ha sido desactivado con éxito.";

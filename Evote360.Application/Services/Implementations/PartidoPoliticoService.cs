@@ -107,4 +107,23 @@ namespace Evote360.Application.Services;
                 await _partidoRepository.DeleteAsync(partido);
             }
         }
+        public async Task<bool> TieneDirigenteActivoAsync(int partidoId)
+    {
+        var partido = await _partidoRepository.GetPartidoConRelacionesOptimizadoAsync(partidoId);
+        
+        if (partido == null) return false;
+        
+        return partido.AsignacionesDirigentes != null && partido.AsignacionesDirigentes.Any(a => 
+            a.Usuario != null && 
+            a.Usuario.Rol == Core.Enums.RolUsuarioEnum.DirigentePolitico && 
+            a.Usuario.Estado == true);
+    }
+    public async Task<bool> TieneCandidatosActivosAsync(int partidoId)
+{
+    var partido = await _partidoRepository.GetPartidoConRelacionesOptimizadoAsync(partidoId);
+    
+    if (partido == null) return false;
+
+    return partido.Candidatos != null && partido.Candidatos.Any(c => c.Estado == true);
+}
     }
