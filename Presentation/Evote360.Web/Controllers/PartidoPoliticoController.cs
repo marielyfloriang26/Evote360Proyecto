@@ -48,7 +48,11 @@ namespace Evote360.Web.Controllers;
         // CREAR (GET)
         public async Task<IActionResult> Crear()
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede crear un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(new SavePartidoPoliticoViewModel());
         }
@@ -58,7 +62,11 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear(SavePartidoPoliticoViewModel vm)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede crear un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
             ModelState.Remove("Estado");
 
             
@@ -130,7 +138,11 @@ namespace Evote360.Web.Controllers;
         // EDITAR (GET)
         public async Task<IActionResult> Editar(int id)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede editar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
         
@@ -157,7 +169,11 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(SavePartidoPoliticoViewModel vm)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede editar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             ModelState.Remove("Estado");
 
@@ -229,7 +245,11 @@ namespace Evote360.Web.Controllers;
         // (GET)
         public async Task<IActionResult> ConfirmarActivar(int id)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede activar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto == null) return NotFound();
             
@@ -242,7 +262,11 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Activar(int id)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede activar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
             try
             {
                 var dto = await _partidoService.GetByIdSaveDtoAsync(id);
@@ -263,7 +287,11 @@ namespace Evote360.Web.Controllers;
         //  CONFIRMAR DESACTIVACION (GET)
         public async Task<IActionResult> ConfirmarDesactivar(int id)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede desactivar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var dto = await _partidoService.GetByIdSaveDtoAsync(id);
             if (dto == null) return NotFound();
@@ -289,7 +317,11 @@ namespace Evote360.Web.Controllers;
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Desactivar(int id)
         {
-            if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
+            if (await _eleccionService.ExisteEleccionActivaAsync()) 
+            {
+                TempData["ErrorMessage"] = "No se puede desactivar un partido político mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
             
             try
             {

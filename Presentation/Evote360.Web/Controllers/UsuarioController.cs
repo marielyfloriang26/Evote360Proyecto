@@ -79,14 +79,20 @@ public class UsuarioController : Controller
         // Valida que sea unico el nombre de usuario mediante el servicio
         if (await _usuarioService.ExisteNombreUsuarioAsync(vm.NombreUsuario))
         {
-            ModelState.AddModelError("NombreUsuario", "El nombre de usuario ya se encuentra registrado.");
+            ModelState.AddModelError("NombreUsuario", "Ya existe un usuario registrado con este nombre de usuario.");
             return View(vm);
         }
 
         // valida que sea unico el correo mediante el servicio
         if (await _usuarioService.ExisteCorreoAsync(vm.Correo))
         {
-            ModelState.AddModelError("Correo", "Este correo electrónico ya está siendo utilizado por otro usuario.");
+            ModelState.AddModelError("Correo", "Ya existe un usuario registrado con este correo electrónico.");
+            return View(vm);
+        }
+
+        if (vm.Rol != RolUsuarioEnum.Administrador && vm.Rol != RolUsuarioEnum.DirigentePolitico)
+        {
+            ModelState.AddModelError("Rol", "Debe seleccionar un rol válido para el usuario.");
             return View(vm);
         }
 
@@ -171,7 +177,7 @@ public class UsuarioController : Controller
         // valida que si escribio una contraseña coincida con su confirmacion
         if (!string.IsNullOrEmpty(vm.Contrasena) && vm.Contrasena != vm.ConfirmarContrasena)
         {
-            ModelState.AddModelError("ConfirmarContrasena", "Las contraseñas ingresadas no coinciden.");
+            ModelState.AddModelError("ConfirmarContrasena", "La contraseña y la confirmación de contraseña no coinciden.");
             return View(vm);
         }
 
@@ -183,14 +189,20 @@ public class UsuarioController : Controller
         // Valida duplicidad de username excluyendo al registro actual
         if (await _usuarioService.ExisteNombreUsuarioAsync(vm.NombreUsuario, vm.Id))
         {
-            ModelState.AddModelError("NombreUsuario", "El nombre de usuario ya está asignado a otra persona.");
+            ModelState.AddModelError("NombreUsuario", "Ya existe un usuario registrado con este nombre de usuario.");
             return View(vm);
         }
 
         // valida duplicidad de correo excluyendo al registro actual
         if (await _usuarioService.ExisteCorreoAsync(vm.Correo, vm.Id))
         {
-            ModelState.AddModelError("Correo", "Este correo electrónico ya pertenece a otro usuario.");
+            ModelState.AddModelError("Correo", "Ya existe un usuario registrado con este correo electrónico.");
+            return View(vm);
+        }
+
+        if (vm.Rol != RolUsuarioEnum.Administrador && vm.Rol != RolUsuarioEnum.DirigentePolitico)
+        {
+            ModelState.AddModelError("Rol", "Debe seleccionar un rol válido para el usuario.");
             return View(vm);
         }
 
@@ -366,7 +378,7 @@ public class UsuarioController : Controller
     {
         if (await _usuarioService.ExisteEleccionActivaAsync())
         {
-            TempData["ErrorMessage"] = "No se puede activar un usuario mientras exista una elección activo.";
+            TempData["ErrorMessage"] = "No se puede activar un usuario mientras exista una elección activa.";
             return RedirectToAction(nameof(Index));
         }
 

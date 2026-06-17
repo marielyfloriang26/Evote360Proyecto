@@ -45,7 +45,7 @@ namespace Evote360.Web.Controllers
         {
             if (await _asignacionService.HayEleccionActivaAsync())
             {
-                TempData["ErrorMessage"] = "No se pueden modificar asignaciones de dirigentes políticos mientras exista una elección activa.";
+                TempData["ErrorMessage"] = "No se puede crear una asignación de dirigente político mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -60,7 +60,7 @@ namespace Evote360.Web.Controllers
         {
             if (await _asignacionService.HayEleccionActivaAsync())
             {
-                TempData["ErrorMessage"] = "No se pueden modificar asignaciones de dirigentes políticos mientras exista una elección activa.";
+                TempData["ErrorMessage"] = "No se puede crear una asignación de dirigente político mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -94,7 +94,7 @@ namespace Evote360.Web.Controllers
         {
             if (await _asignacionService.HayEleccionActivaAsync())
             {
-                TempData["ErrorMessage"] = "No se pueden modificar asignaciones de dirigentes políticos mientras exista una elección activa.";
+                TempData["ErrorMessage"] = "No se puede eliminar una asignación de dirigente político mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -114,7 +114,7 @@ namespace Evote360.Web.Controllers
         {
             if (await _asignacionService.HayEleccionActivaAsync())
             {
-                TempData["ErrorMessage"] = "No se pueden modificar asignaciones de dirigentes políticos mientras exista una elección activa.";
+                TempData["ErrorMessage"] = "No se puede eliminar una asignación de dirigente político mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 

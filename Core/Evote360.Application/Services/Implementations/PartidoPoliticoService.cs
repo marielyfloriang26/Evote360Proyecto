@@ -8,11 +8,13 @@ namespace Evote360.Application.Services;
     public class PartidoPoliticoService : IPartidoPoliticoService
     {
         private readonly IPartidoPoliticoRepository _partidoRepository;
+        private readonly IEleccionRepository _eleccionRepository;
         
 
-        public PartidoPoliticoService(IPartidoPoliticoRepository partidoRepository)
+        public PartidoPoliticoService(IPartidoPoliticoRepository partidoRepository, IEleccionRepository eleccionRepository)
         {
             _partidoRepository = partidoRepository;
+            _eleccionRepository = eleccionRepository;
         }
 
         // OBTENER TODOS LOS PARTIDOS 
@@ -52,6 +54,8 @@ namespace Evote360.Application.Services;
         // CREAR UN NUEVO PARTIDO
         public async Task<PartidoPoliticoSaveDto> AddAsync(PartidoPoliticoSaveDto dto)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+                throw new Exception("No se puede crear un partido político mientras exista una elección activa.");
            
             var partido = new PartidoPolitico
             {
@@ -71,6 +75,9 @@ namespace Evote360.Application.Services;
         // EDITAR UN PARTIDO EXISTENTE
         public async Task UpdateAsync(PartidoPoliticoSaveDto dto)
 {
+    if (await _eleccionRepository.ExisteEleccionActivaAsync())
+        throw new Exception("No se puede editar un partido político mientras exista una elección activa.");
+
     var partido = await _partidoRepository.GetByIdAsync(dto.Id);
 
     if (partido != null)
@@ -140,6 +147,9 @@ namespace Evote360.Application.Services;
         // ELIMINAR PARTIDO
         public async Task DeleteAsync(int id)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+                throw new Exception("No se puede desactivar un partido político mientras exista una elección activa.");
+
             var partido = await _partidoRepository.GetByIdAsync(id);
             if (partido != null)
             {

@@ -32,7 +32,7 @@ namespace Evote360.Web.Controllers
         {
             if (await _eleccionService.ExisteEleccionActivaAsync())
             {
-                TempData["ErrorMessage"] = "No se permite abrir configuraciones mientras haya una elección activa.";
+                TempData["ErrorMessage"] = "No se puede crear una nueva elección mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
             return View(new EleccionCreateViewModel());
