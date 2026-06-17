@@ -1,4 +1,4 @@
-using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.PuestoElectivo;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

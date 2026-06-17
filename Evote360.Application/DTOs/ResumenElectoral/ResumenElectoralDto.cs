@@ -1,4 +1,4 @@
-namespace Evote360.Application.DTOs
+namespace Evote360.Application.DTOs.ResumenElectoral
 {
     public class ResumenElectoralDto
     {

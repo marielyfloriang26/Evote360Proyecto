@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Evote360.Core.Enums;
 
 
-namespace Evote360.Application.DTOs;
+namespace Evote360.Application.DTOs.Usuario;
 
 public class UsuarioDto
 {

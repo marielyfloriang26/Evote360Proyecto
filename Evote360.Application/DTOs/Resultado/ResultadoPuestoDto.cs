@@ -1,4 +1,4 @@
-namespace Evote360.Application.DTOs
+namespace Evote360.Application.DTOs.Resultado
 {
     public class ResultadoPuestoDto
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Evote360.Application.DTOs
+namespace Evote360.Application.DTOs.Candidato
 {
     public class CrearCandidatoDTO
     {

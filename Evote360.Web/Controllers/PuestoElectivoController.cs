@@ -1,4 +1,5 @@
 using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.PuestoElectivo;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels.PuestoElectivo;
 using Microsoft.AspNetCore.Authorization;

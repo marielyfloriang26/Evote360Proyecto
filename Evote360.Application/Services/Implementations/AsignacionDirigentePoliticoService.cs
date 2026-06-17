@@ -1,4 +1,3 @@
-using Evote360.Application.DTOs;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Interfaces;
 using Evote360.Core.Entities;
@@ -7,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Evote360.Application.DTOs.AsignacionDirigentePolitico;
+using Evote360.Application.DTOs.PartidoPolitico;
+using Evote360.Application.DTOs.Usuario;
 
 namespace Evote360.Application.Services.Implementations
 {

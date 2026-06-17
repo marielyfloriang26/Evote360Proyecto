@@ -1,4 +1,4 @@
-using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.Usuario;
 using Evote360.Application.ViewModels.Usuario;
 
 namespace Evote360.Application.Interfaces;

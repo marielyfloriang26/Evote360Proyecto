@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Evote360.Application.DTOs
+namespace Evote360.Application.DTOs.Eleccion
 {
     public class EleccionDto
     {

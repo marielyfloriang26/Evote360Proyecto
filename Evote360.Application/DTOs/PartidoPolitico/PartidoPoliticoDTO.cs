@@ -1,4 +1,4 @@
-namespace Evote360.Application.DTOs;
+namespace Evote360.Application.DTOs.PartidoPolitico;
     public class PartidoPoliticoDTO
     {
         public int Id { get; set; }

@@ -1,4 +1,5 @@
 using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.Usuario;
 using Evote360.Application.Interfaces;
 using Evote360.Application.ViewModels.Usuario;
 using Evote360.Core.Enums;

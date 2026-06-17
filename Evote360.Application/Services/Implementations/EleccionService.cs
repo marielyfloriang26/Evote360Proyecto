@@ -1,4 +1,6 @@
-using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.Eleccion;
+using Evote360.Application.DTOs.Resultado;
+using Evote360.Application.DTOs.ResumenElectoral;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Core.Common;
 using Evote360.Core.Entities;

@@ -1,4 +1,5 @@
 using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.PartidoPolitico;
 using Evote360.Application.Interfaces;
 using Evote360.Application.Services.Interfaces;
 using Evote360.Application.ViewModels;

@@ -1,4 +1,6 @@
-using Evote360.Application.DTOs;
+using Evote360.Application.DTOs.Eleccion;
+using Evote360.Application.DTOs.Resultado;
+using Evote360.Application.DTOs.ResumenElectoral;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
