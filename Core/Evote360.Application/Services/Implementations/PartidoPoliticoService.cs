@@ -97,19 +97,22 @@ namespace Evote360.Application.Services;
 
            bool yaParticipoEnElecciones = tieneCandidatosEnElecciones || tieneAlianzasRegistradas;
 
-           if (siglasOriginales != siglasNuevas)
-                {
-                    throw new Exception("No se pueden modificar las siglas de este partido político porque ya participó en una elección.");
-                }
+           if (yaParticipoEnElecciones)
+           {
+               if (siglasOriginales != siglasNuevas)
+               {
+                   throw new Exception("No se pueden modificar las siglas de este partido político porque ya participó en una elección.");
+               }
 
-                if (nombreOriginal != nombreNuevo)
-                {
-                    throw new Exception("No se puede modificar el nombre de este partido político porque ya participó en una elección.");
-                }
-                if (cambioLogo)
-                {
-                    throw new Exception("No se puede modificar el logo de este partido político porque ya participó en una elección.");
-                }
+               if (nombreOriginal != nombreNuevo)
+               {
+                   throw new Exception("No se puede modificar el nombre de este partido político porque ya participó en una elección.");
+               }
+               if (cambioLogo)
+               {
+                   throw new Exception("No se puede modificar el logo de este partido político porque ya participó en una elección.");
+               }
+           }
         }
 
         partido.Nombre = dto.Nombre;

@@ -243,13 +243,20 @@ namespace Evote360.Web.Controllers;
         public async Task<IActionResult> Activar(int id)
         {
             if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
-            var dto = await _partidoService.GetByIdSaveDtoAsync(id);
-            if (dto != null)
-        {
-            dto.Estado = true; 
-            await _partidoService.UpdateAsync(dto);
-            TempData["SuccessMessage"] = "El partido político ha sido activado con éxito.";
-        }
+            try
+            {
+                var dto = await _partidoService.GetByIdSaveDtoAsync(id);
+                if (dto != null)
+                {
+                    dto.Estado = true; 
+                    await _partidoService.UpdateAsync(dto);
+                    TempData["SuccessMessage"] = "El partido político ha sido activado con éxito.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -284,23 +291,30 @@ namespace Evote360.Web.Controllers;
         {
             if (await _eleccionService.ExisteEleccionActivaAsync()) return RedirectToAction(nameof(Index));
             
-            var dto = await _partidoService.GetByIdSaveDtoAsync(id);
-            if (dto != null)
-        {
-            if (await _partidoService.TieneDirigenteActivoAsync(id))
-        {
-            TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene un dirigente político asignado.";
-            return RedirectToAction(nameof(Index));
-        }
-        if (await _partidoService.TieneCandidatosActivosAsync(id))
-        {
-            TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene candidatos activos registrados.";
-            return RedirectToAction(nameof(Index));
-        }
-            dto.Estado = false; 
-            await _partidoService.UpdateAsync(dto);
-            TempData["SuccessMessage"] = "El partido político ha sido desactivado con éxito.";
-        }
+            try
+            {
+                var dto = await _partidoService.GetByIdSaveDtoAsync(id);
+                if (dto != null)
+                {
+                    if (await _partidoService.TieneDirigenteActivoAsync(id))
+                    {
+                        TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene un dirigente político asignado.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    if (await _partidoService.TieneCandidatosActivosAsync(id))
+                    {
+                        TempData["ErrorMessage"] = "No se puede desactivar este partido político porque tiene candidatos activos registrados.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    dto.Estado = false; 
+                    await _partidoService.UpdateAsync(dto);
+                    TempData["SuccessMessage"] = "El partido político ha sido desactivado con éxito.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
             return RedirectToAction(nameof(Index));
         }
 
