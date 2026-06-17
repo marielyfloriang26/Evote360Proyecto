@@ -265,7 +265,7 @@ namespace Evote360.Application.Services.Implementations
         public async Task<List<ResumenElectoralDto>> ObtenerResumenElectoralPorAnioAsync(int anio)
         {
             var todas = await _eleccionRepository.ObtenerTodasOrdenadasAsync();
-            // Filtramos las elecciones que pertenecen al año seleccionado
+            // filtrar las elecciones que pertenecen al año seleccionado
             var eleccionesDelAnio = todas.Where(e => e.FechaInicio.Year == anio).ToList();
             
             var resumen = new List<ResumenElectoralDto>();

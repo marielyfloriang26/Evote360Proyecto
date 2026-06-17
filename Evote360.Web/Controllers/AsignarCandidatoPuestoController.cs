@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "DirigentePolitico")]
+    [Authorize(Roles = "DirigentePolitico")] // requerimiento para el módulo DirigentePolitico
     public class AsignarCandidatoPuestoController : Controller
     {
         private readonly IAsignarCandidatoPuestoService _asignacionService;
@@ -33,7 +33,6 @@ namespace Evote360.Web.Controllers
             {
                 string mensaje = "Usted no tiene un partido político asignado. Por favor, comuníquese con el administrador.";
         
-                // Redirige al AccessDenied de Auth y le pasa el mensaje por parámetro
                 return RedirectToAction("AccessDenied", "Auth", new { mensaje = mensaje });
             }
 
@@ -84,7 +83,7 @@ namespace Evote360.Web.Controllers
 
         public async Task<IActionResult> ConfirmarEliminar(int id)
         {
-            // Retorna una pequeña vista de confirmación como lo pide el flujo
+            // Retorna una vista de confirmación
             ViewBag.AsignacionId = id;
             return View();
         }

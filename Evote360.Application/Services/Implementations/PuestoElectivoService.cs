@@ -70,7 +70,7 @@ namespace Evote360.Application.Services
             {
                 Nombre = nombreLimpio,
                 Descripcion = dto.Descripcion.Trim(),
-                Estado = true // Por defecto activo según el PDF
+                Estado = true // Por defecto activo
             };
 
             await _repository.AddAsync(puesto);
@@ -87,7 +87,7 @@ namespace Evote360.Application.Services
 
             string nombreLimpio = dto.Nombre.Trim();
 
-            // Validación histórica: si ya fue usado en elecciones pasadas o activas
+            // si ya fue usado en elecciones pasadas o activas
             bool yaFueUtilizado = await _repository.FueUtilizadoEnEleccionAsync(dto.Id);
             if (yaFueUtilizado && puesto.Nombre.ToLower() != nombreLimpio.ToLower())
                 return (false, "No se puede modificar el nombre de este puesto electivo porque ya fue utilizado en una elección.");

@@ -100,17 +100,17 @@ namespace Evote360.Application.Services
             string cedulaLimpia = dto.Cedula.Trim();
             string correoLimpio = dto.Correo.Trim().ToLower();
 
-            // Restricción Histórica de Documento
+            // Restricción de Documento
             bool yaParticipo = await _ciudadanoRepository.HaParticipadoEnEleccionesAsync(dto.Id);
             if (yaParticipo && ciudadano.Cedula != cedulaLimpia)
                 return (false, "No se puede modificar el número de documento de identidad de este ciudadano porque ya participó en una elección.");
 
-            // Validar unicidad de documento contra terceros
+            // Validacion de documento contra terceros
             var existeCedula = await _ciudadanoRepository.ObtenerPorCedulaAsync(cedulaLimpia);
             if (existeCedula != null && existeCedula.Id != dto.Id)
                 return (false, "Ya existe un ciudadano registrado con este número de documento de identidad.");
 
-            // Validar unicidad de correo contra terceros
+            // Validacion de correo contra terceros
             var existeCorreo = await _ciudadanoRepository.ObtenerPorCorreoAsync(correoLimpio);
             if (existeCorreo != null && existeCorreo.Id != dto.Id)
                 return (false, "Ya existe un ciudadano registrado con este correo electrónico.");

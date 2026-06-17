@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Evote360.Web.Controllers
 {
-    [Authorize(Roles = "Administrador")] // Descomentar si se está usando Identity o claims roles
+    [Authorize(Roles = "Administrador")] // requerimiento para el módulo administrativo
     public class AsignacionDirigentePoliticoController : Controller
     {
         private readonly IAsignacionDirigentePoliticoService _asignacionService;

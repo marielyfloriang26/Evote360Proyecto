@@ -6,7 +6,6 @@
 
 <div class="container my-4">
     
-    <!-- Notificaciones de Sistema -->
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
@@ -22,12 +21,10 @@
         </div>
     }
 
-    <!-- Encabezado Principal -->
     <div class="text-center my-4">
         <h1 class="display-6 fw-bold text-primary">Panel Principal de Administración</h1>
     </div>
 
-    <!-- Menú Superior Original Restaurado -->
     <div class="card shadow-sm border-1 mb-4">
         <div class="card-body bg-light py-3">
             <div class="row g-2 text-center">
@@ -53,14 +50,12 @@
         </div>
     </div>
 
-    <!-- Contenedor del Filtro y Resultados -->
     <div class="card shadow-sm border-1">
         <div class="card-header bg-white py-3">
             <h5 class="mb-0 text-secondary fw-bold">Resumen Electoral por Año</h5>
         </div>
         <div class="card-body">
             
-            <!-- Formulario de Selección de Año -->
             <form asp-controller="Administrador" asp-action="ObtenerResumen" method="post" class="mb-4">
                 <div class="row align-items-end g-3">
                     <div class="col-md-8">
@@ -77,7 +72,7 @@
                 </div>
             </form>
 
-            <!-- Tabla Detallada del Resumen -->
+
             @if (Model.EleccionesResumen != null && Model.EleccionesResumen.Count > 0)
             {
                 <div class="table-responsive border rounded">
