@@ -16,6 +16,9 @@ namespace Evote360.Infrastructure.Repositories.Implementations
         {
             return await _dbContext.Set<PartidoPolitico>()
                 .Include(p => p.Candidatos)
+              .ThenInclude(c => c.AsignacionesPuestos) 
+                .Include(p => p.AlianzasComoMayorista)    
+                .Include(p => p.AlianzasComoAliado) 
                 .Include(p => p.AsignacionesDirigentes)       
                     .ThenInclude(a => a.Usuario)           
                 .AsSplitQuery() 

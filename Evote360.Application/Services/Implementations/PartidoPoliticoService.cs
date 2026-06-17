@@ -52,7 +52,7 @@ namespace Evote360.Application.Services;
         // CREAR UN NUEVO PARTIDO
         public async Task<PartidoPoliticoSaveDto> AddAsync(PartidoPoliticoSaveDto dto)
         {
-            // Mapeo manual del ViewModel que viene de la pantalla a la Entidad de la bd
+           
             var partido = new PartidoPolitico
             {
                 Nombre = dto.Nombre,
@@ -70,21 +70,52 @@ namespace Evote360.Application.Services;
 
         // EDITAR UN PARTIDO EXISTENTE
         public async Task UpdateAsync(PartidoPoliticoSaveDto dto)
+{
+    var partido = await _partidoRepository.GetByIdAsync(dto.Id);
+
+    if (partido != null)
+    {
+        
+        string siglasOriginales = partido.Siglas.Trim().ToUpper();
+        string siglasNuevas = dto.Siglas.Trim().ToUpper();
+        
+        string nombreOriginal = partido.Nombre.Trim().ToUpper();
+        string nombreNuevo = dto.Nombre.Trim().ToUpper();
+
+        
+        if (siglasOriginales != siglasNuevas || nombreOriginal != nombreNuevo)
         {
-            var partido = await _partidoRepository.GetByIdAsync(dto.Id);
+            
+            var partidoConRelaciones = await _partidoRepository.GetPartidoConRelacionesOptimizadoAsync(dto.Id);
 
-            if (partido != null)
-            {
-                // Actualiza las propiedades de la entidad con lo que ingreso el usuario
-                partido.Nombre = dto.Nombre;
-                partido.Siglas = dto.Siglas.Trim().ToUpper();
-                partido.LogoUrl = dto.LogoUrl;
-                partido.Descripcion = dto.Descripcion?.Trim();
-                partido.Estado = dto.Estado;
+            bool tieneCandidatosEnElecciones = partidoConRelaciones.Candidatos != null && 
+                partidoConRelaciones.Candidatos.Any(c => c.AsignacionesPuestos != null && c.AsignacionesPuestos.Any());
 
-                await _partidoRepository.UpdateAsync(partido);
-            }
+            
+            bool tieneAlianzasRegistradas = (partidoConRelaciones.AlianzasComoMayorista != null && partidoConRelaciones.AlianzasComoMayorista.Any()) || (partidoConRelaciones.AlianzasComoAliado != null && partidoConRelaciones.AlianzasComoAliado.Any());
+
+           bool yaParticipoEnElecciones = tieneCandidatosEnElecciones || tieneAlianzasRegistradas;
+
+           if (siglasOriginales != siglasNuevas)
+                {
+                    throw new Exception("No se pueden modificar las siglas de este partido político porque ya participó en una elección.");
+                }
+
+                if (nombreOriginal != nombreNuevo)
+                {
+                    throw new Exception("No se puede modificar el nombre de este partido político porque ya participó en una elección.");
+                }
         }
+
+        partido.Nombre = dto.Nombre;
+        partido.Siglas = siglasNuevas;
+        partido.LogoUrl = dto.LogoUrl;
+        partido.Descripcion = dto.Descripcion?.Trim();
+        partido.Estado = dto.Estado;
+
+        await _partidoRepository.UpdateAsync(partido);
+    }
+}
         public async Task<bool> ExisteSiglasAsync(string siglas, int idActual = 0)
         {
             if (string.IsNullOrWhiteSpace(siglas)) return false;

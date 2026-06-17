@@ -210,12 +210,18 @@ namespace Evote360.Web.Controllers;
             dto.LogoUrl = await _fileStorageService.SaveFileAsync(vm.File, "Partidos");
             }
 
-            // Actualiza el registro completo
-            await _partidoService.UpdateAsync(dto);
-            
-
-           TempData["SuccessMessage"] = "Partido político actualizado exitosamente.";
-           return RedirectToAction(nameof(Index));
+            try 
+            {
+                await _partidoService.UpdateAsync(dto);
+                
+                TempData["SuccessMessage"] = "Partido político actualizado exitosamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(vm);
+            }
         }
 
         
