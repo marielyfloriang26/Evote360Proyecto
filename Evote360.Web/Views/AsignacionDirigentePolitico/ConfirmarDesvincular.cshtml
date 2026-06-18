@@ -1,0 +1,32 @@
+@model AsignacionDirigentePoliticoDTO
+
+@{
+    ViewData["Title"] = "Confirmar eliminación";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar eliminación</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="fs-5 mt-3">¿Está seguro que desea desvincular este dirigente político de este partido?</p>
+                    <div class="mt-4 p-3 bg-light rounded text-start">
+                        <p class="mb-1"><strong>Dirigente:</strong> @Model.NombreDirigente (@Model.NombreUsuario)</p>
+                        <p class="mb-0"><strong>Partido:</strong> @Model.NombreDelPartido (@Model.SiglasDelPartido)</p>
+                    </div>
+
+                    <form asp-action="Eliminar" method="post" class="mt-4">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="d-flex justify-content-center gap-3">
+                            <a asp-action="Index" class="btn btn-secondary px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-danger px-4">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

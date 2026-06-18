@@ -1,0 +1,89 @@
+@model Evote360.Application.ViewModels.Usuario.EditarUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Editar Usuario</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Editar" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nombre" class="form-label fw-bold">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Apellido" class="form-label fw-bold">Apellido</label>
+                        <input asp-for="Apellido" class="form-control" />
+                        <span asp-validation-for="Apellido" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-bold">Correo Electrónico</label>
+                    <input asp-for="Correo" type="email" class="form-control" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreUsuario" class="form-label fw-bold">Nombre de Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@@</span>
+                        <input asp-for="NombreUsuario" class="form-control" />
+                    </div>
+                    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="p-3 bg-light rounded border mb-3">
+                    <small class="text-muted d-block mb-2">
+                        <i class="bi bi-info-circle"></i> Deje los siguientes campos vacíos si no desea cambiar la contraseña actual.
+                    </small>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Contrasena" class="form-label fw-bold text-secondary small">Nueva Contraseña</label>
+                            <input asp-for="Contrasena" type="password" class="form-control" placeholder="Opcional" />
+                            <span asp-validation-for="Contrasena" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="ConfirmarContrasena" class="form-label fw-bold text-secondary small">Confirmar Contraseña</label>
+                            <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="Opcional" />
+                            <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Rol" class="form-label fw-bold">Rol de Acceso</label>
+                    <select asp-for="Rol" class="form-select">
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.Administrador)">Administrador</option>
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.DirigentePolitico)">Dirigente Político</option>
+                    </select>
+                    <span asp-validation-for="Rol" class="text-danger"></span>
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    <input asp-for="Estado" class="form-check-input" type="checkbox" role="switch">
+                    <label asp-for="Estado" class="form-check-label fw-bold">Estado Activo</label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

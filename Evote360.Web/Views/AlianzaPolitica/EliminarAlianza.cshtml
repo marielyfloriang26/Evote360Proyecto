@@ -1,0 +1,56 @@
+@model Evote360.Application.ViewModels.AlianzaPolitica.AlianzaVigenteViewModel
+
+@{
+    ViewData["Title"] = "Confirmar Eliminación de Alianza";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Disolución de Alianza</h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    
+                    <div class="mb-4">
+                        <i class="bi bi-shield-x text-danger" style="font-size: 4rem;"></i>
+                    </div>
+
+                   
+                    <p class="fs-5 lh-base px-2">
+                        ¿Está seguro que desea eliminar la alianza política con el partido 
+                        <strong class="text-dark">@Model.PartidoAliadoNombre</strong> 
+                        (<span class="badge bg-secondary">@Model.PartidoAliadoSiglas</span>)?
+                    </p>
+
+                    <div class="alert alert-warning text-start mx-2 my-4 small" role="alert">
+                        <h6 class="alert-heading fw-bold"><i class="bi bi-info-circle-fill"></i> Efectos de esta acción:</h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Ambos partidos dejarán de poder utilizar candidatos del otro partido para nuevas asignaciones.</li>
+                            <li>La eliminación de la alianza <strong>no</strong> eliminará partidos políticos, candidatos ni votos registrados históricamente.</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-4">
+
+                    
+                    <form asp-action="EliminarAlianza" method="post" class="d-flex justify-content-center gap-3">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        
+                        <a asp-action="Index" class="btn btn-light border px-4 py-2">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+
+                        
+                        <button type="submit" class="btn btn-danger px-4 py-2">
+                            <i class="bi bi-check-circle"></i> Aceptar
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

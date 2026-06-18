@@ -1,0 +1,107 @@
+@model Evote360.Application.ViewModels.Dirigente.HomeDirigenteViewModel
+
+@{
+    ViewData["Title"] = "Panel de Dirigente Político";
+}
+
+<div class="container my-4">
+    
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <strong>Atención:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+    <div class="card shadow-sm mb-4 border-0 bg-primary text-white text-center py-4">
+        <div class="card-body">
+            <h1 class="display-5 fw-bold">@Model.NombrePartido (@Model.Siglas)</h1>
+            <div class="my-3">
+                <img src="@Model.LogoUrl" alt="Logo de @Model.NombrePartido" class="img-fluid rounded-circle border border-3 border-white shadow bg-white" style="width: 120px; height: 120px; object-fit: contain;" />
+            </div>
+            <p class="lead mb-0">Panel Principal de Gestión Partidaria</p>
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm mb-4 border-1">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 text-secondary fw-bold">Módulos de Operación</h5>
+        </div>
+        <div class="card-body bg-light">
+            <div class="row g-3 text-center">
+
+                <div class="col-md-4">
+                    <a asp-controller="Candidatos" asp-action="Index" class="btn btn-outline-primary w-100 py-3 fw-bold shadow-sm">
+                        <i class="bi bi-people-fill d-block fs-3 mb-2"></i> Candidatos
+                    </a>
+                </div>
+
+                <div class="col-md-4">
+                    <a asp-controller="AsignarCandidatoPuesto" asp-action="Index" class="btn btn-outline-primary w-100 py-3 fw-bold shadow-sm">
+                        <i class="bi bi-person-badge-fill d-block fs-3 mb-2"></i> Asignar Candidato a Puesto
+                    </a>
+                </div>
+   
+                <div class="col-md-4">
+                    <a asp-controller="AlianzaPolitica" asp-action="Index" class="btn btn-outline-primary w-100 py-3 fw-bold shadow-sm">
+                        <i class="bi bi-handshake-fill d-block fs-3 mb-2"></i> Alianzas Políticas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h4 class="mb-3 text-muted fw-bold">Indicadores de Rendimiento</h4>
+    <div class="row g-3">
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-start border-4 border-success shadow-sm h-100">
+                <div class="card-body py-3">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-1">Candidatos Activos</h6>
+                    <div class="h3 mb-0 fw-bold text-success">@Model.CantidadCandidatosActivos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-start border-4 border-danger shadow-sm h-100">
+                <div class="card-body py-3">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-1">Candidatos Inactivos</h6>
+                    <div class="h3 mb-0 fw-bold text-danger">@Model.CantidadCandidatosInactivos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-start border-4 border-info shadow-sm h-100">
+                <div class="card-body py-3">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-1">Alianzas Políticas </h6>
+                    <div class="h3 mb-0 fw-bold text-info">@Model.CantidadAlianzasPoliticas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-6">
+            <div class="card border-start border-4 border-warning shadow-sm h-100">
+                <div class="card-body py-3">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-1">Solicitudes por Responder (Recibidas)</h6>
+                    <div class="h3 mb-0 fw-bold text-warning">@Model.CantidadSolicitudesPendientes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="card border-start border-4 border-primary shadow-sm h-100">
+                <div class="card-body py-3">
+                    <h6 class="text-uppercase text-muted small fw-bold mb-1">Candidatos con Puesto Asignado</h6>
+                    <div class="h3 mb-0 fw-bold text-primary">@Model.CantidadCandidatosAsignados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

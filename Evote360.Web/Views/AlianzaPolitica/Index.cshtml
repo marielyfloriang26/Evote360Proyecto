@@ -1,0 +1,120 @@
+@model Evote360.Application.ViewModels.AlianzaPolitica.AlianzaPoliticaViewModel
+
+@{
+    ViewData["Title"] = "Gestión de Alianzas Políticas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-diagram-3"></i> Gestión de Alianzas Políticas</h2>
+        
+        @if (Model.ExisteEleccionActiva)
+        {
+            <button class="btn btn-secondary" disabled data-bs-toggle="tooltip" title="No se pueden crear alianzas con una elección activa">
+                <i class="bi bi-plus-circle"></i> Solicitar Alianza
+            </button>
+        }
+        else
+        {
+            <a asp-action="Crear" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Solicitar Alianza
+            </a>
+        }
+    </div>
+
+    @* Manejo de Alertas del Controlador *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model.ExisteEleccionActiva)
+    {
+        <div class="alert alert-warning animate__animated animate__flash" role="alert">
+            <i class="bi bi-info-circle-fill"></i> <strong>Atención:</strong> Existe un proceso electoral activo. Las acciones de modificación, aceptación o disolución de alianzas están temporalmente deshabilitadas.
+        </div>
+    }
+
+    @* *@
+    <div class="row">
+        
+        @* Solicitudes Recibidas (Pendientes de mi respuesta) *@
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-envelope-open"></i> Solicitudes de Alianza Recibidas (Pendientes)</h5>
+                    <span class="badge bg-dark">@Model.SolicitudesPendientes.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Partido Solicitante</th>
+                                    <th>Siglas</th>
+                                    <th>Fecha de Solicitud</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.SolicitudesPendientes.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">No tienes solicitudes pendientes de respuesta.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var item in Model.SolicitudesPendientes)
+                                    {
+                                        <tr>
+                                            <td><strong>@item.PartidoNombre</strong></td>
+                                            <td><span class="badge bg-secondary">@item.PartidoSiglas</span></td>
+
+                                    <td>@item.FechaSolicitud</td>
+                                    
+                                    @* Estado *@
+                                    <td>
+                                        <span class="badge bg-warning text-dark">En espera de respuesta</span>
+                                    </td> 
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                <a asp-action="Aceptar" asp-route-id="@item.Id" 
+                                                class="btn btn-sm btn-success @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                    <i class="bi bi-check-lg"></i> Aceptar
+                                                </a>
+
+                                                <a asp-action="Rechazar" asp-route-id="@item.Id" 
+                                                class="btn btn-sm btn-danger @(Model.ExisteEleccionActiva ? "disabled" : "")">
+                                                    <i class="bi bi-x-lg"></i> Rechazar
+                                                </a>
+                                            </div>
+                                            </td>
+                                                
+                                            </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* LLAMADA A LAS DOS VISTAS PARCIALES *@
+        <partial name="SolicitudEnviada" model="Model" />
+        <partial name="AlianzaVigente" model="Model" />
+
+    </div>
+</div>

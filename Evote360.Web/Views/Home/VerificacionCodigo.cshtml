@@ -1,0 +1,51 @@
+@model Evote360.Application.ViewModels.Votacion.VerificacionCodigoViewModel
+@{
+    ViewData["Title"] = "Verificación de Código";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0 fw-bold">Verificar Código</h3>
+                </div>
+                <div class="card-body p-5">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewBag.ErrorMessage
+                        </div>
+                    }
+
+                    @if (TempData["MensajeCodigo"] != null)
+                    {
+                        <div class="alert alert-success text-center fw-bold shadow-sm" role="alert">
+                            @TempData["MensajeCodigo"]
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center" role="alert">
+                            Se ha enviado un código de seguridad a su correo electrónico. Este código expira en 5 minutos.
+                        </div>
+                    }
+
+                    <form asp-action="VerificacionCodigo" method="post">
+                        <div class="mb-4">
+                            <label asp-for="CodigoVerificacion" class="form-label fw-bold text-secondary"></label>
+                            <input asp-for="CodigoVerificacion" class="form-control form-control-lg bg-light text-center" placeholder="Ej. 123456" />
+                            <span asp-validation-for="CodigoVerificacion" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                Validar código
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

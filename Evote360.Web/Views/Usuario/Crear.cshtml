@@ -1,0 +1,91 @@
+@model Evote360.Application.ViewModels.Usuario.SaveUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Crear Nuevo Usuario</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Crear" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nombre" class="form-label fw-bold">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Ej. Juan" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Apellido" class="form-label fw-bold">Apellido</label>
+                        <input asp-for="Apellido" class="form-control" placeholder="Ej. Pérez" />
+                        <span asp-validation-for="Apellido" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label fw-bold">Correo Electrónico</label>
+                    <input asp-for="Correo" type="email" class="form-control" placeholder="juan.perez@example.com" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreUsuario" class="form-label fw-bold">Nombre de Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@@</span>
+                        <input asp-for="NombreUsuario" class="form-control" placeholder="juanperez" />
+                    </div>
+                    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Contrasena" class="form-label fw-bold">Contraseña</label>
+                        <input asp-for="Contrasena" type="password" class="form-control" placeholder="********" />
+                        <span asp-validation-for="Contrasena" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmarContrasena" class="form-label fw-bold">Confirmar Contraseña</label>
+                        <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="********" />
+                        <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Rol" class="form-label fw-bold">Rol de Acceso</label>
+                    <select asp-for="Rol" class="form-select">
+                        <option value="">-- Seleccione un Rol --</option>
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.Administrador)">Administrador</option>
+                        <option value="@((int)Evote360.Core.Enums.RolUsuarioEnum.DirigentePolitico)">Dirigente Político</option>
+                    </select>
+                    <span asp-validation-for="Rol" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="form-check form-switch p-3 border rounded bg-light">
+                        <input class="form-check-input ms-0 me-2" type="checkbox" asp-for="Estado" checked />
+                        <label class="form-check-input-label fw-bold" asp-for="Estado">
+                            ¿Usuario Activo?
+                        </label>
+                        <div class="form-text text-muted">
+                            Si está inactivo, el usuario no podrá iniciar sesión en el sistema.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Volver atrás</a>
+                    <button type="submit" class="btn btn-primary">Crear usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

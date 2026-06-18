@@ -1,0 +1,118 @@
+@model Evote360.Application.ViewModels.Votacion.BoletaPuestoViewModel
+@{
+    ViewData["Title"] = $"Boleta - {Model.NombrePuesto}";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center fw-bold text-primary mb-2">@Model.NombrePuesto</h2>
+    <p class="text-center text-muted mb-4">Seleccione una única opción y guarde su voto.</p>
+
+    <form asp-action="GuardarVoto" method="post" id="boletaForm">
+        <input type="hidden" asp-for="PuestoId" />
+        <input type="hidden" asp-for="CandidatoSeleccionadoId" id="candidatoSeleccionado" />
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            @foreach (var candidato in Model.Candidatos)
+            {
+                var isSelected = Model.CandidatoSeleccionadoId == candidato.CandidatoId;
+                <div class="col">
+                    <div class="card h-100 shadow-sm candidato-card @(isSelected ? "border-primary border-3" : "border-1")" style="cursor: pointer;" onclick="seleccionarCandidato(@candidato.CandidatoId, this)">
+                        @if (!string.IsNullOrEmpty(candidato.FotoUrl))
+                        {
+                            <img src="@candidato.FotoUrl" class="card-img-top" alt="@candidato.NombreCompleto" style="height: 250px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 250px;">
+                                <i class="bi bi-person-fill" style="font-size: 5rem;"></i>
+                            </div>
+                        }
+                        <div class="card-body text-center d-flex flex-column">
+                            <h5 class="card-title fw-bold">@candidato.NombreCompleto</h5>
+                            
+                            <div class="mt-3 bg-light p-2 rounded">
+                                <p class="mb-0 fw-bold small text-muted">Partido Principal</p>
+                                @if (!string.IsNullOrEmpty(candidato.LogoPartidoPrincipal))
+                                {
+                                    <img src="@candidato.LogoPartidoPrincipal" alt="@candidato.NombrePartidoPrincipal" style="max-height: 40px;" class="mt-1 mb-1">
+                                }
+                                <p class="mb-0 text-dark">@candidato.NombrePartidoPrincipal</p>
+                            </div>
+
+                            @if (candidato.PartidosAliados.Any())
+                            {
+                                <div class="mt-3 border-top pt-2 flex-grow-1">
+                                    <p class="mb-1 fw-bold small text-muted">Aliados</p>
+                                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                                        @foreach (var aliado in candidato.PartidosAliados)
+                                        {
+                                            @if (!string.IsNullOrEmpty(aliado.LogoUrl))
+                                            {
+                                                <img src="@aliado.LogoUrl" alt="@aliado.Nombre" title="@aliado.Nombre" style="max-height: 30px;" data-bs-toggle="tooltip">
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@aliado.Nombre</span>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Opción Ninguno -->
+            @{ var isNinguno = Model.CandidatoSeleccionadoId == 0; }
+            <div class="col">
+                <div class="card h-100 shadow-sm candidato-card @(isNinguno ? "border-primary border-3" : "border-1")" style="cursor: pointer;" onclick="seleccionarCandidato(0, this)">
+                    <div class="bg-dark text-white d-flex align-items-center justify-content-center" style="height: 250px;">
+                        <i class="bi bi-dash-circle" style="font-size: 5rem;"></i>
+                    </div>
+                    <div class="card-body text-center d-flex align-items-center justify-content-center">
+                        <h4 class="card-title fw-bold m-0 text-muted">Ninguno</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between border-top pt-4">
+            <a href="@Url.Action("PuestosDisponibles", "Home")" class="btn btn-outline-secondary btn-lg fw-bold">Volver</a>
+            <button type="submit" class="btn btn-primary btn-lg fw-bold px-5" id="btnGuardar">Guardar voto del puesto</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function seleccionarCandidato(id, elemento) {
+            document.getElementById('candidatoSeleccionado').value = id;
+            
+            // Remover estilos de todos
+            document.querySelectorAll('.candidato-card').forEach(card => {
+                card.classList.remove('border-primary', 'border-3');
+                card.classList.add('border-1');
+            });
+
+            // Añadir al seleccionado
+            elemento.classList.remove('border-1');
+            elemento.classList.add('border-primary', 'border-3');
+        }
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Validar antes de enviar
+        document.getElementById('boletaForm').addEventListener('submit', function(e) {
+            var selected = document.getElementById('candidatoSeleccionado').value;
+            if (selected === '') {
+                e.preventDefault();
+                alert('Debe seleccionar un candidato o la opción "Ninguno" antes de guardar el voto.');
+            }
+        });
+    </script>
+}

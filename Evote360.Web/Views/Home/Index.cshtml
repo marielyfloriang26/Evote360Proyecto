@@ -1,0 +1,43 @@
+@model Evote360.Application.ViewModels.Votacion.LoginElectorViewModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0 fw-bold">eVote360 Pro</h3>
+                    <p class="mb-0 text-white-50">Proceso de Votación Electoral</p>
+                </div>
+                <div class="card-body p-5">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewBag.ErrorMessage
+                        </div>
+                    }
+
+                    <p class="text-muted text-center mb-4">
+                        Por favor, ingrese su número de documento de identidad para iniciar el proceso de votación.
+                    </p>
+
+                    <form asp-action="Index" method="post">
+                        <div class="mb-4">
+                            <label asp-for="DocumentoIdentidad" class="form-label fw-bold text-secondary"></label>
+                            <input asp-for="DocumentoIdentidad" class="form-control form-control-lg bg-light" placeholder="Ej. 40212345678" />
+                            <span asp-validation-for="DocumentoIdentidad" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                Votar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
